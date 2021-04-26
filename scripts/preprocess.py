@@ -26,6 +26,8 @@ import numpy as np
 import random
 import math
 
+from countries import country_list
+
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
 BASE_PATH = CONFIG['file_locations']['base_path']
@@ -353,14 +355,14 @@ def process_coverage_shapes(country):
         print('Working on {} in {}'.format(tech, iso3))
 
         filename = 'Inclusions_201812_{}.shp'.format(tech)
-        folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer_2019',
+        folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer',
             'Data_MCE')
         inclusions = gpd.read_file(os.path.join(folder, filename))
 
         if iso2 in inclusions['CNTRY_ISO2']:
 
             filename = 'MCE_201812_{}.shp'.format(tech)
-            folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer_2019',
+            folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer',
                 'Data_MCE')
             coverage = gpd.read_file(os.path.join(folder, filename))
 
@@ -369,7 +371,7 @@ def process_coverage_shapes(country):
         else:
 
             filename = 'OCI_201812_{}.shp'.format(tech)
-            folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer_2019',
+            folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer',
                 'Data_OCI')
             coverage = gpd.read_file(os.path.join(folder, filename))
 
@@ -381,7 +383,7 @@ def process_coverage_shapes(country):
             coverage['dissolve'] = 1
             coverage = coverage.dissolve(by='dissolve', aggfunc='sum')
 
-            coverage = coverage.to_crs({'init': 'epsg:3857'})
+            coverage = coverage.to_crs('epsg:3857')
 
             print('Excluding small shapes')
             coverage['geometry'] = coverage.apply(clean_coverage,axis=1)
@@ -398,7 +400,7 @@ def process_coverage_shapes(country):
                 preserve_topology=True
             )
 
-            coverage = coverage.to_crs({'init': 'epsg:4326'})
+            coverage = coverage.to_crs('epsg:4326')
 
             if not os.path.exists(folder_coverage):
                 os.makedirs(folder_coverage)
@@ -482,11 +484,8 @@ def get_pop_and_luminosity_data(country):
 
     path_output = os.path.join(DATA_INTERMEDIATE, iso3, 'regional_data.csv')
 
-    # if os.path.exists(path_output):
-    #     return print('Regional data already exists')
-
-    print('----')
-    print('Working on pop/luminosity for {}'.format(iso3))
+    if os.path.exists(path_output):
+        return print('Regional data already exists')
 
     path_night_lights = os.path.join(DATA_INTERMEDIATE, iso3,
         'night_lights.tif')
@@ -513,6 +512,7 @@ def get_pop_and_luminosity_data(country):
                 region['geometry'],
                 array,
                 stats=['sum'],
+                nodata=0,
                 affine=affine)][0]
 
         with rasterio.open(path_settlements) as src:
@@ -522,7 +522,8 @@ def get_pop_and_luminosity_data(country):
             array[array <= 0] = 0
 
             population_summation = [d['sum'] for d in zonal_stats(
-                region['geometry'], array, stats=['sum'], affine=affine)][0]
+                region['geometry'], array, stats=['sum'], nodata=0,
+                affine=affine)][0]
 
         area_km2 = round(area_of_polygon(region['geometry']) / 1e6)
 
@@ -577,19 +578,19 @@ def get_regional_data(country):
 
     total_pop = regions['population'].sum()
 
-    coverage_4G_to_allocate = country['coverage_4G'] # population coverage
+    # coverage_4G_to_allocate = country['coverage_4G'] # population coverage
 
     results = []
 
     for index, region in regions.iterrows():
 
-        pop_share_percentage = (region['population'] / total_pop) * 100
+        # pop_share_percentage = (region['population'] / total_pop) * 100
 
-        if coverage_4G_to_allocate <= 0:
-            coverage = 0
-        else:
-            coverage = 100
-            coverage_4G_to_allocate -= pop_share_percentage
+        # if coverage_4G_to_allocate <= 0:
+        #     coverage = 0
+        # else:
+        #     coverage = 100
+        #     coverage_4G_to_allocate -= pop_share_percentage
 
         results.append({
             'GID_0': region['GID_0'],
@@ -599,14 +600,14 @@ def get_regional_data(country):
             'population': region['population'],
             'area_km2': region['area_km2'],
             'population_km2': region['population_km2'],
-            'coverage_4G_percent': coverage,
+            # 'coverage_4G_percent': coverage,
         })
 
-    print('Working on backhaul')
-    backhaul_lut = estimate_backhaul(iso3, country['region'], '2025')
+    # print('Working on backhaul')
+    # backhaul_lut = estimate_backhaul(iso3, country['region'], '2025')
 
-    print('Working on estimating sites')
-    results = estimate_sites(results, iso3, backhaul_lut)
+    # print('Working on estimating sites')
+    # results = estimate_sites(results, iso3, backhaul_lut)
 
     results_df = pd.DataFrame(results)
 
@@ -1161,7 +1162,7 @@ def process_existing_fiber(country):
     if os.path.exists(path_output):
         return print('Existing fiber already processed')
 
-    if not iso3 in ['UGA', 'MWI', 'KEN', 'SEN']:
+    if not iso3 in ['GMB', 'UGA', 'MWI', 'KEN', 'SEN']:
         path = os.path.join(DATA_RAW, 'fiber_maps', iso3, 'existing_network.shp')
         data = gpd.read_file(path, crs='epsg:3857')
         data = data.to_crs(epsg=4326)
@@ -2042,6 +2043,10 @@ def forecast_subscriptions(country):
     forecast_df.to_csv(os.path.join(path, 'subs_forecast.csv'), index=False)
 
     path = os.path.join(BASE_PATH, '..', 'vis', 'subscriptions', 'data_inputs')
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
     forecast_df.to_csv(os.path.join(path, '{}.csv'.format(iso3)), index=False)
 
     return print('Completed subscription forecast')
@@ -2123,7 +2128,8 @@ def forecast_smartphones(country):
 
     path = os.path.join(BASE_PATH, '..', 'vis', 'smartphones', 'data_inputs')
     if not os.path.exists(path):
-        os.mkdir(path)
+        os.makedirs(path)
+
     forecast_df.to_csv(os.path.join(path, '{}.csv'.format(iso3)), index=False)
 
     return print('Completed subscription forecast')
@@ -2204,44 +2210,7 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
 
 if __name__ == '__main__':
 
-    # countries = find_country_list(['Africa'])
-
-    countries = [
-        {'iso3': 'MWI', 'iso2': 'MW', 'regional_level': 2, #'regional_nodes_level': 3,
-            'region': 'SSA', 'pop_density_km2': 500, 'settlement_size': 1000,
-            'subs_growth': 3.5, 'smartphone_growth': 5, 'cluster': 'C1', 'coverage_4G': 16
-        },
-        {'iso3': 'UGA', 'iso2': 'UG', 'regional_level': 2, 'regional_nodes_level': 2,
-            'region': 'SSA', 'pop_density_km2': 500, 'settlement_size': 1000,
-            'subs_growth': 2, 'smartphone_growth': 5, 'cluster': 'C1', 'coverage_4G': 30
-        },
-        {'iso3': 'SEN', 'iso2': 'SN', 'regional_level': 2, 'regional_nodes_level': 2,
-            'region': 'SSA', 'pop_density_km2': 200, 'settlement_size': 1000,
-            'subs_growth': 1.5, 'smartphone_growth': 2, 'cluster': 'C2', 'coverage_4G': 55
-        },
-        {'iso3': 'KEN', 'iso2': 'KE', 'regional_level': 2, 'regional_nodes_level': 1,
-            'region': 'SSA', 'pop_density_km2': 500, 'settlement_size': 1000,
-            'subs_growth': 1.5, 'smartphone_growth': 2, 'cluster': 'C2', 'coverage_4G': 65
-        },
-        {'iso3': 'PAK', 'iso2': 'PK', 'regional_level': 3, 'regional_nodes_level': 2,
-            'region': 'S&SE Asia', 'pop_density_km2': 500, 'settlement_size': 1000,
-            'subs_growth': 2.5, 'smartphone_growth': 4, 'cluster': 'C3', 'coverage_4G': 67
-        },
-        {'iso3': 'ALB', 'iso2': 'AL', 'regional_level': 2, 'regional_nodes_level': 2,
-            'region': 'Europe', 'pop_density_km2': 500, 'settlement_size': 1000,
-            'subs_growth': 0.3, 'smartphone_growth': 1.5, 'cluster': 'C4', 'coverage_4G': 96
-        },
-        {'iso3': 'PER', 'iso2': 'PE', 'regional_level': 2, 'regional_nodes_level': 1,
-            'region': 'LAC', 'pop_density_km2': 500, 'settlement_size': 1000,
-            'subs_growth': 0.5, 'smartphone_growth': 1, 'cluster': 'C5', 'coverage_4G': 84
-        },
-        {'iso3': 'MEX', 'iso2': 'MX', 'regional_level': 2, 'regional_nodes_level': 1,
-            'region': 'LAC', 'pop_density_km2': 500, 'settlement_size': 1000,
-            'subs_growth': 1.2, 'smartphone_growth': 1, 'cluster': 'C6', 'coverage_4G': 85
-        },
-    ]
-
-    for country in countries:
+    for country in country_list:
 
         print('Working on {}'.format(country['iso3']))
 
@@ -2263,8 +2232,8 @@ if __name__ == '__main__':
         print('Getting population and luminosity')
         get_pop_and_luminosity_data(country)
 
-        print('Getting regional data')
-        get_regional_data(country)
+        # print('Getting regional data')
+        # get_regional_data(country)
 
         print('Generating agglomeration lookup table')
         generate_agglomeration_lut(country)

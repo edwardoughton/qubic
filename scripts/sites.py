@@ -16,6 +16,8 @@ import numpy as np
 from shapely.geometry import MultiPolygon
 from shapely.ops import transform, unary_union
 
+from countries import country_list
+
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
 BASE_PATH = CONFIG['file_locations']['base_path']
@@ -307,205 +309,92 @@ def load_regions(path):
     return regions
 
 
-def load_2G_kenya(path, regions, folder):
+def process_the_gambia():
 
-    print('Loading 2G')
-    df_2G = pd.read_excel(path, '2G TRXs 2019_2020')
-    df_2G = df_2G[['CELL ID', 'SITE ID', 'LAT', 'LON']]
-    df_2G = gpd.GeoDataFrame(
-        df_2G, geometry=gpd.points_from_xy(df_2G.LON, df_2G.LAT))
-    df_2G = df_2G.dropna()
-    df_2G = df_2G.drop_duplicates(['SITE ID'])
-
-    print('Writing 2G shapes')
-    df_2G.to_file(os.path.join(folder, '2G.shp'), crs='epsg:4326')
-
-    f = lambda x:np.sum(df_2G.intersects(x))
-    regions['sites'] = regions['geometry'].apply(f)
-
-    sites_2G = regions[['GID_2', 'sites']]
-    sites_2G['tech'] = '2G'
-
-    return sites_2G
-
-
-def load_3G_kenya(path, regions, folder):
-
-    print('Loading 3G')
-    df_3G = pd.read_excel(path, '3G TRX 2019_2020')
-    df_3G = df_3G[['CELL ID', 'SITE ID', 'LAT', 'LON']]
-    df_3G = gpd.GeoDataFrame(
-        df_3G, geometry=gpd.points_from_xy(df_3G.LON, df_3G.LAT))
-    df_3G = df_3G.dropna()
-    df_3G = df_3G.drop_duplicates(['SITE ID'])
-
-    print('Writing 3G shapes')
-    df_3G.to_file(os.path.join(folder, '3G.shp'), crs='epsg:4326')
-
-    f = lambda x:np.sum(df_3G.intersects(x))
-    regions['sites'] = regions['geometry'].apply(f)
-
-    sites_3G = regions[['GID_2', 'sites']]
-    sites_3G['tech'] = '3G'
-
-    return sites_3G
-
-
-def load_4G_kenya(path, regions, folder):
-
-    print('Loading 4G')
-    df_4G = pd.read_excel(path, '4G TRX 2019_2020')
-    df_4G = df_4G[['CELL ID', 'SITE ID', 'LAT', 'LON']]
-    df_4G = df_4G.dropna()
-
-    df_4G = gpd.GeoDataFrame(
-        df_4G, geometry=gpd.points_from_xy(df_4G.LON, df_4G.LAT))
-
-    df_4G = df_4G.drop_duplicates(['SITE ID'])
-
-    print('Writing 4G shapes')
-    df_4G.to_file(os.path.join(folder, '4G.shp'), crs='epsg:4326')
-
-    f = lambda x:np.sum(df_4G.intersects(x))
-    regions['sites'] = regions['geometry'].apply(f)
-
-    sites_4G = regions[['GID_2', 'sites']]
-    sites_4G['tech'] = '4G'
-
-    return sites_4G
-
-
-def process_kenya():
-
-    print('Processing Kenya data')
-    folder = os.path.join(DATA_INTERMEDIATE, 'KEN', 'sites')
+    print('Processing The Gambia')
+    folder = os.path.join(DATA_INTERMEDIATE, 'GMB', 'sites')
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    path = os.path.join(DATA_INTERMEDIATE, 'KEN', 'regions', 'regions_2_KEN.shp')
+    path = os.path.join(DATA_INTERMEDIATE, 'GMB', 'regions', 'regions_2_GMB.shp')
     regions = load_regions(path)
 
-    path = os.path.join(DATA_RAW, 'KEN', 'Telkom Data.xlsx')
-    sites_2G = load_2G_kenya(path, regions, folder)
+    path = os.path.join(DATA_RAW, 'GMB', 'Gambia Network_Africell.xlsx')
+    sites_2G = load_sites_the_gambia('2G', path, regions, folder)
+    sites_3G = load_sites_the_gambia('3G', path, regions, folder)
+    sites_4G = load_sites_the_gambia('4G', path, regions, folder)
 
-    path = os.path.join(DATA_RAW, 'KEN', 'Telkom Data.xlsx')
-    sites_3G = load_3G_kenya(path, regions, folder)
+    # sites = sites_2G.merge(sites_3G, left_on='GID_2', right_on='GID_2')
+    # sites = sites_4G.merge(sites_3G, left_on='GID_2', right_on='GID_2')
 
-    path = os.path.join(DATA_RAW, 'KEN', 'Telkom Data.xlsx')
-    sites_4G = load_4G_kenya(path, regions, folder)
+    # sites = [sites_2G, sites_3G, sites_4G]
+    # sites = pd.concat(sites)
 
-    sites = [sites_2G, sites_3G, sites_4G]
-    sites = pd.concat(sites)
+    # sites.rename(columns = {'GID_2':'GID_id'}, inplace = True)
+    # sites['GID_level'] = 2
 
-    sites.rename(columns = {'GID_2':'GID_id'}, inplace = True)
-    sites['GID_level'] = 2
+    # sites = sites[['GID_id', 'sites', 'tech']]
+    # sites = sites.groupby(['GID_id'], as_index=False).sum()
 
-    sites = sites[['GID_id', 'sites']]
-    sites = sites.groupby(['GID_id'], as_index=False).sum()
-
-    print('Writing Kenya csv data')
-    sites.to_csv(os.path.join(folder, 'sites.csv'), index=False)
-
-
-def load_senegal(path, regions, folder):
-
-    print('Reading Senegal data')
-    sites = pd.read_csv(path, encoding = "ISO-8859-1")
-    sites = sites[['Cell_ID', 'Site_Name', 'LATITUDE', 'LONGITUDE']]
-    sites = gpd.GeoDataFrame(
-        sites, geometry=gpd.points_from_xy(sites.LONGITUDE, sites.LATITUDE))
-    sites = sites.dropna()
-
-    sites = sites.drop_duplicates(['Site_Name'])
-
-    sites.crs = 'epsg:31028'
-    sites = sites.to_crs('epsg:4326')
-
-    sites.to_file(os.path.join(folder, 'sites.shp'), crs='epsg:4326')
-
-    f = lambda x:np.sum(sites.intersects(x))
-    regions['sites'] = regions['geometry'].apply(f)
-
-    regions = regions[['GID_2', 'sites']]
-    regions['tech'] = 'unknown'
-    regions.rename(columns = {'GID_2':'GID_id'}, inplace = True)
-    regions['GID_level'] = 2
-
-    print('Writing Senegal csv data')
-    folder = os.path.join(DATA_INTERMEDIATE, 'SEN', 'sites')
-    regions.to_csv(os.path.join(folder, 'sites.csv'), index=False)
-
-    return
+    # print('Writing The Gambia csv data')
+    # sites.to_csv(os.path.join(folder, 'sites.csv'), index=False)
 
 
-def process_senegal():
+def load_sites_the_gambia(tech, path, regions, folder):
 
-    print('Processing Senegal data')
-    folder = os.path.join(DATA_INTERMEDIATE, 'SEN', 'sites')
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    df = pd.read_excel(path, 'Sites', skiprows=1)
 
-    path = os.path.join(DATA_INTERMEDIATE, 'SEN', 'regions', 'regions_2_SEN.shp')
-    regions = load_regions(path)
+    df = df[['Site_ID', 'site_name', 'Longitude', 'Latitude',
+        '2G, 3G, 4G, Wifi etc', #technology?
+        'Fibre, microwave', #backhaul type?
+        'Yes / No', #main grid?
+    ]]
+    df.columns = ['site_id', 'site_name', 'longitude', 'latitude',
+        'technology', 'backhaul', 'on_grid']
+    df = df.dropna()
 
-    filename = 'Bilan_Couverture_Orange_Dec2017.csv'
-    path = os.path.join(DATA_RAW, 'SEN', filename)
+    df = df[df['technology'].str.contains(tech)]
 
-    load_senegal(path, regions, folder)
+    df = gpd.GeoDataFrame(
+        df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
 
+    df = df.drop_duplicates(['site_id'])
 
-def load_albania(path, regions, folder):
+    output = []
 
-    print('Reading Albania data')
-    sites = pd.read_csv(path, encoding = "ISO-8859-1")
-    sites = sites[['LATITUDE', 'LONGITUDE']]
+    for idx, point in df.iterrows():
+        for idx, region in regions.iterrows():
+            if point['geometry'].intersects(region['geometry']):
+                output.append({
+                    'type': 'Feature',
+                    'geometry': point['geometry'],
+                    'properties': {
+                        'site_id': point['site_id'],
+                        'site_name': point['site_name'],
+                        'technology': point['technology'],
+                        'backhaul': point['backhaul'],
+                        'on_grid': point['on_grid'],
+                        'GID_2': region['GID_2'],
+                    }
+                })
 
-    #get sites not cells
-    sites = sites.drop_duplicates()
-    sites = gpd.GeoDataFrame(
-        sites, geometry=gpd.points_from_xy(sites.LONGITUDE, sites.LATITUDE))
-    sites = sites.dropna()
+    df = gpd.GeoDataFrame().from_features(output, crs='epsg:4326')
 
-    print('Writing 2G')
-    sites.to_file(os.path.join(folder, 'sites.shp'), crs='epsg:4326')
+    filename = '{}.shp'.format(tech)
+    df.to_file(os.path.join(folder, filename), crs='epsg:4326')
 
-    f = lambda x:np.sum(sites.intersects(x))
-    regions['sites'] = regions['geometry'].apply(f)
+    # f = lambda x:np.sum(df.intersects(x))
+    # regions['sites'] = regions['geometry'].apply(f)
 
-    sites = regions[['GID_2', 'sites']]
-    sites['tech'] = '4G'
-    sites.rename(columns = {'GID_2':'GID_id'}, inplace = True)
-    sites['GID_level'] = 2
+    # sites = regions[['GID_2', 'sites']].reset_index()
+    # sites['tech'] = '{}'.format(tech)
 
-    return sites
-
-
-def process_albania():
-
-    print('Processing Albania data')
-    folder = os.path.join(DATA_INTERMEDIATE, 'ALB', 'sites')
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-
-    path = os.path.join(DATA_INTERMEDIATE, 'ALB', 'regions', 'regions_2_ALB.shp')
-    regions = load_regions(path)
-
-    filename = 'all_data.csv'
-    path = os.path.join(DATA_RAW, 'ALB', filename)
-
-    sites = load_albania(path, regions, folder)
-    sites.to_csv(os.path.join(folder, 'sites.csv'), index=False)
+    return df
 
 
 if __name__ == "__main__":
 
-    countries = [
-        {'iso3': 'KEN', 'iso2': 'KE', 'regional_level': 2},
-        {'iso3': 'SEN', 'iso2': 'SN', 'regional_level': 2},
-        {'iso3': 'ALB', 'iso2': 'AL', 'regional_level': 2},
-    ]
-
-    for country in countries:
+    for country in country_list:
 
         print('Processing country boundary')
         process_country_shape(country)
@@ -516,11 +405,5 @@ if __name__ == "__main__":
         print('Processing coverage shapes')
         process_coverage_shapes(country)
 
-        if country['iso3'] == 'KEN':
-            process_kenya()
-
-        if country['iso3'] == 'SEN':
-            process_senegal()
-
-        if country['iso3'] == 'ALB':
-            process_albania()
+        if country['iso3'] == 'GMB':
+            process_the_gambia()
