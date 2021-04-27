@@ -135,7 +135,7 @@ def process_country_shapes(country):
     glob_info_path = os.path.join(BASE_PATH, 'global_information.csv')
     load_glob_info = pd.read_csv(glob_info_path, encoding = "ISO-8859-1")
     single_country = single_country.merge(
-        load_glob_info,left_on='GID_0', right_on='ISO_3digit')
+        load_glob_info, left_on='GID_0', right_on='ISO_3digit')
 
     print('Exporting processed country shape')
     single_country.to_file(shape_path, driver='ESRI Shapefile')
@@ -2006,208 +2006,6 @@ def load_subscription_data(path, iso3):
     return output
 
 
-def forecast_subscriptions(country):
-    """
-    Forecast subscriptions.
-
-    Parameters
-    ----------
-    country : string
-        ISO3 digital country code.
-
-    """
-    iso3 = country['iso3']
-
-    path = os.path.join(DATA_RAW, 'gsma', 'gsma_unique_subscribers.csv')
-    historical_data = load_subscription_data(path, country['iso3'])
-
-    start_point = 2021
-    end_point = 2030
-    horizon = 4
-
-    forecast = forecast_subscriptions_linear(
-        country,
-        historical_data,
-        start_point,
-        end_point,
-        horizon
-    )
-
-    forecast_df = pd.DataFrame(historical_data + forecast)
-
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'subscriptions')
-
-    if not os.path.exists(path):
-        os.mkdir(path)
-
-    forecast_df.to_csv(os.path.join(path, 'subs_forecast.csv'), index=False)
-
-    path = os.path.join(BASE_PATH, '..', 'vis', 'subscriptions', 'data_inputs')
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-    forecast_df.to_csv(os.path.join(path, '{}.csv'.format(iso3)), index=False)
-
-    return print('Completed subscription forecast')
-
-
-def forecast_subscriptions_linear(country, historical_data, start_point, end_point, horizon):
-    """
-    Forcasts subscription adoption rate.
-
-    Parameters
-    ----------
-    historical_data : list of dicts
-        Past penetration data.
-    start_point : int
-        Starting year of forecast period.
-    end_point : int
-        Final year of forecast period.
-    horizon : int
-        Number of years to use to estimate mean growth rate.
-
-    """
-    output = []
-
-    subs_growth = country['subs_growth']
-
-    year_0 = sorted(historical_data, key = lambda i: i['year'], reverse=True)[0]
-
-    for year in range(start_point, end_point + 1):
-        if year == start_point:
-
-            penetration = year_0['penetration'] * (1 + (subs_growth/100))
-        else:
-            penetration = penetration * (1 + (subs_growth/100))
-
-        if year not in [item['year'] for item in output]:
-
-            output.append({
-                'country': country['iso3'],
-                'year': year,
-                'penetration': round(penetration, 2),
-            })
-
-    return output
-
-
-def forecast_smartphones(country):
-    """
-    Forecast smartphone adoption.
-
-    Parameters
-    ----------
-    historical_data : list of dicts
-        Past penetration data.
-
-    """
-    iso3 = country['iso3']
-
-    path = os.path.join(DATA_RAW, 'wb_smartphone_survey', 'wb_smartphone_survey.csv')
-    survey_data = load_smartphone_data(path, country)
-
-    start_point = 2020
-    end_point = 2030
-
-    forecast = forecast_smartphones_linear(
-        survey_data,
-        country,
-        start_point,
-        end_point
-    )
-
-    forecast_df = pd.DataFrame(forecast)
-
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'smartphones')
-
-    if not os.path.exists(path):
-        os.mkdir(path)
-
-    forecast_df.to_csv(os.path.join(path, 'smartphone_forecast.csv'), index=False)
-
-    path = os.path.join(BASE_PATH, '..', 'vis', 'smartphones', 'data_inputs')
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-    forecast_df.to_csv(os.path.join(path, '{}.csv'.format(iso3)), index=False)
-
-    return print('Completed subscription forecast')
-
-
-def load_smartphone_data(path, country):
-    """
-    Load smartphone adoption survey data.
-
-    Parameters
-    ----------
-    path : string
-        Location of data as .csv.
-    country : string
-        ISO3 digital country code.
-
-    """
-    survey_data = pd.read_csv(path)
-
-    survey_data = survey_data.to_dict('records')
-
-    countries_with_data = [i['iso3'] for i in survey_data]
-
-    output = []
-
-    if country['iso3']  in countries_with_data:
-        for item in survey_data:
-                if item['iso3'] == country['iso3']:
-                    output.append({
-                        'country': item['iso3'],
-                        'cluster': item['cluster'],
-                        'settlement_type': item['Settlement'],
-                        'smartphone_penetration': item['Smartphone']
-                    })
-
-    else:
-        for item in survey_data:
-            if item['cluster'] == country['cluster']:
-                output.append({
-                    'country': country['iso3'],
-                    'cluster': item['cluster'],
-                    'settlement_type': item['Settlement'],
-                    'smartphone_penetration': item['Smartphone']
-                })
-
-    return output
-
-
-def forecast_smartphones_linear(data, country, start_point, end_point):
-    """
-    Forecast smartphone adoption.
-
-    """
-    output = []
-
-    smartphone_growth = country['smartphone_growth']
-
-    for item in data:
-
-        for year in range(start_point, end_point + 1):
-
-            if year == start_point:
-
-                penetration = item['smartphone_penetration']
-
-            else:
-                penetration = penetration * (1 + (smartphone_growth/100))
-
-            output.append({
-                'country': item['country'],
-                'settlement_type': item['settlement_type'].lower(),
-                'year': year,
-                'penetration': round(penetration, 2),
-            })
-
-    return output
-
-
 if __name__ == '__main__':
 
     for country in country_list:
@@ -2232,35 +2030,29 @@ if __name__ == '__main__':
         print('Getting population and luminosity')
         get_pop_and_luminosity_data(country)
 
-        # print('Getting regional data')
-        # get_regional_data(country)
+        print('Getting regional data')
+        get_regional_data(country)
 
-        print('Generating agglomeration lookup table')
-        generate_agglomeration_lut(country)
+        # print('Generating agglomeration lookup table')
+        # generate_agglomeration_lut(country)
 
-        print('Load existing fiber infrastructure')
-        process_existing_fiber(country)
+        # print('Load existing fiber infrastructure')
+        # process_existing_fiber(country)
 
-        print('Estimate existing nodes')
-        find_nodes_on_existing_infrastructure(country)
+        # print('Estimate existing nodes')
+        # find_nodes_on_existing_infrastructure(country)
 
-        print('Find regional nodes')
-        find_regional_nodes(country)
+        # print('Find regional nodes')
+        # find_regional_nodes(country)
 
-        print('Fit edges')
-        prepare_edge_fitting(country)
+        # print('Fit edges')
+        # prepare_edge_fitting(country)
 
-        print('Fit regional edges')
-        fit_regional_edges(country)
+        # print('Fit regional edges')
+        # fit_regional_edges(country)
 
-        print('Create core lookup table')
-        generate_core_lut(country)
+        # print('Create core lookup table')
+        # generate_core_lut(country)
 
-        print('Create backhaul lookup table')
-        generate_backhaul_lut(country)
-
-        print('Create subscription forcast')
-        forecast_subscriptions(country)
-
-        print('Forecasting smartphones')
-        forecast_smartphones(country)
+        # print('Create backhaul lookup table')
+        # generate_backhaul_lut(country)
