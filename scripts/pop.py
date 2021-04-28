@@ -387,7 +387,7 @@ def get_regional_data(country):
                 nodata=0,
                 affine=affine)][0]
 
-        population_summation = find_pop('all', 'all', region, iso3)
+        pop = get_pop_dict(iso3, region)
 
         area_km2 = round(area_of_polygon(region['geometry']) / 1e6)
 
@@ -401,46 +401,17 @@ def get_regional_data(country):
             'GID_0': region['GID_0'],
             'GID_id': region[gid_level],
             'GID_level': gid_level,
-            'population_f_0': find_pop('f', 0, region, iso3),
-            'population_f_1': find_pop('f', 1, region, iso3),
-            'population_f_5': find_pop('f', 5, region, iso3),
-            'population_f_10': find_pop('f', 10, region, iso3),
-            'population_f_15': find_pop('f', 15, region, iso3),
-            'population_f_20': find_pop('f', 20, region, iso3),
-            'population_f_25': find_pop('f', 25, region, iso3),
-            'population_f_30': find_pop('f', 30, region, iso3),
-            'population_f_35': find_pop('f', 35, region, iso3),
-            'population_f_40': find_pop('f', 40, region, iso3),
-            'population_f_45': find_pop('f', 45, region, iso3),
-            'population_f_50': find_pop('f', 50, region, iso3),
-            'population_f_55': find_pop('f', 55, region, iso3),
-            'population_f_60': find_pop('f', 60, region, iso3),
-            'population_f_65': find_pop('f', 65, region, iso3),
-            'population_f_70': find_pop('f', 70, region, iso3),
-            'population_f_75': find_pop('f', 75, region, iso3),
-            'population_f_80': find_pop('f', 80, region, iso3),
-            'population_m_0': find_pop('m', 0, region, iso3),
-            'population_m_1': find_pop('m', 1, region, iso3),
-            'population_m_5': find_pop('m', 5, region, iso3),
-            'population_m_10': find_pop('m', 10, region, iso3),
-            'population_m_15': find_pop('m', 15, region, iso3),
-            'population_m_20': find_pop('m', 20, region, iso3),
-            'population_m_25': find_pop('m', 25, region, iso3),
-            'population_m_30': find_pop('m', 30, region, iso3),
-            'population_m_35': find_pop('m', 35, region, iso3),
-            'population_m_40': find_pop('m', 40, region, iso3),
-            'population_m_45': find_pop('m', 45, region, iso3),
-            'population_m_50': find_pop('m', 50, region, iso3),
-            'population_m_55': find_pop('m', 55, region, iso3),
-            'population_m_60': find_pop('m', 60, region, iso3),
-            'population_m_65': find_pop('m', 65, region, iso3),
-            'population_m_70': find_pop('m', 70, region, iso3),
-            'population_m_75': find_pop('m', 75, region, iso3),
-            'population_m_80': find_pop('m', 80, region, iso3),
-            'population': population_summation,
+            'population_total': pop['population_summation'],
+            'population_over_10': (pop['population_f_over_10'] +
+                pop['population_m_over_10']),
+            'population_f_over_10': pop['population_f_over_10'],
+            'population_m_over_10': pop['population_m_over_10'],
             'area_km2': area_km2,
-            'population_km2': (population_summation /
-                area_km2 if population_summation else 0),
+            'population_km2': (pop['population_summation'] /
+                area_km2 if pop['population_summation'] else 0),
+            'population_over_10km2': (
+                (pop['population_f_over_10'] + pop['population_m_over_10']) /
+                area_km2 if pop['population_summation'] else 0),
             'mean_luminosity_km2': (luminosity_summation /
                 area_km2 if luminosity_summation else 0)
         })
@@ -452,6 +423,82 @@ def get_regional_data(country):
     print('Completed {}'.format(single_country.NAME_0.values[0]))
 
     return print('Completed night lights data querying')
+
+
+def get_pop_dict(iso3, region):
+    """
+    Build a population dictionary.
+
+    """
+    interim = {}
+
+    interim['population_summation'] = find_pop('all', 'all', region, iso3)
+
+    interim['population_f_0'] = find_pop('f', 0, region, iso3)
+    interim['population_f_1'] = find_pop('f', 1, region, iso3)
+    interim['population_f_5'] = find_pop('f', 5, region, iso3)
+    interim['population_f_10'] = find_pop('f', 10, region, iso3)
+    interim['population_f_15'] = find_pop('f', 15, region, iso3)
+    interim['population_f_20'] = find_pop('f', 20, region, iso3)
+    interim['population_f_25'] = find_pop('f', 25, region, iso3)
+    interim['population_f_30'] = find_pop('f', 30, region, iso3)
+    interim['population_f_35'] = find_pop('f', 35, region, iso3)
+    interim['population_f_40'] = find_pop('f', 40, region, iso3)
+    interim['population_f_45'] = find_pop('f', 45, region, iso3)
+    interim['population_f_50'] = find_pop('f', 50, region, iso3)
+    interim['population_f_55'] = find_pop('f', 55, region, iso3)
+    interim['population_f_60'] = find_pop('f', 60, region, iso3)
+    interim['population_f_65'] = find_pop('f', 65, region, iso3)
+    interim['population_f_70'] = find_pop('f', 70, region, iso3)
+    interim['population_f_75'] = find_pop('f', 75, region, iso3)
+    interim['population_f_80'] = find_pop('f', 80, region, iso3)
+    interim['population_m_0'] = find_pop('m', 0, region, iso3)
+    interim['population_m_1'] = find_pop('m', 1, region, iso3)
+    interim['population_m_5'] = find_pop('m', 5, region, iso3)
+    interim['population_m_10'] = find_pop('m', 10, region, iso3)
+    interim['population_m_15'] = find_pop('m', 15, region, iso3)
+    interim['population_m_20'] = find_pop('m', 20, region, iso3)
+    interim['population_m_25'] = find_pop('m', 25, region, iso3)
+    interim['population_m_30'] = find_pop('m', 30, region, iso3)
+    interim['population_m_35'] = find_pop('m', 35, region, iso3)
+    interim['population_m_40'] = find_pop('m', 40, region, iso3)
+    interim['population_m_45'] = find_pop('m', 45, region, iso3)
+    interim['population_m_50'] = find_pop('m', 50, region, iso3)
+    interim['population_m_55'] = find_pop('m', 55, region, iso3)
+    interim['population_m_60'] = find_pop('m', 60, region, iso3)
+    interim['population_m_65'] = find_pop('m', 65, region, iso3)
+    interim['population_m_70'] = find_pop('m', 70, region, iso3)
+    interim['population_m_75'] = find_pop('m', 75, region, iso3)
+    interim['population_m_80'] = find_pop('m', 80, region, iso3)
+
+    pop = {}
+
+    population_total = 0
+    population_f_over_10 = 0
+    population_m_over_10 = 0
+
+    for key, value in interim.items():
+
+        if key == 'population_summation':
+            pop['population_summation'] = round(value)
+            continue
+
+        population_total += value
+
+        if key.split('_')[1] == 'f':
+            if int(key.split('_')[2]) >= 10:
+                population_f_over_10 += value
+        elif key.split('_')[1] == 'm':
+            if int(key.split('_')[2]) >= 10:
+                population_m_over_10 += value
+        else:
+            print('Did not recognize population key')
+
+    pop['population_total'] = round(population_total)
+    pop['population_f_over_10'] = round(population_f_over_10)
+    pop['population_m_over_10'] = round(population_m_over_10)
+
+    return pop
 
 
 def find_pop(gender, age, region, iso3):
@@ -482,7 +529,7 @@ def find_pop(gender, age, region, iso3):
             affine=affine)][0]
 
         if population_summation is not None:
-            return round(population_summation)
+            return population_summation
         else:
             return 0
 
