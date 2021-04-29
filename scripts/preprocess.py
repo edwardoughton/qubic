@@ -1745,7 +1745,7 @@ def generate_core_lut(country):
     regional_level = 'GID_{}'.format(level)
 
     filename = 'core_lut.csv'
-    folder = os.path.join(DATA_INTERMEDIATE, iso3)
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network')
     output_path = os.path.join(folder, filename)
 
     # if os.path.exists(output_path):

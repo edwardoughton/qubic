@@ -55,14 +55,14 @@ def estimate_demand(regions, option, global_parameters,
 
         geotype = region['geotype'].split(' ')[0]
 
-        net_handle = network_strategy + '_' + geotype
+        net_handle = network_strategy + '_' + geotype.split(' ')[0]
         networks = country_parameters['networks'][net_handle]
 
         if geotype == 'suburban':
             #smartphone lut only has urban-rural split, hence no suburban
             geotype_sps = 'urban'
         else:
-            geotype_sps = geotype
+            geotype_sps = geotype.split(' ')[0]
 
         revenue = []
         demand_mbps_km2 = []
@@ -81,24 +81,47 @@ def estimate_demand(regions, option, global_parameters,
 
             region['penetration'] = penetration_lut[timestep]
 
-            #cell_penetration : float
             #Number of cell phones per member of the population.
             region['population_with_phones'] = (
-                region['population'] * (region['penetration'] / 100))
+                (region['population_over_10']) *
+                (region['penetration'] / 100))
+            region['population_with_phones_f_over_10'] = (
+                (region['population_f_over_10']) *
+                (region['penetration'] / 100))
+            region['population_with_phones_m_over_10'] = (
+                (region['population_m_over_10']) *
+                (region['penetration'] / 100))
 
-            #phones : int
             #Total number of phones on the network being modeled.
             region['phones_on_network'] = (
-                region['population_with_phones'] /
-                networks)
+                region['population_with_phones'] / networks)
+            # region['phones_on_network_f_over_10'] = (
+            #     (region['population_with_phones_f_over_10']) / networks)
+            # region['phones_on_network_m_over_10'] = (
+            #     (region['population_with_phones_m_over_10']) / networks)
 
             #get phone density
             region['phone_density_on_network_km2'] = (
-                region['phones_on_network'] / region['area_km2']
-            )
+                region['phones_on_network'] / region['area_km2'])
+            # region['phone_density_on_network_km2_f_over_10'] = (
+            #     region['phones_on_network_f_over_10'] / region['area_km2'])
+            # region['phone_density_on_network_km2_m_over_10'] = (
+            #     region['phones_on_network_m_over_10'] / region['area_km2'])
 
             #add regional smartphone penetration
             region['smartphone_penetration'] = smartphone_lut[geotype_sps][timestep]
+
+            #phones : int
+            #Total number of smartphones on the network being modeled.
+            region['population_with_smartphones'] = (
+                region['population_with_phones'] *
+                (region['smartphone_penetration'] / 100))
+            region['population_with_smartphones_f_over_10'] = (
+                region['population_with_phones_f_over_10'] *
+                (region['smartphone_penetration'] / 100))
+            region['population_with_smartphones_m_over_10'] = (
+                region['population_with_phones_m_over_10'] *
+                (region['smartphone_penetration'] / 100))
 
             #phones : int
             #Total number of smartphones on the network being modeled.
@@ -136,15 +159,20 @@ def estimate_demand(regions, option, global_parameters,
                 'strategy': option['strategy'],
                 'confidence': global_parameters['confidence'][0],
                 'year': timestep,
-                'population': region['population'],
+                'population': region['population_total'],
                 'area_km2': region['area_km2'],
                 'population_km2': region['population_km2'],
-                'geotype': region['geotype'],
+                'geotype': region['geotype'].split(' ')[0],
                 'arpu_discounted_monthly': region['arpu_discounted_monthly'],
                 'penetration': region['penetration'],
                 'population_with_phones': region['population_with_phones'],
+                'population_with_phones_f_over_10': region['population_with_phones_f_over_10'],
+                'population_with_phones_m_over_10': region['population_with_phones_m_over_10'],
                 'phones_on_network': region['phones_on_network'],
                 'smartphone_penetration': region['smartphone_penetration'],
+                'population_with_smartphones': region['population_with_smartphones'],
+                'population_with_smartphones_f_over_10': region['population_with_smartphones_f_over_10'],
+                'population_with_smartphones_m_over_10': region['population_with_smartphones_m_over_10'],
                 'smartphones_on_network': region['smartphones_on_network'],
                 'revenue': annual_revenue,
             })
@@ -162,7 +190,6 @@ def get_per_user_capacity(geotype, option):
     """
     Function to return the target per user capacity by scenario,
     from the scenario string.
-
     Parameters
     ----------
     geotype : string
@@ -173,12 +200,10 @@ def get_per_user_capacity(geotype, option):
         on the type of technology generation, core and backhaul, and the
         strategy for infrastructure sharing, the number of networks in each
         geotype, spectrum and taxation.
-
     Returns
     -------
     per_user_capacity : int
         The targetted per user capacity in Mbps.
-
     """
     if geotype.split(' ')[0] == 'urban':
 
@@ -199,7 +224,6 @@ def get_per_user_capacity(geotype, option):
 def estimate_arpu(region, timestep, global_parameters, country_parameters):
     """
     Allocate consumption category given a specific luminosity.
-
     Parameters
     ----------
     region : dicts
@@ -210,12 +234,10 @@ def estimate_arpu(region, timestep, global_parameters, country_parameters):
         All global model parameters.
     country_parameters : dict
         All country specific parameters.
-
     Returns
     -------
     discounted_arpu : float
         The discounted Average Revenue Per User (ARPU) over the time period.
-
     """
     timestep = timestep - 2020
 
@@ -235,9 +257,7 @@ def estimate_arpu(region, timestep, global_parameters, country_parameters):
 def discount_arpu(arpu, timestep, global_parameters):
     """
     Discount arpu based on return period.
-
     192,744 = 23,773 / (1 + 0.05) ** (0:9)
-
     Parameters
     ----------
     arpu : float
@@ -246,12 +266,10 @@ def discount_arpu(arpu, timestep, global_parameters):
         Time period (year) to discount against.
     global_parameters : dict
         All global model parameters.
-
     Returns
     -------
     discounted_arpu : float
         The discounted revenue over the desired time period.
-
     """
     discount_rate = global_parameters['discount_rate'] / 100
 

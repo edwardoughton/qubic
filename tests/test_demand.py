@@ -1,5 +1,6 @@
 import pytest
-from pytal.demand import estimate_demand, get_per_user_capacity, estimate_arpu
+from podis.demand import (estimate_demand, get_per_user_capacity,
+    estimate_arpu, discount_arpu)
 
 
 def test_estimate_demand(
@@ -14,7 +15,6 @@ def test_estimate_demand(
     ):
     """
     Integration test.
-
     """
     answer, annual_answer = estimate_demand(
         setup_region,
@@ -187,7 +187,6 @@ def test_estimate_demand(
 def test_get_per_user_capacity():
     """
     Unit test.
-
     """
     answer = get_per_user_capacity('urban', {'scenario': 'S1_25_5_1'})
 
@@ -210,7 +209,6 @@ def test_estimate_arpu(setup_region, setup_timesteps, setup_global_parameters,
     setup_country_parameters):
     """
     Unit test.
-
     """
     answer = estimate_arpu({'mean_luminosity_km2': 10}, 2020, setup_global_parameters,
         setup_country_parameters)
