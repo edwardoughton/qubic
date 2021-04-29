@@ -16,7 +16,7 @@ import numpy as np
 from shapely.geometry import MultiPolygon
 from shapely.ops import transform, unary_union
 
-from countries import country_list
+from countries import COUNTRY_LIST
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
@@ -320,27 +320,15 @@ def process_the_gambia():
     regions = load_regions(path)
 
     path = os.path.join(DATA_RAW, 'GMB', 'Gambia Network_Africell.xlsx')
-    sites_2G = load_sites_the_gambia('2G', path, regions, folder)
-    sites_3G = load_sites_the_gambia('3G', path, regions, folder)
-    sites_4G = load_sites_the_gambia('4G', path, regions, folder)
+    process_all_sites_the_gambia(path, regions, folder)
 
-    # sites = sites_2G.merge(sites_3G, left_on='GID_2', right_on='GID_2')
-    # sites = sites_4G.merge(sites_3G, left_on='GID_2', right_on='GID_2')
+    sites_lut = sites_lut_the_gambia(path, regions, folder)
 
-    # sites = [sites_2G, sites_3G, sites_4G]
-    # sites = pd.concat(sites)
-
-    # sites.rename(columns = {'GID_2':'GID_id'}, inplace = True)
-    # sites['GID_level'] = 2
-
-    # sites = sites[['GID_id', 'sites', 'tech']]
-    # sites = sites.groupby(['GID_id'], as_index=False).sum()
-
-    # print('Writing The Gambia csv data')
-    # sites.to_csv(os.path.join(folder, 'sites.csv'), index=False)
+    print('Writing The Gambia csv data')
+    sites_lut.to_csv(os.path.join(folder, 'sites.csv'), index=False)
 
 
-def load_sites_the_gambia(tech, path, regions, folder):
+def process_all_sites_the_gambia(path, regions, folder):
 
     df = pd.read_excel(path, 'Sites', skiprows=1)
 
@@ -352,8 +340,6 @@ def load_sites_the_gambia(tech, path, regions, folder):
     df.columns = ['site_id', 'site_name', 'longitude', 'latitude',
         'technology', 'backhaul', 'on_grid']
     df = df.dropna()
-
-    df = df[df['technology'].str.contains(tech)]
 
     df = gpd.GeoDataFrame(
         df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
@@ -380,21 +366,86 @@ def load_sites_the_gambia(tech, path, regions, folder):
 
     df = gpd.GeoDataFrame().from_features(output, crs='epsg:4326')
 
-    filename = '{}.shp'.format(tech)
+    filename = 'sites.shp'
     df.to_file(os.path.join(folder, filename), crs='epsg:4326')
-
-    # f = lambda x:np.sum(df.intersects(x))
-    # regions['sites'] = regions['geometry'].apply(f)
-
-    # sites = regions[['GID_2', 'sites']].reset_index()
-    # sites['tech'] = '{}'.format(tech)
 
     return df
 
 
+def sites_lut_the_gambia(path, regions, folder):
+    """
+
+    """
+    df = pd.read_excel(path, 'Sites', skiprows=1)
+
+    df = df[['Site_ID', 'site_name', 'Longitude', 'Latitude',
+        '2G, 3G, 4G, Wifi etc', #technology?
+        'Fibre, microwave', #backhaul type?
+        'Yes / No', #main grid?
+    ]]
+    df.columns = ['site_id', 'site_name', 'longitude', 'latitude',
+        'technology', 'backhaul', 'on_grid']
+    df = df.dropna()
+
+    df = gpd.GeoDataFrame(
+        df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
+
+    df = df.drop_duplicates(['site_id'])
+
+    output = []
+
+    for idx, region in regions.iterrows():
+
+        sites_2G = 0
+        sites_3G = 0
+        sites_4G = 0
+        wireless = 0
+        fiber = 0
+        on_grid = 0
+        off_grid = 0
+
+        for idx, point in df.iterrows():
+            if region['geometry'].intersects(point['geometry']):
+
+                if '2G' in point['technology']:
+                    sites_2G += 1
+                if '3G' in point['technology']:
+                    sites_3G += 1
+                if '4G' in point['technology']:
+                    sites_4G += 1
+                if 'Microwave' in point['backhaul']:
+                    wireless += 1
+                if 'Fibre' in point['backhaul']:
+                    fiber += 1
+                if 'Yes' in point['on_grid']:
+                    on_grid += 1
+                if 'No' in point['on_grid']:
+                    off_grid += 1
+
+        output.append({
+            # 'type': 'Feature',
+            # 'geometry': region['geometry'],
+            # 'properties': {
+            'GID_0': region['GID_0'],
+            'GID_2': region['GID_2'],
+            'sites_2G': sites_2G,
+            'sites_3G': sites_3G,
+            'sites_4G': sites_4G,
+            'total_estimated_sites': sites_2G + sites_3G + sites_4G,
+            'backhaul_wireless': wireless ,
+            'backhaul_fiber':  fiber / (wireless + fiber) * 100 if fiber else 0,
+            'on_grid': on_grid ,
+            'off_grid': off_grid,
+        })
+
+    output = pd.DataFrame(output)
+
+    return output
+
+
 if __name__ == "__main__":
 
-    for country in country_list:
+    for country in COUNTRY_LIST:
 
         print('Processing country boundary')
         process_country_shape(country)

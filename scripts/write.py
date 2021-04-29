@@ -30,23 +30,42 @@ def define_deciles(regions):
     return regions
 
 
-def write_mno_demand(regional_annual_demand, folder, metric, path):
+def write_demand(regional_annual_demand, folder):
     """
-    Write all annual demand results for a single hypothetical Mobile
-    Network Operator (MNO).
+    Write all annual demand results.
 
     """
-    print('Writing annual_demand')
+    print('Writing annual_mno_demand')
     regional_annual_demand = pd.DataFrame(regional_annual_demand)
-    regional_annual_demand = regional_annual_demand[[
+    regional_annual_mno_demand = regional_annual_demand[[
         'GID_0', 'GID_id', 'scenario', 'strategy',
         'confidence', 'year', 'population', 'area_km2', 'population_km2',
-        'geotype', 'arpu_discounted_monthly', 'penetration', 'population_with_phones',
-        'phones_on_network', 'smartphone_penetration',
-        'smartphones_on_network', 'revenue'
+        'geotype', 'arpu_discounted_monthly',
+        'penetration', 'population_with_phones','phones_on_network',
+        'smartphone_penetration', 'smartphones_on_network', 'revenue'
     ]]
+    filename = 'regional_annual_mno_demand.csv'
+    path = os.path.join(folder, filename)
+    regional_annual_mno_demand.to_csv(path, index=False)
 
-    regional_annual_demand.to_csv(path, index=False)
+    print('Writing annual_market_demand')
+    regional_annual_market_demand = regional_annual_demand[[
+        'GID_0', 'GID_id', 'scenario', 'strategy',
+        'confidence', 'year', 'population', 'area_km2', 'population_km2',
+        'geotype', 'arpu_discounted_monthly',
+        'penetration',
+        'population_with_phones',
+        'population_with_phones_f_over_10',
+        'population_with_phones_m_over_10',
+        'smartphone_penetration',
+        'population_with_smartphones',
+        'population_with_smartphones_f_over_10',
+        'population_with_smartphones_m_over_10',
+        'revenue'
+    ]]
+    filename = 'regional_annual_market_demand.csv'
+    path = os.path.join(folder, filename)
+    regional_annual_market_demand.to_csv(path, index=False)
 
 
 def write_results(regional_results, folder, metric):
@@ -57,7 +76,7 @@ def write_results(regional_results, folder, metric):
     print('Writing national MNO results')
     national_results = pd.DataFrame(regional_results)
     national_results = national_results[[
-        'GID_0', 'scenario', 'strategy', 'confidence', 'population', 'area_km2',
+        'GID_0', 'scenario', 'strategy', 'confidence', 'population_total', 'area_km2',
         'phones_on_network', 'smartphones_on_network', 'total_estimated_sites',
         'existing_mno_sites', 'upgraded_mno_sites', 'new_mno_sites',
         'total_mno_revenue', 'total_mno_cost',
@@ -76,7 +95,7 @@ def write_results(regional_results, folder, metric):
     print('Writing national cost composition results')
     national_cost_results = pd.DataFrame(regional_results)
     national_cost_results = national_cost_results[[
-        'GID_0', 'scenario', 'strategy', 'confidence', 'population',
+        'GID_0', 'scenario', 'strategy', 'confidence', 'population_total',
         'phones_on_network', 'smartphones_on_network', 'total_mno_revenue',
         'ran', 'backhaul_fronthaul', 'civils', 'core_network',
         'administration', 'spectrum_cost', 'tax', 'profit_margin',
@@ -108,7 +127,7 @@ def write_results(regional_results, folder, metric):
     decile_results = define_deciles(decile_results)
     decile_results = decile_results[[
         'GID_0', 'scenario', 'strategy', 'decile', 'confidence',
-        'population', 'area_km2', 'phones_on_network',
+        'population_total', 'area_km2', 'phones_on_network',
         'smartphones_on_network', 'total_estimated_sites',
         'existing_mno_sites', 'upgraded_mno_sites', 'new_mno_sites',
         'total_mno_revenue', 'total_mno_cost',
@@ -117,7 +136,7 @@ def write_results(regional_results, folder, metric):
     decile_results = decile_results.groupby([
         'GID_0', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum()
     decile_results['population_km2'] = (
-        decile_results['population'] / decile_results['area_km2'])
+        decile_results['population_total'] / decile_results['area_km2'])
     decile_results['phone_density_on_network_km2'] = (
         decile_results['phones_on_network'] / decile_results['area_km2'])
     decile_results['sp_density_on_network_km2'] = (
@@ -139,7 +158,7 @@ def write_results(regional_results, folder, metric):
     decile_cost_results = define_deciles(decile_cost_results)
     decile_cost_results = decile_cost_results[[
         'GID_0', 'scenario', 'strategy', 'decile', 'confidence',
-        'population', 'area_km2', 'phones_on_network', 'smartphones_on_network',
+        'population_total', 'area_km2', 'phones_on_network', 'smartphones_on_network',
         'total_mno_revenue', 'ran', 'backhaul_fronthaul', 'civils', 'core_network',
         'administration', 'spectrum_cost', 'tax', 'profit_margin', 'total_mno_cost',
         'available_cross_subsidy', 'deficit', 'used_cross_subsidy',
@@ -161,7 +180,7 @@ def write_results(regional_results, folder, metric):
     regional_mno_results = define_deciles(regional_mno_results)
     regional_mno_results = regional_mno_results[[
         'GID_0', 'GID_id', 'scenario', 'strategy', 'decile',
-        'confidence', 'population', 'area_km2',
+        'confidence', 'population_total', 'area_km2',
         'phones_on_network', 'smartphones_on_network',
         'total_estimated_sites', 'existing_mno_sites',
         'upgraded_mno_sites', 'new_mno_sites',
@@ -179,7 +198,7 @@ def write_results(regional_results, folder, metric):
     print('Writing national market results')
     national_results = pd.DataFrame(regional_results)
     national_results = national_results[[
-        'GID_0', 'scenario', 'strategy', 'confidence', 'population', 'area_km2',
+        'GID_0', 'scenario', 'strategy', 'confidence', 'population_total', 'area_km2',
         'total_phones', 'total_smartphones',
         'total_estimated_sites',
         'total_upgraded_sites',
@@ -201,7 +220,7 @@ def write_results(regional_results, folder, metric):
     print('Writing national market cost composition results')
     national_cost_results = pd.DataFrame(regional_results)
     national_cost_results = national_cost_results[[
-        'GID_0', 'scenario', 'strategy', 'confidence', 'population',
+        'GID_0', 'scenario', 'strategy', 'confidence', 'population_total',
         'total_phones', 'total_smartphones',
         'total_market_revenue', 'total_ran', 'total_backhaul_fronthaul',
         'total_civils', 'total_core_network',
@@ -235,14 +254,14 @@ def write_results(regional_results, folder, metric):
     decile_results = define_deciles(decile_results)
     decile_results = decile_results[[
         'GID_0', 'scenario', 'strategy', 'decile', 'confidence',
-        'population', 'area_km2', 'total_phones', 'total_smartphones',
+        'population_total', 'area_km2', 'total_phones', 'total_smartphones',
         'total_market_revenue', 'total_market_cost',
     ]]
     decile_results = decile_results.drop_duplicates()
     decile_results = decile_results.groupby([
         'GID_0', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum()
     decile_results['population_km2'] = (
-        decile_results['population'] / decile_results['area_km2'])
+        decile_results['population_total'] / decile_results['area_km2'])
     decile_results['cost_per_network_user'] = (
         decile_results['total_market_cost'] / decile_results['total_phones'])
     decile_results['cost_per_smartphone_user'] = (
@@ -256,7 +275,7 @@ def write_results(regional_results, folder, metric):
     decile_cost_results = define_deciles(decile_cost_results)
     decile_cost_results = decile_cost_results[[
         'GID_0', 'scenario', 'strategy', 'decile', 'confidence',
-        'population', 'area_km2', 'total_phones', 'total_smartphones',
+        'population_total', 'area_km2', 'total_phones', 'total_smartphones',
         'total_market_revenue', 'total_ran', 'total_backhaul_fronthaul',
         'total_civils', 'total_core_network',
         'total_administration', 'total_spectrum_cost', 'total_tax',
@@ -282,7 +301,7 @@ def write_results(regional_results, folder, metric):
     regional_market_results = define_deciles(regional_market_results)
     regional_market_results = regional_market_results[[
         'GID_0', 'GID_id', 'scenario', 'strategy', 'decile',
-        'confidence', 'population', 'area_km2',
+        'confidence', 'population_total', 'area_km2',
         'total_phones', 'total_smartphones',
         'total_upgraded_sites','total_new_sites',
         'total_market_revenue', 'total_market_cost',
