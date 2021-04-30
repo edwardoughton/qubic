@@ -37,21 +37,23 @@ def write_demand(regional_annual_demand, folder):
     """
     print('Writing annual_mno_demand')
     regional_annual_demand = pd.DataFrame(regional_annual_demand)
-    regional_annual_mno_demand = regional_annual_demand[[
-        'GID_0', 'GID_id', 'scenario', 'strategy',
-        'confidence', 'year', 'population', 'area_km2', 'population_km2',
-        'geotype', 'arpu_discounted_monthly',
-        'penetration', 'population_with_phones','phones_on_network',
-        'smartphone_penetration', 'smartphones_on_network', 'revenue'
-    ]]
-    filename = 'regional_annual_mno_demand.csv'
-    path = os.path.join(folder, filename)
-    regional_annual_mno_demand.to_csv(path, index=False)
+    # regional_annual_mno_demand = regional_annual_demand[[
+    #     'GID_0', 'GID_id', 'scenario', 'strategy',
+    #     'confidence', 'year', 'population', 'area_km2', 'population_km2',
+    #     'geotype', 'arpu_discounted_monthly',
+    #     'penetration', 'population_with_phones','phones_on_network',
+    #     'smartphone_penetration', 'smartphones_on_network', 'revenue'
+    # ]]
+    # filename = 'regional_annual_mno_demand.csv'
+    # path = os.path.join(folder, filename)
+    # regional_annual_mno_demand.to_csv(path, index=False)
 
     print('Writing annual_market_demand')
     regional_annual_market_demand = regional_annual_demand[[
         'GID_0', 'GID_id', 'scenario', 'strategy',
-        'confidence', 'year', 'population', 'area_km2', 'population_km2',
+        'confidence', 'year', 'population',
+        'population_f_over_10', 'population_m_over_10',
+        'area_km2', 'population_km2',
         'geotype', 'arpu_discounted_monthly',
         'penetration',
         'population_with_phones',
