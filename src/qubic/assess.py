@@ -94,12 +94,14 @@ def assess(country, regions, option, global_parameters, country_parameters, time
 def get_administration_cost(region, country_parameters, global_parameters, timesteps):
     """
     There is an annual administration cost to deploying and operating all assets.
+
     Parameters
     ----------
     regions : list of dicts
         Data for all regions (one dict per region).
     country_parameters : dict
         All country specific parameters.
+
     Returns
     -------
     region : dict
