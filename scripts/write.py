@@ -55,6 +55,8 @@ def write_demand(regional_annual_demand, folder):
         'population_f_over_10', 'population_m_over_10',
         'area_km2', 'population_km2',
         'geotype', 'arpu_discounted_monthly',
+        'penetration_female',
+        'penetration_male',
         'penetration',
         'population_with_phones',
         'population_with_phones_f_over_10',
@@ -306,14 +308,39 @@ def write_results(regional_results, folder, metric):
         'confidence', 'population_total', 'area_km2',
         'total_phones', 'total_smartphones',
         'total_upgraded_sites','total_new_sites',
-        'total_market_revenue', 'total_market_cost',
+        'total_required_state_subsidy', 'total_spectrum_cost',
+        'total_tax', 'total_market_revenue', 'total_market_cost',
     ]]
     regional_market_results = regional_market_results.drop_duplicates()
-    regional_market_results['cost_per_network_user'] = (
-        regional_market_results['total_market_cost'] /
+
+    regional_market_results['total_private_cost'] = regional_market_results['total_market_cost']
+    regional_market_results['total_government_cost'] = (
+        regional_market_results['total_required_state_subsidy'] -
+            (regional_market_results['total_spectrum_cost'] +
+            regional_market_results['total_tax']))
+    regional_market_results['total_societal_cost'] = (
+        regional_market_results['total_private_cost'] +
+        regional_market_results['total_government_cost'])
+
+    regional_market_results['private_cost_per_network_user'] = (
+        regional_market_results['total_private_cost'] /
         regional_market_results['total_phones'])
-    regional_market_results['cost_per_smartphone_user'] = (
-        regional_market_results['total_market_cost'] /
+    regional_market_results['government_cost_per_network_user'] = (
+        regional_market_results['total_government_cost'] /
+        regional_market_results['total_phones'])
+    regional_market_results['societal_cost_per_network_user'] = (
+        regional_market_results['total_societal_cost'] /
+        regional_market_results['total_phones'])
+
+    regional_market_results['private_cost_per_smartphone_user'] = (
+        regional_market_results['total_private_cost'] /
         regional_market_results['total_smartphones'])
+    regional_market_results['government_cost_per_smartphone_user'] = (
+        regional_market_results['total_government_cost'] /
+        regional_market_results['total_smartphones'])
+    regional_market_results['societal_cost_per_network_user'] = (
+        regional_market_results['total_societal_cost'] /
+        regional_market_results['total_smartphones'])
+
     path = os.path.join(folder,'regional_market_results_{}.csv'.format(metric))
     regional_market_results.to_csv(path, index=True)
