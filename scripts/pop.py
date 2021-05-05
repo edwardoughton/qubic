@@ -22,7 +22,7 @@ from fiona.crs import from_epsg
 import rasterio
 from rasterio.mask import mask
 from rasterstats import zonal_stats
-from countries import country_list
+from countries import COUNTRY_LIST
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
@@ -694,19 +694,26 @@ def load_subscription_data(path, iso3):
     historical_data = pd.read_csv(path, encoding = "ISO-8859-1")
     historical_data = historical_data.to_dict('records')
 
+    genders = ['female', 'male']
     scenarios = ['low', 'baseline', 'high']
 
-    for scenario in scenarios:
-        for year in range(2010, 2021):
-            year = str(year)
-            for item in historical_data:
-                if item['iso3'] == iso3:
-                    output.append({
-                        'scenario': scenario,
-                        'country': iso3,
-                        'penetration': float(item[year]) * 100,
-                        'year':  year,
-                    })
+    for gender in genders:
+        for scenario in scenarios:
+            for year in range(2010, 2021):
+                year = str(year)
+                for item in historical_data:
+                    if item['iso3'] == iso3:
+
+                        adjusted_penetration = adjust_penetration(country,
+                            gender, float(item[year]) * 100)
+
+                        output.append({
+                            'scenario': scenario,
+                            'country': iso3,
+                            'gender': gender,
+                            'penetration': adjusted_penetration,# * 100,
+                            'year':  year,
+                        })
 
     return output
 
@@ -734,35 +741,65 @@ def forecast_linear(country, historical_data, start_point, end_point, horizon):
     """
     output = []
 
+    genders = ['female', 'male']
     scenarios = ['low', 'baseline', 'high']
 
-    for scenario in scenarios:
+    for gender in genders:
 
-        scenario_data = []
+        by_gender = [d for d in historical_data if d['gender'] == gender]
 
-        subs_growth = country['subs_growth_{}'.format(scenario)]
+        for scenario in scenarios:
 
-        year_0 = sorted(historical_data, key = lambda i: i['year'], reverse=True)[0]
+            scenario_data = []
 
-        for year in range(start_point, end_point + 1):
-            if year == start_point:
+            subs_growth = country['subs_growth_{}'.format(scenario)]
 
-                penetration = year_0['penetration'] * (1 + (subs_growth/100))
-            else:
-                penetration = penetration * (1 + (subs_growth/100))
+            year_0 = sorted(by_gender, key = lambda i: i['year'], reverse=True)[0]
 
-            if year not in [item['year'] for item in scenario_data]:
+            for year in range(start_point, end_point + 1):
 
-                scenario_data.append({
-                    'scenario': scenario,
-                    'country': country['iso3'],
-                    'year': year,
-                    'penetration': round(penetration, 2),
-                })
+                if year == start_point:
 
-        output = output + scenario_data
+                    penetration = year_0['penetration'] * (1 + (subs_growth/100))
+
+                    # penetration = adjust_penetration(country, gender, penetration)
+
+                else:
+                    penetration = penetration * (1 + (subs_growth/100))
+
+                if year not in [item['year'] for item in scenario_data]:
+
+                    scenario_data.append({
+                        'scenario': scenario,
+                        'country': country['iso3'],
+                        'gender': gender,
+                        'year': year,
+                        'penetration': round(penetration, 2),
+                    })
+
+            output = output + scenario_data
 
     return output
+
+
+def adjust_penetration(country, gender, penetration):
+    """
+    Adjust penetration.
+
+    """
+    female_gender_diff = (country['phone_ownership_male'] -
+        country['phone_ownership_female'])
+
+    if gender == 'female' and female_gender_diff >= 0:
+        return penetration - (female_gender_diff / 2)
+    elif gender == 'female' and female_gender_diff < 0:
+        return penetration + (female_gender_diff / 2)
+    elif gender == 'male' and female_gender_diff >= 0:
+        return penetration + (female_gender_diff / 2)
+    elif gender == 'male' and female_gender_diff < 0:
+        return penetration - (female_gender_diff / 2)
+    else:
+        print('Did not recognize female gender difference parameter')
 
 
 def forecast_smartphones(country):
@@ -916,7 +953,7 @@ if __name__ == '__main__':
     # countries = find_country_list(['Africa'])
     # countries = countries#[::-1]
 
-    for country in country_list:#[:1]:
+    for country in COUNTRY_LIST:#[:1]:
 
         # if not country['iso3'] == 'COD':
         #     continue
