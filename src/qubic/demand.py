@@ -79,12 +79,16 @@ def estimate_demand(regions, option, global_parameters,
                 country_parameters
             )
 
-            region['penetration'] = penetration_lut[timestep]
+            year_gender = '{}_{}'.format(timestep, 'female')
+            region['penetration_female'] = penetration_lut[year_gender]
+            year_gender = '{}_{}'.format(timestep, 'male')
+            region['penetration_male'] = penetration_lut[year_gender]
+            region['penetration'] = ((region['penetration_female'] +
+                region['penetration_male']) / 2 )
 
             #Number of cell phones per member of the population.
             region['population_with_phones'] = (
-                (region['population_over_10']) *
-                (region['penetration'] / 100))
+                region['population_over_10'] * (region['penetration'] / 100))
             region['population_with_phones_f_over_10'] = (
                 (region['population_f_over_10']) *
                 (region['penetration'] / 100))
@@ -166,6 +170,8 @@ def estimate_demand(regions, option, global_parameters,
                 'population_km2': region['population_km2'],
                 'geotype': region['geotype'].split(' ')[0],
                 'arpu_discounted_monthly': region['arpu_discounted_monthly'],
+                'penetration_female': region['penetration_female'],
+                'penetration_male': region['penetration_male'],
                 'penetration': region['penetration'],
                 'population_with_phones': region['population_with_phones'],
                 'population_with_phones_f_over_10': region['population_with_phones_f_over_10'],

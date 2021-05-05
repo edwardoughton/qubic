@@ -26,7 +26,9 @@ def generate_tech_options():
     """
     output = []
 
-    scenarios = ['low_50_25_5', 'baseline_50_25_5', 'high_50_25_5']
+    scenarios = ['low_20_20_20', 'baseline_20_20_20', 'high_20_20_20',
+                'low_10_10_10', 'baseline_10_10_10', 'high_10_10_10',
+                'low_5_5_5', 'baseline_5_5_5', 'high_5_5_5']
     generation_core_types = ['3G_umts', '4G_epc', '5G_nsa']
     backhaul_types = ['wireless', 'fiber']
     sharing_types = ['baseline']
@@ -64,7 +66,9 @@ def generate_business_model_options():
     """
     output = []
 
-    scenarios = ['low_50_25_5', 'baseline_50_25_5', 'high_50_25_5']
+    scenarios = ['low_20_20_20', 'baseline_20_20_20', 'high_20_20_20',
+                'low_10_10_10', 'baseline_10_10_10', 'high_10_10_10',
+                'low_5_5_5', 'baseline_5_5_5', 'high_5_5_5']
     generation_core_types = ['3G_umts', '4G_epc', '5G_nsa']
     backhaul_types = ['wireless', 'fiber']
     sharing_types = ['baseline', 'passive', 'active', 'srn']
@@ -102,10 +106,12 @@ def generate_policy_options():
     """
     output = []
 
-    scenarios = ['low_50_25_5', 'baseline_50_25_5', 'high_50_25_5']
+    scenarios = ['low_20_20_20', 'baseline_20_20_20', 'high_20_20_20',
+                'low_10_10_10', 'baseline_10_10_10', 'high_10_10_10',
+                'low_5_5_5', 'baseline_5_5_5', 'high_5_5_5']
     generation_core_types = ['3G_umts', '4G_epc', '5G_nsa']
     backhaul_types = ['wireless', 'fiber']
-    sharing_types = ['baseline', 'passive', 'active', 'srn']
+    sharing_types = ['baseline']
     networks_types = ['baseline']
     spectrum_types = ['baseline', 'low', 'high']
     tax_types = ['baseline', 'low', 'high']
@@ -140,7 +146,9 @@ def generate_mixed_options():
     """
     output = []
 
-    scenarios = ['low_50_25_5', 'baseline_50_25_5', 'high_50_25_5']
+    scenarios = ['low_20_20_20', 'baseline_20_20_20', 'high_20_20_20',
+                'low_10_10_10', 'baseline_10_10_10', 'high_10_10_10',
+                'low_5_5_5', 'baseline_5_5_5', 'high_5_5_5']
     generation_core_types = ['3G_umts', '4G_epc', '5G_nsa']
     backhaul_types = ['wireless', 'fiber']
     sharing_types = ['srn']
@@ -179,79 +187,6 @@ OPTIONS = {
 }
 
 
-COUNTRY_PARAMETERS = {
-    'GMB': {
-        'luminosity': {
-            'high': 20,
-            'medium': 15,
-        },
-        'arpu': {
-            'high': 3.5,
-            'medium': 2.5,
-            'low': 1,
-        },
-        'networks': {
-            'baseline_urban': 3,
-            'baseline_suburban': 3,
-            'baseline_rural': 3,
-            'shared_urban': 3,
-            'shared_suburban': 3,
-            'shared_rural': 1,
-        },
-        'frequencies': {
-            '3G': [
-                {
-                    'frequency': 900,
-                    'bandwidth': '2x10',
-                    'status': 'active',
-                },
-                {
-                    'frequency': 2100,
-                    'bandwidth': '2x10',
-                    'status': 'active',
-                },
-            ],
-            '4G': [
-                {
-                    'frequency': 800,
-                    'bandwidth': '2x10',
-                    'status': 'active',
-                },
-                {
-                    'frequency': 1800,
-                    'bandwidth': '2x10',
-                    'status': 'inactive',
-                },
-            ],
-            '5G': [
-                {
-                    'frequency': 700,
-                    'bandwidth': '2x10',
-                    'status': 'inactive',
-                },
-                {
-                    'frequency': 3500,
-                    'bandwidth': '1x50',
-                    'status': 'inactive',
-                },
-            ]
-        },
-        'financials': {
-            'wacc': 15,
-            'profit_margin': 20,
-            'spectrum_coverage_baseline_usd_mhz_pop': 0.02,
-            'spectrum_capacity_baseline_usd_mhz_pop': 0.01,
-            'spectrum_cost_low': 25,
-            'spectrum_cost_high': 100,
-            'tax_low': 10,
-            'tax_baseline': 30,
-            'tax_high': 40,
-            'administration_percentage_of_network_cost': 20,
-            },
-        },
-    }
-
-
 COSTS = {
     #all costs in $USD
     'equipment': 40000,
@@ -273,6 +208,7 @@ COSTS = {
     'regional_node': 200000,
     'regional_edge': 25,
 }
+
 
 GLOBAL_PARAMETERS = {
     'overbooking_factor': 20,

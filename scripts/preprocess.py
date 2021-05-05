@@ -2033,26 +2033,26 @@ if __name__ == '__main__':
         print('Getting regional data')
         get_regional_data(country)
 
-        # print('Generating agglomeration lookup table')
-        # generate_agglomeration_lut(country)
+        print('Generating agglomeration lookup table')
+        generate_agglomeration_lut(country)
 
-        # print('Load existing fiber infrastructure')
-        # process_existing_fiber(country)
+        print('Load existing fiber infrastructure')
+        process_existing_fiber(country)
 
-        # print('Estimate existing nodes')
-        # find_nodes_on_existing_infrastructure(country)
+        print('Estimate existing nodes')
+        find_nodes_on_existing_infrastructure(country)
 
-        # print('Find regional nodes')
-        # find_regional_nodes(country)
+        print('Find regional nodes')
+        find_regional_nodes(country)
 
-        # print('Fit edges')
-        # prepare_edge_fitting(country)
+        print('Fit edges')
+        prepare_edge_fitting(country)
 
-        # print('Fit regional edges')
-        # fit_regional_edges(country)
+        print('Fit regional edges')
+        fit_regional_edges(country)
 
-        # print('Create core lookup table')
-        # generate_core_lut(country)
+        print('Create core lookup table')
+        generate_core_lut(country)
 
-        # print('Create backhaul lookup table')
-        # generate_backhaul_lut(country)
+        print('Create backhaul lookup table')
+        generate_backhaul_lut(country)
