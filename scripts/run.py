@@ -13,12 +13,12 @@ import pandas as pd
 import geopandas
 from collections import OrderedDict
 
-from options import OPTIONS, COUNTRY_PARAMETERS, GLOBAL_PARAMETERS, COSTS
+from options import OPTIONS, GLOBAL_PARAMETERS, COSTS
 from qubic.demand import estimate_demand
 from qubic.supply import estimate_supply
 from qubic.assess import assess
 from write import define_deciles, write_demand, write_results
-from countries import COUNTRY_LIST
+from countries import COUNTRY_LIST, COUNTRY_PARAMETERS
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
@@ -220,11 +220,16 @@ def load_penetration(scenario, path):
     """
     output = {}
 
-    with open(path, 'r') as source:
-        reader = csv.DictReader(source)
-        for row in reader:
-            if row['scenario'] == scenario.split('_')[0]:
-                output[int(row['year'])] = round(float(row['penetration']), 1)
+    genders = ['female', 'male']
+
+    for gender in genders:
+        with open(path, 'r') as source:
+            reader = csv.DictReader(source)
+            for row in reader:
+                if row['scenario'] == scenario.split('_')[0]:
+                    if row['gender'] == gender:
+                        year_gender = '{}_{}'.format(int(row['year']), gender)
+                        output[year_gender] = round(float(row['penetration']), 1)
 
     return output
 
@@ -343,20 +348,20 @@ if __name__ == '__main__':
     TIMESTEP_INCREMENT = 1
     TIMESTEPS = [t for t in range(BASE_YEAR, END_YEAR + 1, TIMESTEP_INCREMENT)]
 
-
     path = os.path.join(DATA_RAW, 'pysim5g', 'capacity_lut_by_frequency.csv')
     capacity_lut = read_capacity_lut(path)
 
     # countries, country_regional_levels = find_country_list(['Africa', 'South America'])
 
     decision_options = [
-        # 'technology_options',
-        # 'business_model_options',
-        # 'policy_options',
+        'technology_options',
+        'business_model_options',
+        'policy_options',
         'mixed_options',
     ]
 
     all_results = []
+    all_options = []
 
     for decision_option in decision_options:#[:1]:
 
@@ -414,7 +419,7 @@ if __name__ == '__main__':
 
                     filename = 'regional_data.csv'
                     path = os.path.join(DATA_INTERMEDIATE, iso3, filename)
-                    data_initial = load_regions(country, path, sites_lut)
+                    data_initial = load_regions(country, path, sites_lut)#[:1]
 
                     data_demand, annual_demand = estimate_demand(
                         data_initial,
@@ -458,4 +463,6 @@ if __name__ == '__main__':
 
         write_results(regional_results, OUTPUT, decision_option)
 
-        print('Completed model run')
+    write_results(all_results, OUTPUT, 'all_options')
+
+    print('Completed model run')
