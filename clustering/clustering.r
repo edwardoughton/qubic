@@ -33,25 +33,19 @@ library(ggpubr)
 #get folder directory
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 
-#set cluster number
-cluster_num <- 6
-
 #read in data
 mydata <- read.csv(file.path(folder, 'data_inputs', 'country_data.csv'))
 
-#exclude certain outlier countries
-# mydata <- mydata[which(mydata$country != 'Macao SAR, China' & mydata$country != 'Maldives' & mydata$country != 'Bangladesh'),]
-
-#split high income countries
+#split high income countries (required later)
 high_income <- mydata[which(mydata$income == 'High income'),]
 
-#drop high income countries
+#drop high income countries (not needed for clustering)
 mydata <- mydata[which(mydata$income != 'High income'), ]
 
-#drop countries <1000km
+#drop countries 
 mydata <- mydata[which(mydata$area >= 5000), ]
 
-#drop countries <1000km
+#drop countries 
 mydata <- mydata[which(mydata$pop_density < 500), ]
 
 #get statistical summary
@@ -77,7 +71,7 @@ subset <- scale(subset)
 #k means uses randomised initial centroids
 set.seed(42)
 
-#determine number of clusters
+#help to determine number of clusters
 wss <- ''
 for (i in 1:20) wss[i] <- sum(kmeans(subset, centers=i)$withinss)
 
@@ -87,10 +81,13 @@ plot(1:20, wss, type="b", xlab="Number of Clusters",
      ylab="Within groups sum of squares")
 dev.off()
 
+#set cluster number
+cluster_num <- 6
+
 # K-Means Cluster Analysis
 fit <- kmeans(subset, cluster_num) 
 data <- data.frame(subset, fit$cluster)
-
+help(kmeans)
 #turn row names into country column
 country_info$country <- rownames(country_info)
 
@@ -125,12 +122,12 @@ data <- na.omit(data)
 #rename variable to cluster
 names(data)[names(data) == 'fit.cluster'] <- 'cluster'
 
-cluster_1 <- data$cluster[data$country=='congo,dem.rep.'][1] #6
-cluster_2 <- data$cluster[data$country=='kenya'][1] #5
-cluster_3 <- data$cluster[data$country=='pakistan'][1] #4
-cluster_4 <- data$cluster[data$country=='algeria'][1] #3
-cluster_5 <- data$cluster[data$country=='ecuador'][1] #1
-cluster_6 <- data$cluster[data$country=='china'][1] #2
+cluster_1 <- data$cluster[data$country=='congo,dem.rep.'][1] 
+cluster_2 <- data$cluster[data$country=='kenya'][1] 
+cluster_3 <- data$cluster[data$country=='pakistan'][1] 
+cluster_4 <- data$cluster[data$country=='algeria'][1] 
+cluster_5 <- data$cluster[data$country=='ecuador'][1] 
+cluster_6 <- data$cluster[data$country=='china'][1] 
 
 data$cluster[data$cluster== cluster_1] <- 'C1'
 data$cluster[data$cluster== cluster_2] <- 'C2'
@@ -224,10 +221,6 @@ if (!require(rgdal)) {
   install.packages("rgdal", repos = "http://cran.us.r-project.org")
   require(rgdal)
 }
-# if (!require(raster)) {
-#   install.packages("raster", repos = "http://cran.us.r-project.org")
-#   require(raster)
-# }
 if(!require(ggplot2)) {
   install.packages("ggplot2", repos="http://cloud.r-project.org")
   require(ggplot2)
@@ -268,7 +261,6 @@ theme_map <- function(...) {
       axis.ticks = element_blank(),
       axis.title.x = element_blank(),
       axis.title.y = element_blank(),
-      # panel.grid.minor = element_line(color = "#ebebe5", size = 0.2),
       panel.grid.major = element_line(color = "#ebebe5", size = 0.2),
       panel.grid.minor = element_blank(),
       plot.background = element_rect(fill = "#f5f5f2", color = NA),
@@ -287,7 +279,7 @@ data <- read.csv(file.path(folder,'results','data_clustering_results.csv'), stri
 
 shapes <- file.path(folder, 'data_inputs', "global_countries.shp")
 
-#fortify the data AND keep trace of the commune code! (Takes ~2 minutes)
+#fortify the data
 gde_15 <- readOGR(shapes, layer = "global_countries")
 
 #fortify the data
