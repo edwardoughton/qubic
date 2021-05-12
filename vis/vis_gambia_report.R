@@ -15,7 +15,6 @@ data$scenario_adopt[grep("high", data$scenario)] = 'High (6% Adoption Growth)'
 
 data$scenario_capacity[grep("5_5_5", data$scenario)] = '5 Mbps Per User'
 data$scenario_capacity[grep("10_10_10", data$scenario)] = '10 Mbps Per User'
-data$scenario_capacity[grep("20_20_20", data$scenario)] = '20 Mbps Per User'
 
 data$strategy_short = ''
 data$strategy_short[grep("3G_umts_fiber", data$strategy)] = '3G (F)'
@@ -35,9 +34,10 @@ data$strategy_short = factor(data$strategy_short, levels=c(
                                      ))
 
 data$scenario_capacity = factor(data$scenario_capacity, 
-                             levels=c("20 Mbps Per User",
-                                      "10 Mbps Per User",
+                             levels=c("10 Mbps Per User",
                                       "5 Mbps Per User"))
+
+data = data[complete.cases(data), ]
 
 data$scenario_adopt = factor(data$scenario_adopt, 
                              levels=c("Low (2% Adoption Growth)",
@@ -76,8 +76,7 @@ ggplot(data, aes(y=value, x=strategy_short, fill=Cost_Type)) +
             size = 2.5, data = totals, hjust=-.5) +
   coord_flip() +
   scale_fill_manual(values=c("#E1BE6A", "#40B0A6"), name=NULL) +
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(angle = 45, hjust=1)) +
+  theme(legend.position = "bottom") +
   labs(title = "Social Cost of Universal Broadband by Technology for The Gambia", 
        colour=NULL,
        subtitle = "Reported for all scenarios and capacity per user targets",
@@ -88,7 +87,7 @@ ggplot(data, aes(y=value, x=strategy_short, fill=Cost_Type)) +
   facet_grid(scenario_capacity~scenario_adopt)
 
 path = file.path(folder, 'figures', 'social_costs_by_strategy.png')
-ggsave(path, units="in", width=8, height=8, dpi=300)
+ggsave(path, units="in", width=8, height=5, dpi=300)
 dev.off()
 
 ################################################################################
@@ -151,6 +150,10 @@ min_value = min(round(data$societal_cost/ 1e9,2))
 max_value = max(round(data$societal_cost/ 1e9,2))
 min_value[min_value > 0] = 0
 
+
+data$social_cost = data$private_cost + data$government_cost
+write.csv(data, file.path(folder, 'business_model_percentages.csv'))
+
 colnames(data)[colnames(data) == 'private_cost'] <- 'Private Cost ($USD)'
 colnames(data)[colnames(data) == 'government_cost'] <- 'Government Cost ($USD)'
 colnames(data)[colnames(data) == 'societal_cost'] <- 'Social Cost ($USD)'
@@ -161,6 +164,7 @@ data <- data %>% gather(key="Cost_Type", value = "value",
 )
 
 data$value = round(data$value/1e9, 3)
+
 
 ggplot(data, aes(y=value, x=strategy, fill=Cost_Type)) + 
   geom_bar(position="stack", stat="identity") +
