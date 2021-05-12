@@ -26,7 +26,7 @@ import numpy as np
 import random
 import math
 
-from countries import country_list
+from countries import COUNTRY_LIST
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
@@ -333,8 +333,8 @@ def process_coverage_shapes(country):
         Three digit ISO country code.
 
     """
-    iso3 = country['iso3']
     iso2 = country['iso2']
+    iso3 = country['iso3']
 
     technologies = [
         'GSM',
@@ -438,11 +438,11 @@ def process_regional_coverage(country):
 
     technologies = [
         # 'GSM',
-        # '3G',
+        '3G',
         '4G'
     ]
 
-    output = {}
+    output = []
 
     for tech in technologies:
 
@@ -455,15 +455,20 @@ def process_regional_coverage(country):
 
             segments = gpd.overlay(regions, coverage, how='intersection')
 
-            tech_coverage = {}
-
             for idx, region in segments.iterrows():
 
                 area_km2 = round(area_of_polygon(region['geometry']) / 1e6)
 
-                tech_coverage[region[gid_level]] = area_km2
+                output.append({
+                    'GID_id': region[gid_level],
+                    'generation': tech,
+                    'coverage': area_km2,
+                })
 
-            output[tech] = tech_coverage
+    output = pd.DataFrame(output)
+
+    path = os.path.join(DATA_INTERMEDIATE, iso3, 'coverage', 'coverage.csv')
+    output.to_csv(path, index=False)
 
     return output
 
@@ -576,7 +581,7 @@ def get_regional_data(country):
 
     regions = regions.sort_values(by=['population_km2'], ascending=False)
 
-    total_pop = regions['population'].sum()
+    total_pop = regions['population_total'].sum()
 
     # coverage_4G_to_allocate = country['coverage_4G'] # population coverage
 
@@ -597,7 +602,7 @@ def get_regional_data(country):
             'GID_id': region['GID_id'],
             'GID_level': region['GID_level'],
             'mean_luminosity_km2': region['mean_luminosity_km2'],
-            'population': region['population'],
+            'population': region['population_total'],
             'area_km2': region['area_km2'],
             'population_km2': region['population_km2'],
             # 'coverage_4G_percent': coverage,
@@ -706,22 +711,22 @@ def estimate_sites(data, iso3, backhaul_lut):
                 backhaul_satellite += 1
 
         output.append({
-                'GID_0': region['GID_0'],
-                'GID_id': region['GID_id'],
-                'GID_level': region['GID_level'],
-                'mean_luminosity_km2': region['mean_luminosity_km2'],
-                'population': region['population'],
-                'area_km2': region['area_km2'],
-                'population_km2': region['population_km2'],
-                'coverage_4G_percent': region['coverage_4G_percent'],
-                'sites_estimated_total': sites_estimated_total,
-                'sites_estimated_km2': sites_estimated_km2,
-                'sites_4G': sites_estimated_total * (region['coverage_4G_percent'] /100),
-                'backhaul_fiber': backhaul_fiber,
-                'backhaul_copper': backhaul_copper,
-                'backhaul_microwave': backhaul_microwave,
-                'backhaul_satellite': backhaul_satellite,
-            })
+            'GID_0': region['GID_0'],
+            'GID_id': region['GID_id'],
+            'GID_level': region['GID_level'],
+            'mean_luminosity_km2': region['mean_luminosity_km2'],
+            'population': region['population'],
+            'area_km2': region['area_km2'],
+            'population_km2': region['population_km2'],
+            'coverage_4G_percent': region['coverage_4G_percent'],
+            'sites_estimated_total': sites_estimated_total,
+            'sites_estimated_km2': sites_estimated_km2,
+            'sites_4G': sites_estimated_total * (region['coverage_4G_percent'] /100),
+            'backhaul_fiber': backhaul_fiber,
+            'backhaul_copper': backhaul_copper,
+            'backhaul_microwave': backhaul_microwave,
+            'backhaul_satellite': backhaul_satellite,
+        })
 
         if region['population'] == None:
             continue
@@ -1227,6 +1232,7 @@ def find_nodes_on_existing_infrastructure(country):
 
     """
     iso3 = country['iso3']
+    core_node_size = country['core_node_size']
 
     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network_existing')
     filename = 'core_nodes_existing.shp'
@@ -1253,6 +1259,8 @@ def find_nodes_on_existing_infrastructure(country):
 
     path = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations', 'agglomerations.shp')
     agglomerations = gpd.read_file(path, crs='epsg:4326')
+
+    agglomerations = agglomerations[agglomerations['population'] >= core_node_size]
 
     bool_list = agglomerations.intersects(existing_infra.unary_union)
 
@@ -2008,51 +2016,54 @@ def load_subscription_data(path, iso3):
 
 if __name__ == '__main__':
 
-    for country in country_list:
+    for country in COUNTRY_LIST:
 
-        print('Working on {}'.format(country['iso3']))
+        print('--Working on {}'.format(country['iso3']))
 
-        print('Processing country boundary')
-        process_country_shapes(country)
+        # print('Processing country boundary')
+        # process_country_shapes(country)
 
-        print('Processing regions')
-        process_regions(country)
+        # print('Processing regions')
+        # process_regions(country)
 
-        print('Processing settlement layer')
-        process_settlement_layer(country)
+        # print('Processing settlement layer')
+        # process_settlement_layer(country)
 
-        print('Processing night lights')
-        process_night_lights(country)
+        # print('Processing night lights')
+        # process_night_lights(country)
 
         print('Processing coverage shapes')
         process_coverage_shapes(country)
 
-        print('Getting population and luminosity')
-        get_pop_and_luminosity_data(country)
+        print('Chopping coverage shapes')
+        process_regional_coverage(country)
 
-        print('Getting regional data')
-        get_regional_data(country)
+        # # print('Getting population and luminosity')
+        # # get_pop_and_luminosity_data(country)
 
-        print('Generating agglomeration lookup table')
-        generate_agglomeration_lut(country)
+        # # print('Getting regional data')
+        # # get_regional_data(country)
 
-        print('Load existing fiber infrastructure')
-        process_existing_fiber(country)
+        # print('Generating agglomeration lookup table')
+        # generate_agglomeration_lut(country)
 
-        print('Estimate existing nodes')
-        find_nodes_on_existing_infrastructure(country)
+        # print('Load existing fiber infrastructure')
+        # process_existing_fiber(country)
 
-        print('Find regional nodes')
-        find_regional_nodes(country)
+        # print('Estimate existing nodes')
+        # find_nodes_on_existing_infrastructure(country)
 
-        print('Fit edges')
-        prepare_edge_fitting(country)
+        # print('Find regional nodes')
+        # find_regional_nodes(country)
 
-        print('Fit regional edges')
-        fit_regional_edges(country)
+        # print('Fit edges')
+        # prepare_edge_fitting(country)
 
-        print('Create core lookup table')
-        generate_core_lut(country)
+        # print('Fit regional edges')
+        # fit_regional_edges(country)
 
-        print('Create backhaul lookup table')
-        generate_backhaul_lut(country)
+        # print('Create core lookup table')
+        # generate_core_lut(country)
+
+        # print('Create backhaul lookup table')
+        # generate_backhaul_lut(country)
