@@ -105,18 +105,12 @@ venv.bak/
 
 # specific folders
 /data
-vis/figures/*
 results/*
-vis/spectrum/figures/*
-vis/backhaul/figures/*
-vis/clustering/figures/*
-vis/subscriptions/data_inputs/*
-vis/subscriptions/figures/*
+vis/cross_country/figures/*
+vis/figures/*
+vis/figures_tables/*
 vis/smartphones/figures/*
 vis/smartphones/data_inputs/*
-vis/global_cost/figures/*
-vis/tables/*
-vis/figures_tables/*
+vis/subscriptions/data_inputs/*
+vis/subscriptions/figures/*
 vis/vis_results/*
-vis/report_map_map_clearance/data_inputs/*
-vis/report_map_map_clearance/figures/*
