@@ -17,8 +17,6 @@ import glob
 import pyproj
 from shapely.geometry import MultiPolygon, mapping, MultiLineString
 from shapely.ops import transform, unary_union, nearest_points
-import fiona
-from fiona.crs import from_epsg
 import rasterio
 from rasterio.mask import mask
 from rasterstats import zonal_stats
@@ -133,12 +131,11 @@ def process_country_shapes(country):
 
     shape_path = os.path.join(path, 'national_outline.shp')
 
-    # print('Loading all country shapes')
     path = os.path.join(DATA_RAW, 'gadm36_levels_shp', 'gadm36_0.shp')
     countries = gpd.read_file(path)
 
     # print('Getting specific country shape for {}'.format(iso3))
-    single_country = countries[countries.GID_0 == iso3]
+    single_country = countries[countries.GID_0 == iso3].reset_index()
 
     # print('Excluding small shapes')
     single_country['geometry'] = single_country.apply(
@@ -207,6 +204,62 @@ def process_regions(country):
     print('Completed processing of regional shapes level {}'.format(level))
 
     return print('Completed processing of regions')
+
+
+def process_night_lights(country):
+    """
+    Clip the nightlights layer to the chosen country boundary and place in
+    desired country folder.
+
+    Parameters
+    ----------
+    country : string
+        Three digit ISO country code.
+
+    """
+    iso3 = country['iso3']
+
+    folder = os.path.join(DATA_INTERMEDIATE, iso3)
+    path_output = os.path.join(folder,'night_lights.tif')
+
+    # if os.path.exists(path_output):
+    #     return print('Completed processing of nightlight layer')
+
+    path_country = os.path.join(folder, 'national_outline.shp')
+
+    filename = 'F182013.v4c_web.stable_lights.avg_vis.tif'
+    path_night_lights = os.path.join(DATA_RAW, 'nightlights', '2013',
+        filename)
+
+    country = gpd.read_file(path_country, crs='epsg:4326')
+
+    print('----')
+    print('working on {}'.format(iso3))
+
+    bbox = country.envelope
+
+    geo = gpd.GeoDataFrame()
+    geo = gpd.GeoDataFrame({'geometry': bbox}, crs='epsg:4326')
+
+    coords = [json.loads(geo.to_json())['features'][0]['geometry']]
+
+    night_lights = rasterio.open(path_night_lights, "r+")
+    night_lights.nodata = 0
+
+    out_img, out_transform = mask(night_lights, coords, crop=True)
+
+    out_meta = night_lights.meta.copy()
+
+    out_meta.update({"driver": "GTiff",
+                    "height": out_img.shape[1],
+                    "width": out_img.shape[2],
+                    "transform": out_transform,
+                    "crs": 'epsg:4326'})
+
+    with rasterio.open(path_output, "w", **out_meta) as dest:
+            dest.write(out_img)
+
+    return print('Completed processing of night lights layer')
 
 
 def process_settlement_layer(country):
@@ -694,26 +747,26 @@ def load_subscription_data(path, iso3):
     historical_data = pd.read_csv(path, encoding = "ISO-8859-1")
     historical_data = historical_data.to_dict('records')
 
-    genders = ['female', 'male']
+    # genders = ['female', 'male']
     scenarios = ['low', 'baseline', 'high']
 
-    for gender in genders:
-        for scenario in scenarios:
-            for year in range(2010, 2021):
-                year = str(year)
-                for item in historical_data:
-                    if item['iso3'] == iso3:
+    # for gender in genders:
+    for scenario in scenarios:
+        for year in range(2010, 2021):
+            year = str(year)
+            for item in historical_data:
+                if item['iso3'] == iso3:
 
-                        adjusted_penetration = adjust_penetration(country,
-                            gender, float(item[year]) * 100)
+                    # adjusted_penetration = adjust_penetration(country,
+                    #     gender, float(item[year]) * 100)
 
-                        output.append({
-                            'scenario': scenario,
-                            'country': iso3,
-                            'gender': gender,
-                            'penetration': adjusted_penetration,# * 100,
-                            'year':  year,
-                        })
+                    output.append({
+                        'scenario': scenario,
+                        'country': iso3,
+                        # 'gender': gender,
+                        'penetration': float(item[year] * 100),
+                        'year':  year,
+                    })
 
     return output
 
@@ -741,43 +794,43 @@ def forecast_linear(country, historical_data, start_point, end_point, horizon):
     """
     output = []
 
-    genders = ['female', 'male']
+    # genders = ['female', 'male']
     scenarios = ['low', 'baseline', 'high']
 
-    for gender in genders:
+    # for gender in genders:
 
-        by_gender = [d for d in historical_data if d['gender'] == gender]
+        # by_gender = [d for d in historical_data if d['gender'] == gender]
 
-        for scenario in scenarios:
+    for scenario in scenarios:
 
-            scenario_data = []
+        scenario_data = []
 
-            subs_growth = country['subs_growth_{}'.format(scenario)]
+        subs_growth = country['subs_growth_{}'.format(scenario)]
 
-            year_0 = sorted(by_gender, key = lambda i: i['year'], reverse=True)[0]
+        year_0 = sorted(historical_data, key = lambda i: i['year'], reverse=True)[0]
 
-            for year in range(start_point, end_point + 1):
+        for year in range(start_point, end_point + 1):
 
-                if year == start_point:
+            if year == start_point:
 
-                    penetration = year_0['penetration'] * (1 + (subs_growth/100))
+                penetration = year_0['penetration'] * (1 + (subs_growth/100))
 
-                    # penetration = adjust_penetration(country, gender, penetration)
+                # penetration = adjust_penetration(country, gender, penetration)
 
-                else:
-                    penetration = penetration * (1 + (subs_growth/100))
+            else:
+                penetration = penetration * (1 + (subs_growth/100))
 
-                if year not in [item['year'] for item in scenario_data]:
+            if year not in [item['year'] for item in scenario_data]:
 
-                    scenario_data.append({
-                        'scenario': scenario,
-                        'country': country['iso3'],
-                        'gender': gender,
-                        'year': year,
-                        'penetration': round(penetration, 2),
-                    })
+                scenario_data.append({
+                    'scenario': scenario,
+                    'country': country['iso3'],
+                    # 'gender': gender,
+                    'year': year,
+                    'penetration': round(penetration, 2),
+                })
 
-            output = output + scenario_data
+        output = output + scenario_data
 
     return output
 
@@ -955,7 +1008,7 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:#[:1]:
 
-        # if not country['iso3'] == 'COD':
+        # if not country['iso3'] == 'SEN':
         #     continue
 
         print('----')
@@ -968,6 +1021,9 @@ if __name__ == '__main__':
 
         print('Processing regions')
         process_regions(country)
+
+        print('Processing night lights')
+        process_night_lights(country)
 
         print('Processing settlement layers')
         process_settlement_layer(country)

@@ -65,8 +65,8 @@ def load_regions(country, path, sites_lut):
                     'total_estimated_sites': value['total_estimated_sites'],
                     'backhaul_wireless': value['backhaul_wireless'],
                     'backhaul_fiber': value['backhaul_fiber'],
-                    'on_grid': value['on_grid'],
-                    'off_grid': value['off_grid'],
+                    # 'on_grid': value['on_grid'],
+                    # 'off_grid': value['off_grid'],
                 })
 
     return data_initial
@@ -220,16 +220,16 @@ def load_penetration(scenario, path):
     """
     output = {}
 
-    genders = ['female', 'male']
+    # genders = ['female', 'male']
 
-    for gender in genders:
-        with open(path, 'r') as source:
-            reader = csv.DictReader(source)
-            for row in reader:
-                if row['scenario'] == scenario.split('_')[0]:
-                    if row['gender'] == gender:
-                        year_gender = '{}_{}'.format(int(row['year']), gender)
-                        output[year_gender] = round(float(row['penetration']), 1)
+    # for gender in genders:
+    with open(path, 'r') as source:
+        reader = csv.DictReader(source)
+        for row in reader:
+            if row['scenario'] == scenario.split('_')[0]:
+                # if row['gender'] == gender:
+                # year = '{}'.format(int(row['year']), gender)
+                output[int(row['year'])] = round(float(row['penetration']), 1)
 
     return output
 
@@ -282,8 +282,8 @@ def load_sites(country, path):
                 'total_estimated_sites': int(row['total_estimated_sites']),
                 'backhaul_wireless': float(row['backhaul_wireless']),
                 'backhaul_fiber':  float(row['backhaul_fiber']),
-                'on_grid': float(row['on_grid']),
-                'off_grid': float(row['off_grid']),
+                # 'on_grid': float(row['on_grid']),
+                # 'off_grid': float(row['off_grid']),
             }
 
     return output
@@ -355,13 +355,12 @@ if __name__ == '__main__':
 
     decision_options = [
         'technology_options',
-        'business_model_options',
-        'policy_options',
-        'mixed_options',
+        # 'business_model_options',
+        # 'policy_options',
+        # 'mixed_options',
     ]
 
     all_results = []
-    all_options = []
 
     for decision_option in decision_options:#[:1]:
 
@@ -369,13 +368,21 @@ if __name__ == '__main__':
 
         options = OPTIONS[decision_option]
 
-        regional_annual_demand = []
-        regional_results = []
-        regional_cost_structure = []
-
         for country in COUNTRY_LIST:#[:1]:
 
+            regional_annual_demand = []
+            regional_results = []
+            regional_cost_structure = []
+
             iso3 = country['iso3']
+
+            OUTPUT_COUNTRY = os.path.join(OUTPUT, iso3)
+
+            if not os.path.exists(OUTPUT_COUNTRY):
+                os.makedirs(OUTPUT_COUNTRY)
+
+            # if not iso3 == 'GMB':
+            #     continue
 
             print('Working on {}'.format(iso3))
 
@@ -457,12 +464,12 @@ if __name__ == '__main__':
                     regional_annual_demand = regional_annual_demand + annual_demand
                     regional_results = regional_results + final_results
 
-            write_demand(regional_annual_demand, OUTPUT)
+            write_demand(regional_annual_demand, OUTPUT_COUNTRY)
 
             all_results = all_results + regional_results
 
-        write_results(regional_results, OUTPUT, decision_option)
+            write_results(regional_results, OUTPUT_COUNTRY, decision_option)
 
-    write_results(all_results, OUTPUT, 'all_options')
+    write_results(all_results, OUTPUT, 'all_options_all_countries')
 
     print('Completed model run')

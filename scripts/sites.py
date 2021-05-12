@@ -15,6 +15,11 @@ import xlrd
 import numpy as np
 from shapely.geometry import MultiPolygon
 from shapely.ops import transform, unary_union
+import rasterio
+# from rasterio.mask import mask
+from rasterstats import zonal_stats
+import pyproj
+import random
 
 from countries import COUNTRY_LIST
 
@@ -302,13 +307,6 @@ def clean_coverage(x):
         return MultiPolygon(new_geom)
 
 
-def load_regions(path):
-
-    regions = gpd.read_file(path, crs='epsg:4326')
-
-    return regions
-
-
 def process_the_gambia():
 
     print('Processing The Gambia')
@@ -317,7 +315,7 @@ def process_the_gambia():
         os.makedirs(folder)
 
     path = os.path.join(DATA_INTERMEDIATE, 'GMB', 'regions', 'regions_2_GMB.shp')
-    regions = load_regions(path)
+    regions = gpd.read_file(path, crs='epsg:4326')
 
     path = os.path.join(DATA_RAW, 'GMB', 'Gambia Network_Africell.xlsx')
     process_all_sites_the_gambia(path, regions, folder)
@@ -443,18 +441,406 @@ def sites_lut_the_gambia(path, regions, folder):
     return output
 
 
+def process_senegal(country, technologies):
+    """
+    Process site data for Senegal.
+
+    """
+    level = country['regional_level']
+    iso3 = country['iso3']
+    gid_level = 'GID_{}'.format(level)
+
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'sites')
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    filename = 'regions_{}_{}.shp'.format(country['regional_level'], iso3)
+    path = os.path.join(DATA_INTERMEDIATE, iso3, 'regions', filename)
+    regions = gpd.read_file(path, crs='epsg:4326')#[:1]
+
+    path_settlements = os.path.join(DATA_INTERMEDIATE, iso3, 'settlements.tif')
+
+    filename = 'Bilan_Couverture_Orange_Dec2017.csv'
+    path = os.path.join(DATA_RAW, 'SEN', filename)
+
+    sites = pd.read_csv(path, encoding = "ISO-8859-1")
+    sites = sites[['Cell_ID', 'Site_Name', 'LATITUDE', 'LONGITUDE']].reset_index()
+    sites = gpd.GeoDataFrame(
+        sites, geometry=gpd.points_from_xy(sites.LONGITUDE, sites.LATITUDE),
+        crs='epsg:31028')
+    sites = sites.dropna()
+    sites = sites.to_crs('epsg:4326')
+
+    lut = {}
+
+    for tech in technologies:
+
+        folder = os.path.join(DATA_INTERMEDIATE, iso3, 'coverage')
+        path =  os.path.join(folder, 'coverage_{}.shp'.format(tech))
+
+        if not os.path.exists(path):
+            coverage = 0
+        else:
+            coverage = gpd.read_file(path, crs='epsg:4326')
+
+        region_lut = {}
+
+        for idx, region in regions.iterrows():
+
+            if not os.path.exists(path):
+                region_lut[region[gid_level]] = 0
+                print('Coverage path did not exist')
+                continue
+
+            if region['geometry'].geom_type == 'Polygon':
+                polygons = []
+                polygons.append(region['geometry'])
+            if region['geometry'].geom_type == 'MultiPolygon':
+                polygons = list(region['geometry'])
+
+            geo = gpd.GeoDataFrame.from_features(
+                [
+                    {'geometry': poly, 'properties': {}}
+                    for poly in polygons
+                ],
+                crs='epsg:4326'
+            )
+
+            region_coverage = gpd.overlay(geo, coverage, how='intersection')
+
+            if len(region_coverage) == 0:
+                region_lut[region[gid_level]] = 0
+                print('No regional coverage for {} in {}'.format(tech, region[gid_level]))
+                continue
+
+            region_sites = gpd.overlay(sites, region_coverage, how='intersection')
+
+            if len(sites) == 0:
+                region_lut[region[gid_level]] = 0
+                print('No sites for {} in {}'.format(tech, region[gid_level]))
+                continue
+
+            region_lut[region[gid_level]] = len(region_sites)
+
+        interim = {}
+        interim[tech] = region_lut
+        lut.update(interim)
+
+    backhaul_lut = get_backhaul_lut(iso3, country['region'], '2025')
+
+    output = []
+
+    for idx, region in regions.iterrows():
+
+        sites_2G = lut['GSM'][region[gid_level]]
+        sites_3G = lut['3G'][region[gid_level]]
+        sites_4G = lut['4G'][region[gid_level]]
+        total_sites = (sites_2G + sites_3G + sites_4G)
+
+        backhaul_estimates = estimate_backhaul(total_sites, backhaul_lut)
+
+        with rasterio.open(path_settlements) as src:
+
+            affine = src.transform
+            array = src.read(1)
+            array[array <= 0] = 0
+
+            population = [d['sum'] for d in zonal_stats(
+                region['geometry'], array, stats=['sum'], nodata=0,
+                affine=affine)][0]
+
+        area_km2 = round(area_of_polygon(region['geometry']) / 1e6)
+
+        output.append({
+            'GID_0': region['GID_0'],
+            gid_level: region[gid_level],
+            'population': population,
+            'area_km2': area_km2,
+            'pop_density_km2': population / area_km2,
+            'sites_2G': sites_2G,
+            'sites_3G': sites_3G,
+            'sites_4G': sites_4G,
+            'total_estimated_sites': total_sites,
+            'backhaul_fiber': backhaul_estimates['backhaul_fiber'],
+            'backhaul_copper': backhaul_estimates['backhaul_copper'],
+            'backhaul_wireless': backhaul_estimates['backhaul_wireless'],
+            'backhaul_satellite': backhaul_estimates['backhaul_satellite'],
+        })
+
+    output = pd.DataFrame(output)
+
+    path = os.path.join(DATA_INTERMEDIATE, iso3, 'sites', 'sites.csv')
+    output.to_csv(path, index=False)
+
+    return
+
+
+def estimate_backhaul(total_sites, backhaul_lut):
+
+    output = {}
+
+    backhaul_fiber = 0
+    backhaul_copper = 0
+    backhaul_wireless = 0
+    backhaul_satellite = 0
+
+    for i in range(1, int(round(total_sites)) + 1):
+
+        num = random.uniform(0, 1)
+
+        if num <= backhaul_lut['fiber']:
+            backhaul_fiber += 1
+        elif backhaul_lut['fiber'] < num <= backhaul_lut['copper']:
+            backhaul_copper += 1
+        elif backhaul_lut['copper'] < num <= backhaul_lut['microwave']:
+            backhaul_wireless += 1
+        elif backhaul_lut['microwave'] < num:
+            backhaul_satellite += 1
+
+    output['backhaul_fiber'] = backhaul_fiber
+    output['backhaul_copper'] = backhaul_copper
+    output['backhaul_wireless'] = backhaul_wireless
+    output['backhaul_satellite'] = backhaul_satellite
+
+    return output
+
+
+def get_backhaul_lut(iso3, region, year):
+    """
+
+    """
+    interim = []
+
+    path = os.path.join(BASE_PATH, 'raw', 'gsma', 'backhaul.csv')
+    backhaul_lut = pd.read_csv(path)
+    backhaul_lut = backhaul_lut.to_dict('records')
+
+    for item in backhaul_lut:
+        if region == item['Region'] and int(item['Year']) == int(year):
+            interim.append({
+                'tech': item['Technology'],
+                'percentage': int(item['Value']),
+            })
+
+    output = {}
+
+    preference = [
+        'fiber',
+        'copper',
+        'microwave',
+        'satellite'
+    ]
+
+    perc_so_far = 0
+
+    for tech in preference:
+        for item in interim:
+            if tech == item['tech'].lower():
+                perc = item['percentage']
+                output[tech] = (perc + perc_so_far) / 100
+                perc_so_far += perc
+
+    return output
+
+
+def area_of_polygon(geom):
+    """
+    Returns the area of a polygon. Assume WGS84 as crs.
+
+    """
+    geod = pyproj.Geod(ellps="WGS84")
+
+    poly_area, poly_perimeter = geod.geometry_area_perimeter(
+        geom
+    )
+
+    return abs(poly_area)
+
+
+# def estimate_sites(data, iso3, backhaul_lut):
+#     """
+#     Estimate sites based on mobile population coverage (2G-4G).
+
+#     Parameters
+#     ----------
+#     data :
+#     iso3 : string
+#         Three digit ISO country code.
+
+#     """
+#     output = []
+
+#     existing_site_data_path = os.path.join(DATA_INTERMEDIATE, iso3, 'sites', 'sites.csv')
+
+#     existing_site_data = {}
+#     if os.path.exists(existing_site_data_path):
+#         site_data = pd.read_csv(existing_site_data_path)
+#         site_data = site_data.to_dict('records')
+#         for item in site_data:
+#             existing_site_data[item['GID_id']] = item['sites']
+
+#     population = 0
+
+#     for region in data:
+
+#         if region['population'] == None:
+#             continue
+
+#         population += int(region['population'])
+
+#     path = os.path.join(DATA_RAW, 'wb_mobile_coverage', 'wb_population_coverage.csv')
+#     coverage = pd.read_csv(path)
+#     coverage = coverage.loc[coverage['Country ISO3'] == iso3]
+#     coverage = coverage['2016'].values[0]
+
+#     population_covered = population * (coverage / 100)
+
+#     path = os.path.join(DATA_RAW, 'real_site_data', 'tower_counts', 'tower_counts.csv')
+#     towers = pd.read_csv(path, encoding = "ISO-8859-1")
+#     towers = towers.loc[towers['ISO_3digit'] == iso3]
+#     towers = towers['count'].values[0]
+
+#     towers_per_pop = towers / population_covered
+
+#     tower_backhaul_lut = estimate_backhaul_type(backhaul_lut)
+
+#     data = sorted(data, key=lambda k: k['population_km2'], reverse=True)
+
+#     covered_pop_so_far = 0
+
+#     for region in data:
+
+#         #first try to use actual data
+#         if len(existing_site_data) > 0:
+#             sites_estimated_total = existing_site_data[region['GID_id']]
+#             if region['area_km2'] > 0:
+#                 sites_estimated_km2 = sites_estimated_total / region['area_km2']
+#             else:
+#                 sites_estimated_km2 = 0
+
+#         #or if we don't have data estimate sites per area
+#         else:
+#             if covered_pop_so_far < population_covered:
+#                 sites_estimated_total = region['population'] * towers_per_pop
+#                 sites_estimated_km2 = region['population_km2'] * towers_per_pop
+
+#             else:
+#                 sites_estimated_total = 0
+#                 sites_estimated_km2 = 0
+
+#         backhaul_fiber = 0
+#         backhaul_copper = 0
+#         backhaul_microwave = 0
+#         backhaul_satellite = 0
+
+#         for i in range(1, int(round(sites_estimated_total)) + 1):
+
+#             num = random.uniform(0, 1)
+
+#             if num <= tower_backhaul_lut['fiber']:
+#                 backhaul_fiber += 1
+#             elif tower_backhaul_lut['fiber'] < num <= tower_backhaul_lut['copper']:
+#                 backhaul_copper += 1
+#             elif tower_backhaul_lut['copper'] < num <= tower_backhaul_lut['microwave']:
+#                 backhaul_microwave += 1
+#             elif tower_backhaul_lut['microwave'] < num:
+#                 backhaul_satellite += 1
+
+#         output.append({
+#                 'GID_0': region['GID_0'],
+#                 'GID_id': region['GID_id'],
+#                 'GID_level': region['GID_level'],
+#                 'mean_luminosity_km2': region['mean_luminosity_km2'],
+#                 'population': region['population'],
+#                 'area_km2': region['area_km2'],
+#                 'population_km2': region['population_km2'],
+#                 'coverage_4G_percent': region['coverage_4G_percent'],
+#                 'sites_estimated_total': sites_estimated_total,
+#                 'sites_estimated_km2': sites_estimated_km2,
+#                 'sites_4G': sites_estimated_total * (region['coverage_4G_percent'] /100),
+#                 'backhaul_fiber': backhaul_fiber,
+#                 'backhaul_copper': backhaul_copper,
+#                 'backhaul_microwave': backhaul_microwave,
+#                 'backhaul_satellite': backhaul_satellite,
+#             })
+
+#         if region['population'] == None:
+#             continue
+
+#         covered_pop_so_far += region['population']
+
+#     return output
+
+
+# def estimate_backhaul(iso3, region, year):
+#     """
+
+#     """
+#     output = []
+
+#     path = os.path.join(BASE_PATH, 'raw', 'gsma', 'backhaul.csv')
+#     backhaul_lut = pd.read_csv(path)
+#     backhaul_lut = backhaul_lut.to_dict('records')
+
+#     for item in backhaul_lut:
+#         if region == item['Region'] and int(item['Year']) == int(year):
+#             output.append({
+#                 'tech': item['Technology'],
+#                 'percentage': int(item['Value']),
+#             })
+
+#     return output
+
+
+# def estimate_backhaul_type(backhaul_lut):
+#     """
+#     Estimate backhaul type.
+
+#     """
+#     output = {}
+
+#     preference = [
+#         'fiber',
+#         'copper',
+#         'microwave',
+#         'satellite'
+#     ]
+
+#     perc_so_far = 0
+
+#     for tech in preference:
+#         for item in backhaul_lut:
+#             if tech == item['tech'].lower():
+#                 perc = item['percentage']
+#                 output[tech] = (perc + perc_so_far) / 100
+#                 perc_so_far += perc
+
+#     return output
+
+
 if __name__ == "__main__":
+
+    technologies = [
+        'GSM',
+        '3G',
+        '4G'
+    ]
 
     for country in COUNTRY_LIST:
 
-        print('Processing country boundary')
-        process_country_shape(country)
+        print('--Working on {}'.format(country['iso3']))
 
-        print('Processing regions')
-        process_regions(country)
+        # print('Processing country boundary')
+        # process_country_shape(country)
 
-        print('Processing coverage shapes')
-        process_coverage_shapes(country)
+        # print('Processing regions')
+        # process_regions(country)
+
+        # print('Processing coverage shapes')
+        # process_coverage_shapes(country)
 
         if country['iso3'] == 'GMB':
             process_the_gambia()
+
+        if country['iso3'] == 'SEN':
+            process_senegal(country, technologies)

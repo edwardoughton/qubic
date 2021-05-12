@@ -52,19 +52,19 @@ def write_demand(regional_annual_demand, folder):
     regional_annual_market_demand = regional_annual_demand[[
         'GID_0', 'GID_id', 'scenario', 'strategy',
         'confidence', 'year', 'population',
-        'population_f_over_10', 'population_m_over_10',
+        # 'population_f_over_10', 'population_m_over_10',
         'area_km2', 'population_km2',
         'geotype', 'arpu_discounted_monthly',
-        'penetration_female',
-        'penetration_male',
+        # 'penetration_female',
+        # 'penetration_male',
         'penetration',
         'population_with_phones',
-        'population_with_phones_f_over_10',
-        'population_with_phones_m_over_10',
+        # 'population_with_phones_f_over_10',
+        # 'population_with_phones_m_over_10',
         'smartphone_penetration',
         'population_with_smartphones',
-        'population_with_smartphones_f_over_10',
-        'population_with_smartphones_m_over_10',
+        # 'population_with_smartphones_f_over_10',
+        # 'population_with_smartphones_m_over_10',
         'revenue'
     ]]
     filename = 'regional_annual_market_demand.csv'
