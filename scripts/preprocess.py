@@ -2020,17 +2020,17 @@ if __name__ == '__main__':
 
         print('--Working on {}'.format(country['iso3']))
 
-        # print('Processing country boundary')
-        # process_country_shapes(country)
+        print('Processing country boundary')
+        process_country_shapes(country)
 
-        # print('Processing regions')
-        # process_regions(country)
+        print('Processing regions')
+        process_regions(country)
 
-        # print('Processing settlement layer')
-        # process_settlement_layer(country)
+        print('Processing settlement layer')
+        process_settlement_layer(country)
 
-        # print('Processing night lights')
-        # process_night_lights(country)
+        print('Processing night lights')
+        process_night_lights(country)
 
         print('Processing coverage shapes')
         process_coverage_shapes(country)
@@ -2038,32 +2038,32 @@ if __name__ == '__main__':
         print('Chopping coverage shapes')
         process_regional_coverage(country)
 
-        # # print('Getting population and luminosity')
-        # # get_pop_and_luminosity_data(country)
+        print('Getting population and luminosity')
+        get_pop_and_luminosity_data(country)
 
-        # # print('Getting regional data')
-        # # get_regional_data(country)
+        print('Getting regional data')
+        get_regional_data(country)
 
-        # print('Generating agglomeration lookup table')
-        # generate_agglomeration_lut(country)
+        print('Generating agglomeration lookup table')
+        generate_agglomeration_lut(country)
 
-        # print('Load existing fiber infrastructure')
-        # process_existing_fiber(country)
+        print('Load existing fiber infrastructure')
+        process_existing_fiber(country)
 
-        # print('Estimate existing nodes')
-        # find_nodes_on_existing_infrastructure(country)
+        print('Estimate existing nodes')
+        find_nodes_on_existing_infrastructure(country)
 
-        # print('Find regional nodes')
-        # find_regional_nodes(country)
+        print('Find regional nodes')
+        find_regional_nodes(country)
 
-        # print('Fit edges')
-        # prepare_edge_fitting(country)
+        print('Fit edges')
+        prepare_edge_fitting(country)
 
-        # print('Fit regional edges')
-        # fit_regional_edges(country)
+        print('Fit regional edges')
+        fit_regional_edges(country)
 
-        # print('Create core lookup table')
-        # generate_core_lut(country)
+        print('Create core lookup table')
+        generate_core_lut(country)
 
-        # print('Create backhaul lookup table')
-        # generate_backhaul_lut(country)
+        print('Create backhaul lookup table')
+        generate_backhaul_lut(country)
