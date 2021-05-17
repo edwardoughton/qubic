@@ -307,9 +307,118 @@ def clean_coverage(x):
         return MultiPolygon(new_geom)
 
 
+def process_costa_rica(country, technologies):
+
+    iso3 = country['iso3']
+
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'sites')
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    filename = 'regions_2_{}.shp'.format(iso3)
+    path = os.path.join(DATA_INTERMEDIATE, iso3, 'regions', filename)
+    regions = gpd.read_file(path, crs='epsg:4326')#[:2]
+
+    path = os.path.join(DATA_RAW, iso3, 'RadioBases móviles I Semestre 2020.xlsx')
+
+    df = pd.read_excel(path, 'Datos', skiprows=6)
+
+    df = df[['Code of antenna/ base station',
+        'GIS coordinates: Longitude (*)', 'GIS coordinates: Latitude (*)',
+        'Band in use (*)',
+        'Antenna model/ technology (GSM, LTE, etc.) (*)',
+    ]]
+    df.columns = ['site_id', 'longitude', 'latitude', 'spectrum',
+        'technology', #'backhaul', 'on_grid'
+        ]
+    df = df.dropna()
+
+    df = gpd.GeoDataFrame(
+        df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
+
+    df = df.drop_duplicates(['site_id'])
+
+    interim = []
+
+    for idx, point in df.iterrows():
+        for idx, region in regions.iterrows():
+            if point['geometry'].intersects(region['geometry']):
+                interim.append({
+                    'type': 'Feature',
+                    'geometry': point['geometry'],
+                    'properties': {
+                        'site_id': point['site_id'],
+                        # 'site_name': point['site_name'],
+                        'technology': point['technology'],
+                        'spectrum': point['spectrum'],
+                        # 'backhaul': point['backhaul'],
+                        # 'on_grid': point['on_grid'],
+                        'GID_2': region['GID_2'],
+                    }
+                })
+
+    df = gpd.GeoDataFrame().from_features(interim, crs='epsg:4326')
+
+    filename = 'sites.shp'
+    df.to_file(os.path.join(folder, filename), crs='epsg:4326')
+
+    backhaul_lut = get_backhaul_lut(iso3, country['region'], '2025')
+
+    output = []
+
+    for idx, region in regions.iterrows():
+
+        sites_2G = 0
+        sites_3G = 0
+        sites_4G = 0
+        # wireless = 0
+        # fiber = 0
+        # on_grid = 0
+        # off_grid = 0
+
+        for idx, point in df.iterrows():
+            if region['geometry'].intersects(point['geometry']):
+
+                techs = []
+
+                if '2G' in point['technology']:
+                    techs.append('2G')
+                if '3G' in point['technology']:
+                    techs.append('3G')
+                if '4G' in point['technology']:
+                    techs.append('4G')
+
+                if '4G' in techs:
+                    sites_4G += 1
+                elif '3G' in techs:
+                    sites_3G += 1
+                elif '2G' in techs:
+                    sites_2G += 1
+                else:
+                    print('Did not reconize any technologies')
+
+        total_sites = sites_2G + sites_3G + sites_4G
+        backhaul_estimates = estimate_backhaul(total_sites, backhaul_lut)
+
+        output.append({
+            'GID_0': region['GID_0'],
+            'GID_2': region['GID_2'],
+            'sites_2G': sites_2G,
+            'sites_3G': sites_3G,
+            'sites_4G': sites_4G,
+            'total_estimated_sites': sites_2G + sites_3G + sites_4G,
+            'backhaul_fiber': backhaul_estimates['backhaul_fiber'],
+            'backhaul_copper': backhaul_estimates['backhaul_copper'],
+            'backhaul_wireless': backhaul_estimates['backhaul_wireless'],
+            'backhaul_satellite': backhaul_estimates['backhaul_satellite'],
+        })
+
+    output = pd.DataFrame(output)
+    output.to_csv(os.path.join(folder, 'sites.csv'), index=False)
+
+
 def process_the_gambia():
 
-    print('Processing The Gambia')
     folder = os.path.join(DATA_INTERMEDIATE, 'GMB', 'sites')
     if not os.path.exists(folder):
         os.makedirs(folder)
@@ -839,8 +948,14 @@ if __name__ == "__main__":
         # print('Processing coverage shapes')
         # process_coverage_shapes(country)
 
-        if country['iso3'] == 'GMB':
-            process_the_gambia()
+        if country['iso3'] == 'CRI':
+            print('Processing Costa Rica')
+            process_costa_rica(country, technologies)
 
-        if country['iso3'] == 'SEN':
-            process_senegal(country, technologies)
+        # if country['iso3'] == 'GMB':
+            # print('Processing Gambia')
+        #     process_the_gambia()
+
+        # if country['iso3'] == 'SEN':
+            # print('Processing Senegal')
+        #     process_senegal(country, technologies)

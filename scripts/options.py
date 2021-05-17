@@ -17,6 +17,7 @@ sharing: the type of infrastructure sharing, active, passive etc..
 network: relates to the number of networks, as defined in country parameters
 spectrum: type of spectrum strategy, so baseline, high or low
 tax: type of taxation strategy, so baseline, high or low
+
 """
 
 def generate_tech_options():
@@ -149,12 +150,12 @@ def generate_mixed_options():
     scenarios = ['low_20_20_20', 'baseline_20_20_20', 'high_20_20_20',
                 'low_10_10_10', 'baseline_10_10_10', 'high_10_10_10',
                 'low_5_5_5', 'baseline_5_5_5', 'high_5_5_5']
-    generation_core_types = ['3G_umts', '4G_epc', '5G_nsa']
+    generation_core_types = ['4G_epc'] #'3G_umts', '5G_nsa'
     backhaul_types = ['wireless', 'fiber']
-    sharing_types = ['srn']
+    sharing_types = ['baseline', 'srn']
     networks_types = ['baseline']
-    spectrum_types = ['low']
-    tax_types = ['low']
+    spectrum_types = ['baseline', 'low']
+    tax_types = ['baseline', 'low']
 
     for scenario in scenarios:
         for generation_core_type in generation_core_types:

@@ -8,7 +8,7 @@ Written by Ed Oughton
 """
 import os
 import pandas as pd
-
+import datetime
 
 def define_deciles(regions):
     """
@@ -202,12 +202,15 @@ def write_results(regional_results, folder, metric):
     print('Writing national market results')
     national_results = pd.DataFrame(regional_results)
     national_results = national_results[[
-        'GID_0', 'scenario', 'strategy', 'confidence', 'population_total', 'area_km2',
+        'GID_0', 'scenario', 'strategy', 'confidence',
+        'population_total', 'area_km2',
         'total_phones', 'total_smartphones',
         'total_estimated_sites',
         'total_upgraded_sites',
         'total_new_sites',
         'total_market_revenue', 'total_market_cost',
+        'total_spectrum_cost', 'total_tax',
+        'total_required_state_subsidy',
     ]]
     national_results = national_results.drop_duplicates()
     national_results = national_results.groupby([
@@ -216,6 +219,13 @@ def write_results(regional_results, folder, metric):
         national_results['total_market_cost'] / national_results['total_phones'])
     national_results['cost_per_smartphone_user'] = (
         national_results['total_market_cost'] / national_results['total_smartphones'])
+    national_results['private_cost'] = (
+        national_results['total_market_cost'])
+    national_results['government_cost'] = (
+        national_results['total_required_state_subsidy'] -
+            (national_results['total_spectrum_cost'] + national_results['total_tax']))
+    national_results['social_cost'] = (
+        national_results['private_cost'] + national_results['government_cost'])
     path = os.path.join(folder,'national_market_results_{}.csv'.format(metric))
     national_results.to_csv(path, index=True)
 
@@ -344,3 +354,31 @@ def write_results(regional_results, folder, metric):
 
     path = os.path.join(folder,'regional_market_results_{}.csv'.format(metric))
     regional_market_results.to_csv(path, index=True)
+
+
+def write_inputs(folder, country, global_parameters, costs):
+    """
+    Write model inputs.
+
+    """
+    country_parameters = pd.DataFrame(country.items(),
+        columns=['parameter', 'value'])
+    country_parameters['source'] = 'country_parameters'
+
+    global_parameters = pd.DataFrame(global_parameters.items(),
+        columns=['parameter', 'value'])
+    global_parameters['source'] = 'global_parameters'
+
+    costs = pd.DataFrame(costs.items(),
+        columns=['parameter', 'value'])
+    costs['source'] = 'costs'
+
+    parameters = country_parameters.append(global_parameters)
+    parameters = parameters.append(costs)
+    parameters = parameters[['source', 'parameter', 'value']]
+
+    timenow = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+    filename = 'parameters_{}_{}.csv'.format(country['iso3'], timenow)
+    path = os.path.join(folder, filename)
+    parameters.to_csv(path, index=False)
