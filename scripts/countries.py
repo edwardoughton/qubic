@@ -4,6 +4,50 @@ Country Assessment list
 """
 
 COUNTRY_LIST = [
+        {
+        'country_name': 'El Salvador',
+        'iso3': 'SLV',
+        'iso2': 'SV',
+        'regional_level': 2,
+        'region': 'LAC',
+        # 'coverage_4G': 70,
+        'pop_density_km2': 100,
+        'settlement_size': 200,
+        'core_node_size': 2000,
+        'subs_growth_low': 2,
+        'sp_growth_low_urban': 2,
+        'sp_growth_low_rural': 2,
+        'subs_growth_baseline': 4,
+        'sp_growth_baseline_urban': 4,
+        'sp_growth_baseline_rural': 4,
+        'subs_growth_high': 6,
+        'sp_growth_high_urban': 6,
+        'sp_growth_high_rural': 6,
+        'phone_ownership_male': 50,
+        'phone_ownership_female': 50,
+    },
+    {
+        'country_name': 'Costa Rica',
+        'iso3': 'CRI',
+        'iso2': 'CR',
+        'regional_level': 2,
+        'region': 'LAC',
+        # 'coverage_4G': 70,
+        'pop_density_km2': 100,
+        'settlement_size': 200,
+        'core_node_size': 2000,
+        'subs_growth_low': 2,
+        'sp_growth_low_urban': 2,
+        'sp_growth_low_rural': 2,
+        'subs_growth_baseline': 4,
+        'sp_growth_baseline_urban': 4,
+        'sp_growth_baseline_rural': 4,
+        'subs_growth_high': 6,
+        'sp_growth_high_urban': 6,
+        'sp_growth_high_rural': 6,
+        'phone_ownership_male': 50,
+        'phone_ownership_female': 50,
+    },
     {
         'country_name': 'Gambia (the)',
         'iso3': 'GMB',
@@ -52,6 +96,75 @@ COUNTRY_LIST = [
 
 
 COUNTRY_PARAMETERS = {
+    'CRI': {
+        'luminosity': {
+            'high': 5,
+            'medium': 1,
+        },
+        'arpu': {
+            'high': 6,
+            'medium': 4,
+            'low': 2,
+        },
+        'networks': {
+            'baseline_urban': 3,
+            'baseline_suburban': 3,
+            'baseline_rural': 3,
+            'shared_urban': 3,
+            'shared_suburban': 3,
+            'shared_rural': 1,
+        },
+        'frequencies': {
+            '3G': [
+                {
+                    'frequency': 850,
+                    'bandwidth': '2x10',
+                    'status': 'active',
+                },
+                {
+                    'frequency': 2100,
+                    'bandwidth': '2x10',
+                    'status': 'active',
+                },
+            ],
+            '4G': [
+                {
+                    'frequency': 1800,
+                    'bandwidth': '2x10',
+                    'status': 'active',
+                },
+                {
+                    'frequency': 2600,
+                    'bandwidth': '2x10',
+                    'status': 'active',
+                },
+            ],
+            '5G': [
+                {
+                    'frequency': 700,
+                    'bandwidth': '2x10',
+                    'status': 'inactive',
+                },
+                {
+                    'frequency': 3500,
+                    'bandwidth': '1x50',
+                    'status': 'inactive',
+                },
+            ]
+        },
+        'financials': {
+            'wacc': 9.5, #http://www.waccexpert.com/
+            'profit_margin': 20,
+            'spectrum_coverage_baseline_usd_mhz_pop': 0.04, #refine
+            'spectrum_capacity_baseline_usd_mhz_pop': 0.03,
+            'spectrum_cost_low': 25,
+            'spectrum_cost_high': 200,
+            'tax_low': 10,
+            'tax_baseline': 30,
+            'tax_high': 45,
+            'administration_percentage_of_network_cost': 20,
+            },
+        },
     'GMB': {
         'luminosity': {
             'high': 5,
