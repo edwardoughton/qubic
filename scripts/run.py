@@ -17,7 +17,7 @@ from options import OPTIONS, GLOBAL_PARAMETERS, COSTS
 from qubic.demand import estimate_demand
 from qubic.supply import estimate_supply
 from qubic.assess import assess
-from write import define_deciles, write_demand, write_results
+from write import define_deciles, write_demand, write_results, write_inputs
 from countries import COUNTRY_LIST, COUNTRY_PARAMETERS
 
 CONFIG = configparser.ConfigParser()
@@ -220,15 +220,10 @@ def load_penetration(scenario, path):
     """
     output = {}
 
-    # genders = ['female', 'male']
-
-    # for gender in genders:
     with open(path, 'r') as source:
         reader = csv.DictReader(source)
         for row in reader:
             if row['scenario'] == scenario.split('_')[0]:
-                # if row['gender'] == gender:
-                # year = '{}'.format(int(row['year']), gender)
                 output[int(row['year'])] = round(float(row['penetration']), 1)
 
     return output
@@ -355,9 +350,9 @@ if __name__ == '__main__':
 
     decision_options = [
         'technology_options',
-        # 'business_model_options',
-        # 'policy_options',
-        # 'mixed_options',
+        'business_model_options',
+        'policy_options',
+        'mixed_options',
     ]
 
     all_results = []
@@ -404,7 +399,7 @@ if __name__ == '__main__':
             print('Working on {} in {}'.format(decision_option, iso3))
             print(' ')
 
-            for option in options:#[:1]:
+            for option in options:
 
                 print('Working on {} and {}'.format(option['scenario'], option['strategy']))
 
@@ -469,6 +464,8 @@ if __name__ == '__main__':
             all_results = all_results + regional_results
 
             write_results(regional_results, OUTPUT_COUNTRY, decision_option)
+
+            write_inputs(OUTPUT_COUNTRY, country, GLOBAL_PARAMETERS, COSTS)
 
     write_results(all_results, OUTPUT, 'all_options_all_countries')
 
