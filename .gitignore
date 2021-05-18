@@ -114,3 +114,5 @@ vis/smartphones/data_inputs/*
 vis/subscriptions/data_inputs/*
 vis/subscriptions/figures/*
 vis/vis_results/*
+reports/images/*
+reports/countries/*

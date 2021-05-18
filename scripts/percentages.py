@@ -281,38 +281,38 @@ if __name__ == '__main__':
         if not iso3 == 'GMB':
             continue
 
-        # #technologies
-        # filename = 'national_market_results_technology_options.csv'
-        # path = os.path.join(RESULTS, iso3, filename)
-        # data = pd.read_csv(path)
+        #technologies
+        filename = 'national_market_results_technology_options.csv'
+        path = os.path.join(RESULTS, iso3, filename)
+        data = pd.read_csv(path)
 
-        # data = process_technology_data(data)
+        data = process_technology_data(data)
 
-        # filename = 'percentages_technologies_{}.csv'.format(iso3)
-        # path = os.path.join(OUTPUT, filename)
-        # data.to_csv(path, index=False)
+        filename = 'percentages_technologies_{}.csv'.format(iso3)
+        path = os.path.join(OUTPUT, filename)
+        data.to_csv(path, index=False)
 
-        # #infra sharing
-        # filename = 'national_market_results_business_model_options.csv'
-        # path = os.path.join(RESULTS, iso3, filename)
-        # data = pd.read_csv(path)
+        #infra sharing
+        filename = 'national_market_results_business_model_options.csv'
+        path = os.path.join(RESULTS, iso3, filename)
+        data = pd.read_csv(path)
 
-        # data = process_sharing_data(data)
+        data = process_sharing_data(data)
 
-        # filename = 'percentages_sharing_{}.csv'.format(iso3)
-        # path = os.path.join(OUTPUT, filename)
-        # data.to_csv(path, index=False)
+        filename = 'percentages_sharing_{}.csv'.format(iso3)
+        path = os.path.join(OUTPUT, filename)
+        data.to_csv(path, index=False)
 
-        # #policy options
-        # filename = 'national_market_results_policy_options.csv'
-        # path = os.path.join(RESULTS, iso3, filename)
-        # data = pd.read_csv(path)
+        #policy options
+        filename = 'national_market_results_policy_options.csv'
+        path = os.path.join(RESULTS, iso3, filename)
+        data = pd.read_csv(path)
 
-        # data = process_policy_data(data)
+        data = process_policy_data(data)
 
-        # filename = 'percentages_policy_{}.csv'.format(iso3)
-        # path = os.path.join(OUTPUT, filename)
-        # data.to_csv(path, index=False)
+        filename = 'percentages_policy_{}.csv'.format(iso3)
+        path = os.path.join(OUTPUT, filename)
+        data.to_csv(path, index=False)
 
         #policy options
         filename = 'national_market_results_mixed_options.csv'

@@ -5,7 +5,7 @@ library(ggpubr)
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 
 filename = 'national_market_cost_results_technology_options.csv'
-data <- read.csv(file.path(folder, '..', 'results', 'model_results', filename))
+data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'GMB', filename))
 
 names(data)[names(data) == 'GID_0'] <- 'country'
 
@@ -95,7 +95,7 @@ dev.off()
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 
 filename = 'national_market_cost_results_business_model_options.csv'
-data <- read.csv(file.path(folder, '..', 'results', 'model_results', filename))
+data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'GMB', filename))
 
 names(data)[names(data) == 'GID_0'] <- 'country'
 
@@ -150,9 +150,8 @@ min_value = min(round(data$societal_cost/ 1e9,2))
 max_value = max(round(data$societal_cost/ 1e9,2))
 min_value[min_value > 0] = 0
 
-
 data$social_cost = data$private_cost + data$government_cost
-write.csv(data, file.path(folder, 'business_model_percentages.csv'))
+# write.csv(data, file.path(folder, 'business_model_percentages.csv'))
 
 colnames(data)[colnames(data) == 'private_cost'] <- 'Private Cost ($USD)'
 colnames(data)[colnames(data) == 'government_cost'] <- 'Government Cost ($USD)'
@@ -192,7 +191,7 @@ dev.off()
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 
 filename = 'national_market_cost_results_policy_options.csv'
-data <- read.csv(file.path(folder, '..', 'results', 'model_results', filename))
+data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'GMB', filename))
 
 names(data)[names(data) == 'GID_0'] <- 'country'
 
