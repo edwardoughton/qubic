@@ -1,19 +1,23 @@
 import pytest
 import math
-from podis.costs import (upgrade_to_3g, upgrade_to_4g,
-    greenfield_3g, greenfield_4g, backhaul_quantity,
-    get_backhaul_costs, regional_net_costs,
-    core_costs, discount_opex,
-    discount_capex_and_opex, calc_costs,
-    find_network_cost)
+from qubic.costs import (
+    upgrade_existing_site,
+    greenfield_site,
+    backhaul_quantity,
+    get_backhaul_costs,
+    regional_net_costs,
+    core_costs,
+    discount_opex,
+    discount_capex_and_opex,
+    calc_costs,
+    find_network_cost
+)
 
 #test approach is to:
 #test each function which returns the cost structure
 #test the function which calculates quantities
 #test infrastructure sharing strategies
 #test meta cost function
-
-
 def test_find_network_cost(setup_region, setup_costs,
     setup_global_parameters, setup_country_parameters,
     setup_core_lut):
@@ -131,127 +135,32 @@ def test_find_network_cost(setup_region, setup_costs,
 
     assert answer['network_cost'] == 875055.6999999998
 
+    answer = find_network_cost(
+        setup_region[0],
+        {'strategy': '4G_epc_fiber_srn_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
 
-def test_upgrade_to_3g(setup_region, setup_option, setup_costs,
-    setup_global_parameters, setup_core_lut,
-    setup_country_parameters):
-    """
-    Unit test.
-
-    """
-    setup_region[0]['total_estimated_sites'] = 1
-    setup_region[0]['upgraded_mno_sites'] = 1
-    setup_region[0]['new_mno_sites'] = 1
-    setup_region[0]['site_density'] = 0.5
-
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_baseline_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == 40000
-    assert cost_structure['installation'] ==30000
-
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_pss_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['site_rental'] == (
-        setup_costs['site_rental_urban']  /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_psb_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['site_rental'] == (
-        setup_costs['site_rental_urban'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    assert cost_structure['backhaul'] == (
-        setup_costs['wireless_small'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_moran_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    assert cost_structure['installation'] == (
-        setup_costs['installation'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_cns_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert round(cost_structure['core_edge']) == round(
-        (setup_costs['core_edge'] * 1000) *
-        (1 /
-        setup_country_parameters['networks']['baseline_urban']))
-
-    assert round(cost_structure['core_node']) == round(
-        (setup_costs['core_node_epc'] * 2) *
-        (setup_region[0]['total_estimated_sites'] /
-        setup_country_parameters['networks']['baseline_urban']))
+    assert answer['network_cost'] == 875055.6999999998
 
     setup_region[0]['geotype'] = 'rural'
 
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_cns_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
+    answer = find_network_cost(
+        setup_region[0],
+        {'strategy': '4G_epc_fiber_srn_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
 
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'] * (
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-
-    setup_region[0]['geotype'] = 'rural'
-
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_baseline_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment']) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        )
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000)) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        )
-
-    setup_region[0]['geotype'] = 'urban'
-
-    cost_structure = upgrade_to_3g(setup_region[0],
-        '3G_epc_wireless_baseline_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'])
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000))
+    assert answer['network_cost'] == 669457.1666666665
 
 
-def test_upgrade_to_4g(setup_region, setup_option, setup_costs,
+def test_upgrade_existing_site(setup_region, setup_option, setup_costs,
     setup_global_parameters, setup_core_lut,
     setup_country_parameters):
     """
@@ -263,7 +172,7 @@ def test_upgrade_to_4g(setup_region, setup_option, setup_costs,
     setup_region[0]['upgraded_mno_sites'] = 1
     setup_region[0]['site_density'] = 0.5
 
-    cost_structure = upgrade_to_4g(setup_region[0],
+    cost_structure = upgrade_existing_site(setup_region[0],
         '4G_epc_wireless_baseline_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
@@ -272,325 +181,78 @@ def test_upgrade_to_4g(setup_region, setup_option, setup_costs,
     assert cost_structure['installation'] == 30000
     assert cost_structure['site_rental'] == 9600
 
-    cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_wireless_pss_baseline_baseline_baseline',
+    cost_structure = upgrade_existing_site(setup_region[0],
+        '4G_epc_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
     assert cost_structure['site_rental'] == (
         setup_costs['site_rental_urban'] /
-        setup_country_parameters['networks']['baseline_urban'])
+        setup_country_parameters['networks']['baseline_urban']
+        )
 
-    cost_structure = upgrade_to_4g(setup_region[0],
-        '4g_epc_wireless_psb_baseline_baseline_baseline',
+    cost_structure = upgrade_existing_site(setup_region[0],
+        '4g_epc_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
     assert cost_structure['site_rental'] == (
         setup_costs['site_rental_urban'] /
-        setup_country_parameters['networks']['baseline_urban'])
+        setup_country_parameters['networks']['baseline_urban']
+        )
     assert cost_structure['backhaul'] == (
         setup_costs['wireless_small'] /
-        setup_country_parameters['networks']['baseline_urban'])
+        setup_country_parameters['networks']['baseline_urban']
+        )
 
-    cost_structure = upgrade_to_4g(setup_region[0],
-        '4g_epc_wireless_moran_baseline_baseline_baseline',
+    cost_structure = upgrade_existing_site(setup_region[0],
+        '4g_epc_wireless_active_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
     assert cost_structure['equipment'] == (
         setup_costs['equipment'] /
-        setup_country_parameters['networks']['baseline_urban'])
+        setup_country_parameters['networks']['baseline_urban']
+        )
 
-    cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_wireless_cns_baseline_baseline_baseline',
+    cost_structure = upgrade_existing_site(setup_region[0],
+        '4G_epc_wireless_srn_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
-
-    assert round(cost_structure['core_edge']) == round(
-        (setup_costs['core_edge'] * 1000)  * (1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-    assert round(cost_structure['core_node']) == round(
-        (setup_costs['core_node_epc'] * 2)  * (1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
 
     setup_region[0]['geotype'] = 'rural'
 
-    cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_wireless_cns_srn_baseline_baseline',
+    cost_structure = upgrade_existing_site(setup_region[0],
+        '4G_epc_wireless_srn_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
-    assert cost_structure['equipment'] == (
+    assert round(cost_structure['equipment']) == round(
         setup_costs['equipment'] * (
         1 /
         setup_country_parameters['networks']['baseline_rural']
-        ))
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-
-    setup_region[0]['geotype'] = 'rural'
-
-    cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_wireless_baseline_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment']) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
         )
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000)) * (  # 20*1000
+        )
+    assert round(cost_structure['operation_and_maintenance']) == round(
+        setup_costs['operation_and_maintenance'] * (
         1 /
         setup_country_parameters['networks']['baseline_rural']
+        ))
+    assert round(cost_structure['core_edge']) == round(
+        (setup_costs['core_edge'] * 1000)
         )
 
     setup_region[0]['geotype'] = 'urban'
 
-    cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_wireless_baseline_srn_baseline_baseline',
+    cost_structure = upgrade_existing_site(setup_region[0],
+        '4G_epc_wireless_srn_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'])
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000))
-
-
-def test_greenfield_3g(setup_region, setup_option, setup_costs,
-    setup_global_parameters, setup_core_lut,
-    setup_country_parameters):
-    """
-    Unit test.
-
-    """
-    setup_region[0]['total_estimated_sites'] = 1
-    setup_region[0]['new_mno_sites'] = 1
-    setup_region[0]['upgraded_mno_sites'] = 1
-    setup_region[0]['site_density'] = 0.5
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_baseline_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == 40000
-    assert cost_structure['site_rental'] == 9600
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_pss_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['installation'] == (
-        setup_costs['installation'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_psb_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['site_rental'] == (
-        setup_costs['site_rental_urban'] /
-        setup_country_parameters['networks']['baseline_urban'])
-    assert cost_structure['backhaul'] == (
-        setup_costs['wireless_small'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_moran_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_cns_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert round(cost_structure['core_edge']) == round(
-        (setup_costs['core_edge'] * 1000)  * (
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-    assert round(cost_structure['core_node']) == round(
-        (setup_costs['core_node_epc'] * 2)  * (
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-
-    setup_region[0]['geotype'] = 'rural'
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_cns_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'] * (
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-
-    setup_region[0]['geotype'] = 'rural'
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_baseline_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment']) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
+    assert round(cost_structure['equipment']) == round(
+        setup_costs['equipment'] #* (
+        # 1 /setup_country_parameters['networks']['baseline_rural'])
         )
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000)) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        )
-
-    setup_region[0]['geotype'] = 'urban'
-
-    cost_structure = greenfield_3g(setup_region[0],
-        '3G_epc_wireless_baseline_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'])
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000))
-
-
-def test_greenfield_4g(setup_region, setup_option, setup_costs,
-    setup_global_parameters, setup_core_lut,
-    setup_country_parameters):
-    """
-    Unit test.
-
-    """
-    setup_region[0]['total_estimated_sites'] = 1
-    setup_region[0]['new_mno_sites'] = 1
-    setup_region[0]['upgraded_mno_sites'] = 1
-    setup_region[0]['site_density'] = 0.5
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_baseline_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == 40000
-    assert cost_structure['site_rental'] == 9600
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_pss_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['installation'] == (
-        setup_costs['installation'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_psb_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['site_rental'] == (
-        setup_costs['site_rental_urban'] /
-        setup_country_parameters['networks']['baseline_urban'])
-    assert cost_structure['backhaul'] == (
-        setup_costs['wireless_small'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_moran_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'] /
-        setup_country_parameters['networks']['baseline_urban'])
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_cns_baseline_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert round(cost_structure['core_edge']) == round(
-        (setup_costs['core_edge'] * 1000)  * (
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-    assert round(cost_structure['core_node']) == round(
-        (setup_costs['core_node_epc'] * 2)  * (
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-
-    setup_region[0]['geotype'] = 'rural'
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_cns_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'] * (
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        ))
-
-    setup_region[0]['geotype'] = 'rural'
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_baseline_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment']) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        )
-    assert cost_structure['core_edge'] == (
-        (setup_costs['core_edge'] * 1000)) * (  # 20*1000
-        1 /
-        setup_country_parameters['networks']['baseline_rural']
-        )
-
-    setup_region[0]['geotype'] = 'urban'
-
-    cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_wireless_baseline_srn_baseline_baseline',
-        setup_costs, setup_global_parameters,
-        setup_core_lut, setup_country_parameters)
-
-    assert cost_structure['equipment'] == (
-        setup_costs['equipment'])
     assert cost_structure['core_edge'] == (
         (setup_costs['core_edge'] * 1000))
 
@@ -656,7 +318,7 @@ def test_regional_net_costs(setup_region, setup_option, setup_costs, setup_core_
 
     assert regional_net_costs(setup_region[0], 'regional_node', setup_costs,
         setup_core_lut, setup_option['strategy'], setup_country_parameters) == (
-            (setup_costs['regional_node_epc'] * setup_core_lut['regional_node']['MWI.1.1.1_1_new']) /
+            (setup_costs['regional_node'] * setup_core_lut['regional_node']['MWI.1.1.1_1_new']) /
             (setup_region[0]['total_estimated_sites'] /
             (setup_country_parameters['networks']['baseline_urban'])))
 
@@ -665,7 +327,7 @@ def test_regional_net_costs(setup_region, setup_option, setup_costs, setup_core_
 
     assert regional_net_costs(setup_region[0], 'regional_node', setup_costs,
         setup_core_lut, setup_option['strategy'], setup_country_parameters) == (
-            (setup_costs['regional_node_epc'] * setup_core_lut['regional_node']['MWI.1.1.1_1_new']) /
+            (setup_costs['regional_node'] * setup_core_lut['regional_node']['MWI.1.1.1_1_new']) /
             (setup_region[0]['total_estimated_sites'] /
             (setup_country_parameters['networks']['baseline_urban'])))
 
@@ -674,7 +336,7 @@ def test_regional_net_costs(setup_region, setup_option, setup_costs, setup_core_
 
     assert regional_net_costs(setup_region[0], 'regional_node', setup_costs,
         setup_core_lut, setup_option['strategy'], setup_country_parameters) == (
-            (setup_costs['regional_node_epc'] * setup_core_lut['regional_node']['MWI.1.1.1_1_new']) /
+            (setup_costs['regional_node'] * setup_core_lut['regional_node']['MWI.1.1.1_1_new']) /
             (setup_region[0]['total_estimated_sites'] /
             (setup_country_parameters['networks']['baseline_urban'])))
 
@@ -717,7 +379,7 @@ def test_core_costs(setup_region, setup_option, setup_costs, setup_core_lut, set
         setup_core_lut, setup_option['strategy'], setup_country_parameters) == (setup_costs['core_edge'] * 1000)
 
     assert core_costs(setup_region[0], 'core_node', setup_costs,
-        setup_core_lut, setup_option['strategy'], setup_country_parameters) == (setup_costs['core_node_{}'.format('epc')] * 2)
+        setup_core_lut, setup_option['strategy'], setup_country_parameters) == (setup_costs['core_node'] * 2)
 
     assert core_costs(setup_region[0], 'incorrrect_asset_name', setup_costs,
         setup_core_lut, setup_option['strategy'], setup_country_parameters) == 0
