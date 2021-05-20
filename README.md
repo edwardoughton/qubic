@@ -52,10 +52,18 @@ Then the model script can be run:
 
     python scripts/run.py
 
-To install the packages required for data visualization try:
+You can obtain percentage differences between strategies using:
+
+    python scripts/percentages.py
+
+And you can generate a formal report of the results with:
+
+    python scripts/report.py
+
+<!-- To install the packages required for data visualization try:
 
     conda install seaborn, descartes
 
 And:
 
-    pip install contextily
+    pip install contextily -->

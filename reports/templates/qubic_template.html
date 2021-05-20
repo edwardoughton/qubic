@@ -1,47 +1,349 @@
+<!-- <link rel="stylesheet" href="https://latex.now.sh/style.min.css" /> -->
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <!-- <meta charset="UTF-8"> -->
-    <h1>Quantified Universal Broadband Investment by Country (Qubic)</h1>
+<style>
+body {
+  background-color: white;
+  font-size: 11pt;
+}
+
+body {
+	font-family: 'Latin Modern Roman', serif;
+	counter-reset: theorem;
+	counter-reset: definition;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	border: none;
+	font-weight: bold;
+}
+
+</style>
+<meta charset="UTF-8">
+<h1>Quantified Universal Broadband Investment by Country (Qubic)</h1>
+<h2>Country Assessment for {{ preferred_name }} by Edward Oughton</h2>
 </head>
 <body>
 <p>
     This country briefing contains estimated investment costs for providing
     universal broadband. The analysis focuses on exploring the impact of different
-    technology, infrastructure sharing business models and policy options.
-    The required investment is broken down based on the social cost, which is based
-    on a combination of the quantity of private sector investment which can be
-    viably achieved, with government investment in the form of subsidies making up
-    the difference in unviable locations.
+    technologies, infrastructure sharing business models and policy options.
+    The required investment is broken down based on the social cost, which is a
+    combination of the quantity of private sector investment and government subsidies.
+    The private sector investment represents the portion that can be viably achieved,
+    whereas the government investment in the form of subsidies makes up
+    any shortfall in unviable locations.
 </p>
 <p>
     For a detailed description of the method used, please refer to the affiliated
-    method document which provides a comprehensive overview of the approach.
+    method document which provides a comprehensive overview of the approach, as
+    applied in a recent World Bank working paper (Oughton et al. 2021a).
 </p>
 <h2>Technology options</h2>
 <p>
     There are a variety of technology options available to provide universal broadband
     connectivity. This assessment focuses on assessing cellular technologies (3G, 4G
     and 5G) using licensed spectrum as this is one of the most cost-effective ways to
-    provide wide-area broadband connectivity. The cost of building and operating cellular
-    sites is not always prohibitive but often in rural and remote areas the challenge
-    relates to the ‘backhaul’ connection which links each tower back to a fiber Point
-    of Presence, transporting data to and from the wider internet.
+    provide wide-area broadband connectivity (Oughton et al. 2021b).
+</p>
+<p> The cost of building and operating cellular sites is not always prohibitive on its own,
+    but often in rural and remote areas a major challenge relates to the cost of building
+    the ‘backhaul’ connection. This component links each tower back to a fiber Point of
+    Presence, enabling data to be transported to and from the wider Internet. If data needs
+    to traverse long distances (especially over irregular terrain), then this can push
+    the cost of the backhaul connection up significantly and make deployment unviable.
+    This warrants exploration of the costs of different backhaul technologies.
 </p>
 <p>
     Three different scenarios are explored here given different cellphone and smartphone
     adoption rates, for low (2%), baseline (4%) and high (6%) variants. Moreover, three
-    capacity per user targets are applied (5, 10 and 20 Mbps) based on the mean speed
-    available for the busiest hour of the day.
+    capacity per user targets are applied (~5, ~10 and ~20 Mbps) based on the mean speed
+    available for the busiest hour of the day. Figure 1 illustrates the results, with
+    the social cost of the different technology strategies tested based on the
+    required private sector and government investment to reach 100% population
+    coverage.
 </p>
 <p>
-    Figure 1 illustrates the social cost of different technology strategies in
-    providing universal broadband, based on the required private sector and
-    government investment to reach 100% population coverage.
+    The results demonstrate that as newer, more spectrally efficient, technologies
+    become available, the cost of provision decreases. This is because more
+    spectrally efficient technologies enable an increase in the number of bits per
+    Hertz (thus, more information) to be transferred, translating to fewer sites being
+    required to meet the desired capacity per user targets. As fewer sites are
+    required for newer generations relative to older ones (e.g. 5G relative to 3G),
+    this technically leads to reduced cost (subject to the caveats discussed later,
+    regarding users actually having enabled devices).
 </p>
+<p>
+    Additionally, newer technologies often have better quality coverage spectrum
+    relative to older generations, such as when comparing 3G to 4G. Moreover,
+    with 5G there is the benefit of having both good quality coverage spectrum
+    (700 MHz), as well as very wide bandwidth in the 3.5 GHz band, enabling large
+    capacity increases.
+</p>
+<p>
+    For example, to deliver a mean capacity per user of ~10 Mbps in the baseline,
+    3G (W) requires {{ upgraded_sites_baseline_10mbps_3g_w }} upgraded sites and
+    {{ new_sites_baseline_10mbps_3g_w }} new sites, based on 3G using 'Single In,
+    Single Out' (SISO) radio technology. This compares with 4G requiring
+    {{ upgraded_sites_baseline_10mbps_4g_w }} upgraded sites and
+    {{ new_sites_baseline_10mbps_4g_w }} new sites, based on 4G using 2x2 'Multiple In,
+    Multiple Out' (MIMO) radio technology. Finally, with 5G gaining a significant
+    capacity boost from using 4x4 MIMO, this strategy requires
+    {{ upgraded_sites_baseline_10mbps_5g_w }} upgraded sites and
+    {{ new_sites_baseline_10mbps_5g_w }} new sites.
+</p>
+<p>
+    As the MIMO level has a large impact on the cost results, this technology
+    deserves attention. Just imagine in practical terms that the MIMO level
+    reflects the number of streams of simultaneously transmitted information
+    sent over a radio channel. This is achieved thanks to 'multipath propagation',
+    where radio waves can take many different paths between the site antenna and the
+    receiving antenna on a user's smartphone. Newer devices are clever enough to
+    detect these simultaneous streams thanks to the use of multiple antennas.
+    The only caveat is that generally for this technique to enable additional
+    capacity gains, the user needs to be close enough to the cell site to
+    achieve a strong radio signal.
+</p>
+
 <h3>Figure 1 Assessment of universal broadband technology strategies</h3>
 
-<!-- <img src="{{ figure }}"> -->
-<img src='D:\Github\qubic\reports\templates\social_costs_by_strategy.png'>
+<img src="{{ figure_1 }}">
+<p>
+    When comparing the required investment across strategies in the baseline, using
+    wireless backhaul to deliver ~10 Mbps per user, 3G is estimated to cost
+    ${{ baseline_10mbps_3g_w }} billion, versus a 4G cost of ${{ baseline_10mbps_4g_w }}
+    billion and a 5G cost of ${{ baseline_10mbps_5g_w }} billion.
+</p>
+<p>
+    The scenario variants help to capture the uncertainty around future cellphone and
+    smartphone adoption, and the potential impact on the social cost. For example,
+    providing ~10 Mbps per user with a wireless backhaul ranges for 3G from
+    ${{ low_10mbps_3g_w }} billion to ${{ high_10mbps_3g_w }} billion, for 4G from
+    ${{ low_10mbps_4g_w }} billion to ${{ high_10mbps_4g_w }} billion, and for 5G
+    from ${{ low_10mbps_5g_w }} billion to ${{ high_10mbps_5g_w }} billion.
+</p>
+<p>
+    It is equally important to capture the impact of varying the universal broadband
+    targets, which in this case are highly ambitious, ranging from a conservative ~5 Mbps,
+    up to ~20 Mbps per user. This translates to a baseline cost using wireless
+    backhaul of ${{ baseline_5mbps_3g_w }} billion (~5 Mbps) to ${{ baseline_20mbps_3g_w }}
+    billion (~20 Mbps) for 3G, ${{ baseline_5mbps_4g_w }} billion (~5 Mbps) to
+    ${{ baseline_20mbps_4g_w }} billion (~20 Mbps) for 4G, and finally
+    ${{ baseline_5mbps_5g_w }} billion (~5 Mbps) to ${{ baseline_20mbps_5g_w }}
+    billion (~20 Mbps) for 5G. This generational improvement reflects the combination
+    of greater spectral efficiency and wider spectrum bandwidth.
+</p>
+<p>
+    <b>There are a number of caveats to these results.</b>
+</p>
+<p>
+    Firstly, users would need to have either 4G- or 5G-enabled smartphones in
+    order to make use of these technologies. Given that handset prices for newer
+    generations are more expensive, this weakens the case for leapfrogging to newer
+    generations. The most sensible current option is to target universal deployment
+    of 4G, which has favorable technological characteristics, combined with the
+    ability for users to acquire increasingly cheaper 4G-enabled smartphones (below
+    US$50).
+</p>
+<p>
+    Secondly, these are the costs for a single generation to be deployed on the
+    existing available infrastructure. In reality, an operator would need to be
+    running multiple generations at once (such as 2G, 3G and 4G, potentially with
+    5G in the future), often with the use of multi-carrier base stations. This
+    combined spectrum usage may make it harder to reduce the number of sites
+    being used, if there is still an ambition to provide coverage via earlier
+    generations of cellular technologies. However, over the next decade, it will
+    become increasingly common that operators choose to shutdown older generations
+    such as 2G or 3G (although this is likely to be in high-income frontier
+    markets where consumers have progressively moved to newer generations such as 4G).
+</p>
+<p>
+    The use of different backhaul technologies has a large impact on investment.
+    While fiber optic backhaul links are highly desirable thanks to their large capacity,
+    the reality is that this option costs much more than using a wireless connection (using
+    either microwave or millimeter wave frequencies). Fiber also takes much longer to deploy,
+    relative to a wireless link. For example, when deploying wireless rather than fiber, a
+    saving can be achieved of {{ w_over_fb_3g_10mbps }}% for 3G, {{ w_over_fb_4g_10mbps }}%
+    for 4G and {{ w_over_fb_5g_10mbps }}% for 5G, when targeting ~10 Mbps per user.
+
+    Given how large the investment would need to be in order to deploy fiber to every site,
+    the most probable future for providing universal broadband will continue to include the
+    use of wireless backhaul connections between the cell site and the closest connection
+    point (due to advantages in cost efficiency and deployment speed).
+</p>
+
+<h2>Infrastructure sharing options</h2>
+
+<p>
+    Four different infrastructure sharing strategies are assessed to provide insight into
+    the infrastructure business models which could be employed to help reduce the
+    necessary investment cost. These range from each operator building and running
+    their own separate network in the baseline, through to sharing different passive
+    and active infrastructure assets with other service providers.
+</p>
+<p>
+    Passive sharing focuses on multiple operators using the same site compound, tower and
+    backhaul connection (thus, non-electronic components). Whereas active sharing is the
+    introduction of a Multi-Operator Radio Access Network (MORAN), where the active
+    electronic radio equipment is shared simultaneously along with the passive
+    infrastructure assets. Finally, as both passive and active sharing strategies are
+    nationally homogenous in their level of sharing across urban and rural markets,
+    a Shared Rural Network (SRN) focuses on deploying an actively-shared MORAN, but
+    only in rural areas where the economics of deployment are generally more challenging.
+    This preserves competition in capacity-constrained urban areas. If required, see
+    the method document for additional information.
+</p>
+<p>
+    Figure 2 reports the relative differences across the sharing strategies, as they
+    translate to cost savings, using 4G with a wireless backhaul as the common
+    deployment strategy. The variation across the scenarios and capacity
+    targets will be similar to the results reported in Figure 1, therefore the
+    focus here will be on business model options.
+</p>
+<p>
+    Between the baseline and the passive sharing strategies, a percentage saving of
+    approximately {{ passive_vs_base_4g_10mbps }}% is estimated in the baseline,
+    when targeting ~10 Mbps per user. This equates to a reduction from
+    ${{ baseline_10mbps_4g_w }} billion to ${{ passive_cost_4g_10mbps }}
+    billion.
+</p>
+
+<h3>Figure 2 Assessment of universal broadband infrastructure sharing strategies</h3>
+
+<img src="{{ figure_2 }}">
+
+<p>
+    This contrasts with a much more substantial savings from moving to an actively-shared
+    MORAN, where the cost relative to the baseline is estimated to reduce by up to
+    {{ active_vs_base_4g_10mbps }}%. This relates to a reduction from the baseline cost
+    of ${{ baseline_10mbps_4g_w }} billion to ${{ active_cost_4g_10mbps }} billion.
+</p>
+<p>
+    The caveat to these aforementioned strategies is that they could end up compromising
+    the level of market-based infrastructure competition between operators, which is well
+    documented to provide beneficial consumer outcomes. The aim of the SRN is to try to
+    balance out these benefits by retaining market-based infrastructure competition in
+    urban areas, while reducing the deployment costs in rural areas. When considering
+    the cost saving provided for sharing in rural areas, based on using 4G (W) and a
+    wireless backhaul, the cost drops from the baseline investment of
+    ${{ baseline_10mbps_4g_w }} billion to ${{ srn_cost_4g_10mbps }} billion, equating
+    to an approximate {{ srn_vs_base_4g_10mbps }}% saving.
+</p>
+<p>
+    Regulators need to make a judgement call based on their preferred direction. On the one
+    hand, increased infrastructure sharing can help to reduce the costs of deployment,
+    while on the other, there is a balancing act in terms of the level of competition
+    desired between operators, especially as this market dynamic can lead to stronger
+    investment outcomes. If such a strategy is of interest to pursue, it is wise
+    to model the infrastructure sharing implications based on actual operator data, rather
+    than using the hypothetical operator approach adopted here.
+</p>
+
+<h2>Policy options</h2>
+
+<p>
+    A set of policy options are assessed to help support regulatory decisions at the
+    national level.
+</p>
+<p>
+    The two previous sections  focused on technologies and infrastructure sharing
+    business models. The decisions associated with these options will ultimately be
+    taken by private operators, particularly as governments increasingly adopt a technology
+    neutral policy approach. However, it is essential for governments
+    to have a strategic understanding of how different strategies perform, given their
+    role in managing market rules and public resources, such as radio spectrum.
+</p>
+<p>
+    For example, governments need to help encourage the technologies operators will deploy
+    by understanding which general market direction to set, including identifying and
+    releasing relevant spectrum bands. Moreover, governments need to help set an
+    acceptable level of infrastructure sharing (if any), given the trade-off with
+    market competition benefits.
+</p>
+
+<h3>Figure 3 Assessment of universal broadband policy strategies</h3>
+
+<img src="{{ figure_3 }}">
+
+<p>
+    To complete this national assessment, the focus of this policy section is on both
+    taxation and spectrum licensing costs.
+    In terms of the strategies tested, a baseline is used which matches the
+    existing spectrum prices and corporation tax rates reported in both Figures 1
+    and 2 using 4G with a wireless backhaul. The new policy strategies explore a reduction
+    in the corporation tax rate on profits to {{tax_low}}% (Low Tax), versus a
+    situation where this rate is raised to {{tax_high}}% (High Tax). This is relative
+    to a baseline of {{tax_baseline}}%. Figure 3 presents the results generated from
+    testing these strategies.
+</p>
+<p>
+    The results find a cost decrease of approximately {{perc_lowtax}}% in
+    the Low Tax option for the baseline adoption scenario targeting a mean of ~10
+    Mbps per user. This equates to a decrease from ${{baselinetax_cost_4g_10mbps}}
+    billion to ${{lowtax_cost_4g_10mbps}} billion. This contrasts with a High Tax
+    case with a cost increase of approximately {{perc_hightax}}%, meaning the
+    baseline cost rose from ${{baselinetax_cost_4g_10mbps}} billion to
+    {{hightax_cost_4g_10mbps}} billion.
+</p>
+<p>
+    As the model focuses on deploying universal broadband via user-cross
+    subsidization (akin to a universal service obligation), profits above
+    {{profit_margin}}% are reallocated to serving unviable areas. Therefore,
+    corporation tax rate changes have a more modest impact than if there was
+    no minimum service target and operators could maximize profits from only
+    viable urban and suburban areas (leaving rural areas with poor coverage).
+</p>
+<p>
+    Similarly, the spectrum license fees are varied to explore the cost sensitivity
+    of this option. In the Low Spectrum Fees case, the existing cost of
+    ${{spectrum_coverage_baseline_usd_mhz_pop}} per MHz/population for coverage
+    spectrum and ${{spectrum_capacity_baseline_usd_mhz_pop}} per MHz/population
+    for capacity spectrum, is decreased by {{spectrum_cost_low}}%. This led to a
+    cost decrease from the baseline of ${{baselinetax_cost_4g_10mbps}} billion to
+    ${{lowspectrum_cost_4g_10mbps}} billion.
+</p>
+<p>
+    In contrast, the cost of spectrum is increased by {{spectrum_cost_high}}% in
+    the High Spectrum Fees case. This leads to an increase in the required
+    investment from a baseline of ${{baselinetax_cost_4g_10mbps}} billion to
+    ${{highspectrum_cost_4g_10mbps}} billion.
+</p>
+<p>
+    The magnitude of these cost changes very much relate to the cost of spectrum
+    in each country. For example, some countries are notorious for having very
+    high spectrum costs which is stated to reduce available capital for
+    infrastructure deployment in unviable locations.
+</p>
+<p>
+    Quantifying the social cost in this way, based on the composition of the
+    private and the government cost, is important. It demonstrates that in
+    nationally unviable markets, where there is not enough revenue to support
+    universal coverage, there is little benefit from allocating high taxes.
+    For example, for every $1 taken in tax revenue via the private cost, equates
+    to a $1 subsidy required by government in unviable areas.
+</p>
+<p>
+    Therefore, it is worth governments exploring the use of universal coverage
+    obligations to help push out broadband service to unviable areas, while also
+    being prudent about the use of taxation and spectrum licensing fees. Based on
+    the modeling approach used in this analysis, the results suggest no net benefit
+    is derived from these revenue raising activities in markets where universal
+    broadband cannot be viably achieved.
+</p>
+
+<h2>References</h2>
+<p>
+    Oughton, E.J., Comini, N., Foster, V., Hall, J.W., 2021a. Policy Choices Can Help
+    Keep 4G and 5G Universal Broadband Affordable. World Bank, Policy Research Working Paper.
+    <a href="https://documents.worldbank.org/en/publication/documents-reports/documentdetail/658521614715617195/Policy-Choices-Can-Help-Keep-4G-and-5G-Universal-Broadband-Affordable">World Bank, Policy Research Working Paper
+        </a>
+</p>
+<p>
+    Oughton, E.J., Lehr, W., Katsaros, K., Selinis, I., Bubley, D., Kusuma, J., 2021b.
+    Revisiting Wireless Internet Connectivity: 5G vs Wi-Fi 6. Telecommunications
+    Policy 45, 102127. <a href="https://doi.org/10.1016/j.telpol.2021.102127">https://doi.org/10.1016/j.telpol.2021.102127</a>
+</p>
+
 </body>
 </html>

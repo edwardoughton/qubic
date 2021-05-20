@@ -6,6 +6,7 @@ Country Assessment list
 COUNTRY_LIST = [
         {
         'country_name': 'El Salvador',
+        'preferred_name': 'El Salvador',
         'iso3': 'SLV',
         'iso2': 'SV',
         'regional_level': 2,
@@ -28,6 +29,7 @@ COUNTRY_LIST = [
     },
     {
         'country_name': 'Costa Rica',
+        'preferred_name': 'Costa Rica',
         'iso3': 'CRI',
         'iso2': 'CR',
         'regional_level': 2,
@@ -50,6 +52,7 @@ COUNTRY_LIST = [
     },
     {
         'country_name': 'Gambia (the)',
+        'preferred_name': 'The Gambia',
         'iso3': 'GMB',
         'iso2': 'GM',
         'regional_level': 2,
@@ -72,6 +75,7 @@ COUNTRY_LIST = [
     },
     {
         'country_name': 'Senegal',
+        'preferred_name': 'Senegal',
         'iso3': 'SEN',
         'iso2': 'SN',
         'regional_level': 3,

@@ -1,5 +1,5 @@
 import pytest
-from podis.demand import (estimate_demand, get_per_user_capacity,
+from qubic.demand import (estimate_demand, get_per_user_capacity,
     estimate_arpu, discount_arpu)
 
 
