@@ -314,7 +314,7 @@ def write_results(regional_results, folder, metric):
     regional_market_results = pd.DataFrame(regional_results)
     regional_market_results = define_deciles(regional_market_results)
     regional_market_results = regional_market_results[[
-        'GID_0', 'GID_id', 'scenario', 'strategy', 'decile',
+        'GID_0', 'GID_id', 'scenario', 'strategy', 'decile', 'geotype',
         'confidence', 'population_total', 'area_km2',
         'total_phones', 'total_smartphones',
         'total_upgraded_sites','total_new_sites',
@@ -356,14 +356,20 @@ def write_results(regional_results, folder, metric):
     regional_market_results.to_csv(path, index=True)
 
 
-def write_inputs(folder, country, global_parameters, costs):
+def write_inputs(folder, country, country_parameters, global_parameters,
+    costs, decision_option):
     """
     Write model inputs.
 
     """
-    country_parameters = pd.DataFrame(country.items(),
+    country_info = pd.DataFrame(country.items(),
         columns=['parameter', 'value'])
-    country_parameters['source'] = 'country_parameters'
+    country_info['source'] = 'country_info'
+
+    country_params = pd.DataFrame(
+        country_parameters['financials'].items(),
+        columns=['parameter', 'value'])
+    country_params['source'] = 'country_parameters'
 
     global_parameters = pd.DataFrame(global_parameters.items(),
         columns=['parameter', 'value'])
@@ -373,12 +379,13 @@ def write_inputs(folder, country, global_parameters, costs):
         columns=['parameter', 'value'])
     costs['source'] = 'costs'
 
-    parameters = country_parameters.append(global_parameters)
+    parameters = country_info.append(country_params)
+    parameters = parameters.append(global_parameters)
     parameters = parameters.append(costs)
     parameters = parameters[['source', 'parameter', 'value']]
 
     timenow = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
-    filename = 'parameters_{}_{}.csv'.format(country['iso3'], timenow)
+    filename = 'parameters_{}_{}.csv'.format(decision_option, timenow)
     path = os.path.join(folder, filename)
     parameters.to_csv(path, index=False)

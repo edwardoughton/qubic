@@ -113,7 +113,7 @@ def upgrade_existing_site(region, strategy, costs, global_parameters,
     geotype = region['geotype'].split(' ')[0]
 
     # generation_core_backhaul_sharing_networks_spectrum_tax
-    network_strategy = strategy.split('_')[4]
+    # network_strategy = strategy.split('_')[4]
     networks = country_parameters['networks']['baseline' + '_' + geotype]
 
     shared_assets = INFRA_SHARING_ASSETS[sharing]
@@ -137,12 +137,13 @@ def upgrade_existing_site(region, strategy, costs, global_parameters,
         if not key in shared_assets:
             cost_structure[key] = value
         else:
-            if network_strategy == 'srn' and geotype == 'rural':
-                value = value * (1 / networks)
-                cost_structure[key] = value
+            if sharing == 'srn':
+                if geotype == 'urban' or geotype == 'suburban':
+                    cost_structure[key] = value
+                else:
+                    cost_structure[key] = value / networks
             else:
-                value = value / networks
-                cost_structure[key] = value
+                cost_structure[key] = value / networks
 
     return cost_structure
 
@@ -158,7 +159,7 @@ def greenfield_site(region, strategy, costs, global_parameters,
     geotype = region['geotype'].split(' ')[0]
 
     # generation_core_backhaul_sharing_networks_spectrum_tax
-    network_strategy = strategy.split('_')[4]
+    # network_strategy = strategy.split('_')[4]
     networks = country_parameters['networks']['baseline' + '_' + geotype]
 
     shared_assets = INFRA_SHARING_ASSETS[sharing]
@@ -183,12 +184,13 @@ def greenfield_site(region, strategy, costs, global_parameters,
         if not key in shared_assets:
             cost_structure[key] = value
         else:
-            if network_strategy == 'srn' and geotype == 'rural':
-                value = value * (1 / networks)
-                cost_structure[key] = value
+            if sharing == 'srn':
+                if geotype == 'urban' or geotype == 'suburban':
+                    cost_structure[key] = value
+                else:
+                    cost_structure[key] = value / networks
             else:
-                value = value / networks
-                cost_structure[key] = value
+                cost_structure[key] = value / networks
 
     return cost_structure
 

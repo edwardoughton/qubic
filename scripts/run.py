@@ -376,8 +376,8 @@ if __name__ == '__main__':
             if not os.path.exists(OUTPUT_COUNTRY):
                 os.makedirs(OUTPUT_COUNTRY)
 
-            # if not iso3 == 'GMB':
-            #     continue
+            if not iso3 == 'GMB':
+                continue
 
             print('Working on {}'.format(iso3))
 
@@ -465,7 +465,8 @@ if __name__ == '__main__':
 
             write_results(regional_results, OUTPUT_COUNTRY, decision_option)
 
-            write_inputs(OUTPUT_COUNTRY, country, GLOBAL_PARAMETERS, COSTS)
+            write_inputs(OUTPUT_COUNTRY, country, country_parameters,
+                            GLOBAL_PARAMETERS, COSTS, decision_option)
 
     write_results(all_results, OUTPUT, 'all_options_all_countries')
 

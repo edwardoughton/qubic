@@ -13,8 +13,9 @@ data$scenario_adopt[grep("low", data$scenario)] = 'Low (2% Adoption Growth)'
 data$scenario_adopt[grep("baseline", data$scenario)] = 'Baseline (4% Adoption Growth)'
 data$scenario_adopt[grep("high", data$scenario)] = 'High (6% Adoption Growth)'
 
-data$scenario_capacity[grep("5_5_5", data$scenario)] = '5 Mbps Per User'
-data$scenario_capacity[grep("10_10_10", data$scenario)] = '10 Mbps Per User'
+data$scenario_capacity[grep("5_5_5", data$scenario)] = '~5 Mbps Per User'
+data$scenario_capacity[grep("10_10_10", data$scenario)] = '~10 Mbps Per User'
+data$scenario_capacity[grep("20_20_20", data$scenario)] = '~20 Mbps Per User'
 
 data$strategy_short = ''
 data$strategy_short[grep("3G_umts_fiber", data$strategy)] = '3G (F)'
@@ -34,8 +35,9 @@ data$strategy_short = factor(data$strategy_short, levels=c(
                                      ))
 
 data$scenario_capacity = factor(data$scenario_capacity, 
-                             levels=c("10 Mbps Per User",
-                                      "5 Mbps Per User"))
+                                levels=c("~20 Mbps Per User",
+                                         "~10 Mbps Per User",
+                                         "~5 Mbps Per User"))
 
 data = data[complete.cases(data), ]
 
@@ -73,21 +75,23 @@ data$value = round(data$value/1e9, 3)
 ggplot(data, aes(y=value, x=strategy_short, fill=Cost_Type)) + 
   geom_bar(position="stack", stat="identity") +
   geom_text(aes(strategy_short, social_cost, label = social_cost, fill = NULL),
-            size = 2.5, data = totals, hjust=-.5) +
+            size = 2.5, data = totals, hjust=-.2) +
   coord_flip() +
   scale_fill_manual(values=c("#E1BE6A", "#40B0A6"), name=NULL) +
   theme(legend.position = "bottom") +
-  labs(title = "Social Cost of Universal Broadband by Technology for The Gambia", 
+  labs(title = "Social Cost of Universal Broadband by Technology", 
        colour=NULL,
        subtitle = "Reported for all scenarios and capacity per user targets",
        x = NULL, y = "Social Cost (Billions $USD)") +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, max_value+0.7)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, max_value+0.9)) +
   theme(panel.spacing = unit(0.6, "lines")) +
   guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
   facet_grid(scenario_capacity~scenario_adopt)
 
 path = file.path(folder, 'figures', 'social_costs_by_strategy.png')
-ggsave(path, units="in", width=8, height=5, dpi=300)
+ggsave(path, units="in", width=8, height=7, dpi=300)
+path = file.path(folder, '..', 'reports', 'images', 'GMB', 'social_costs_by_strategy.png')
+ggsave(path, units="in", width=8, height=7, dpi=300)
 dev.off()
 
 ################################################################################
@@ -103,9 +107,9 @@ data$scenario_adopt[grep("low", data$scenario)] = 'Low (2% Adoption Growth)'
 data$scenario_adopt[grep("baseline", data$scenario)] = 'Baseline (4% Adoption Growth)'
 data$scenario_adopt[grep("high", data$scenario)] = 'High (6% Adoption Growth)'
 
-data$scenario_capacity[grep("5_5_5", data$scenario)] = '5 Mbps Per User'
-data$scenario_capacity[grep("10_10_10", data$scenario)] = '10 Mbps Per User'
-data$scenario_capacity[grep("20_20_20", data$scenario)] = '20 Mbps Per User'
+data$scenario_capacity[grep("5_5_5", data$scenario)] = '~5 Mbps Per User'
+data$scenario_capacity[grep("10_10_10", data$scenario)] = '~10 Mbps Per User'
+data$scenario_capacity[grep("20_20_20", data$scenario)] = '~20 Mbps Per User'
 
 data$strategy_short = ''
 data$strategy_short[grep("4G_epc_wireless", data$strategy)] = '4G (W)'
@@ -113,22 +117,22 @@ data$strategy_short[grep("4G_epc_wireless", data$strategy)] = '4G (W)'
 data = data %>% filter(data$strategy_short == '4G (W)')
 
 data$strategy = factor(data$strategy, levels=c(
-  "4G_epc_wireless_srn_baseline_baseline_baseline",
   "4G_epc_wireless_active_baseline_baseline_baseline",
   "4G_epc_wireless_passive_baseline_baseline_baseline",
+  "4G_epc_wireless_srn_baseline_baseline_baseline",
   "4G_epc_wireless_baseline_baseline_baseline_baseline"
 ),
 labels=c(
-  "SRN",
   "Active",
   "Passive",
+  "SRN",
   "Baseline"
 ))
 
 data$scenario_capacity = factor(data$scenario_capacity, 
-                                levels=c("20 Mbps Per User",
-                                         "10 Mbps Per User",
-                                         "5 Mbps Per User"))
+                                levels=c("~20 Mbps Per User",
+                                         "~10 Mbps Per User",
+                                         "~5 Mbps Per User"))
 
 data$scenario_adopt = factor(data$scenario_adopt, 
                              levels=c("Low (2% Adoption Growth)",
@@ -168,22 +172,24 @@ data$value = round(data$value/1e9, 3)
 ggplot(data, aes(y=value, x=strategy, fill=Cost_Type)) + 
   geom_bar(position="stack", stat="identity") +
   geom_text(aes(strategy, social_cost, label = social_cost, fill = NULL),
-            size = 2.5, data = totals, hjust=-.45) +
+            size = 2.5, data = totals, hjust=-.3) +
   coord_flip() +
   scale_fill_manual(values=c("#E1BE6A", "#40B0A6"), name=NULL) +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust=1)) +
-  labs(title = "Social Cost of Universal Broadband by Infrastructure Sharing Strategy for The Gambia", 
+  labs(title = "Social Cost of Universal Broadband by Infrastructure Sharing Strategy", 
        colour=NULL,
        subtitle = "Reported using 4G (W) for all scenarios and capacity per user targets",
        x = NULL, y = "Social Cost (Billions $USD)") +
-  scale_y_continuous(expand = c(0, 0), limits = c(-min_value, max_value+0.17)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-min_value, max_value+0.35)) +
   theme(panel.spacing = unit(0.6, "lines")) +
   guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
   facet_grid(scenario_capacity~scenario_adopt)
 
 path = file.path(folder, 'figures', 'social_costs_by_sharing_strategy.png')
-ggsave(path, units="in", width=8, height=8, dpi=300)
+ggsave(path, units="in", width=8, height=7, dpi=300)
+path = file.path(folder, '..', 'reports', 'images', 'GMB', 'social_costs_by_sharing_strategy.png')
+ggsave(path, units="in", width=8, height=7, dpi=300)
 dev.off()
 
 ################################################################################
@@ -216,10 +222,10 @@ data$strategy = factor(data$strategy, levels=c(
   "4G_epc_wireless_baseline_baseline_baseline_baseline"
   ),
 labels=c(
-  "High Spectrum\nFees (+200%)",
-  "Low Spectrum\nFees (-75%)",
-  "High Tax (45%)",
-  "Low Tax (10%)",
+  "High Spectrum\nFees",
+  "Low Spectrum\nFees",
+  "High Tax",
+  "Low Tax",
   "Baseline"
   ))
 
@@ -259,25 +265,27 @@ data <- data %>% gather(key="Cost_Type", value = "value",
                         'Government Cost ($USD)', 
 )
 
-data$value = round(data$value/1e9, 3)
+data$value = round(data$value/1e9, 2)
 
 ggplot(data, aes(y=value, x=strategy, fill=Cost_Type)) + 
   geom_bar(position="stack", stat="identity") +
   geom_text(aes(strategy, social_cost, label = social_cost, fill = NULL),
-            size = 2.5, data = totals, hjust=-.5) +
+            size = 2.5, data = totals, hjust=-.3) +
   coord_flip() +
   scale_fill_manual(values=c("#E1BE6A", "#40B0A6"), name=NULL) +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust=1)) +
-  labs(title = "Social Cost of Universal Broadband by Policy Strategy for The Gambia", 
+  labs(title = "Social Cost of Universal Broadband by Policy Strategy", 
        colour=NULL,
        subtitle = "Reported using 4G (W) for all scenarios and capacity per user targets",
        x = NULL, y = "Social Cost (Billions $USD)") +
-  scale_y_continuous(expand = c(0, 0), limits = c(-0, max_value+.2)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-0, max_value+.4)) +
   theme(panel.spacing = unit(0.6, "lines")) +
   guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
   facet_grid(scenario_capacity~scenario_adopt)
 
 path = file.path(folder, 'figures', 'social_costs_by_policy_options.png')
-ggsave(path, units="in", width=8, height=8, dpi=300)
+ggsave(path, units="in", width=8, height=7, dpi=300)
+path = file.path(folder, '..', 'reports', 'images', 'GMB', 'social_costs_by_policy_options.png')
+ggsave(path, units="in", width=8, height=7, dpi=300)
 dev.off()
