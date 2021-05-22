@@ -5,7 +5,7 @@ library(ggpubr)
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 
 filename = 'national_market_cost_results_technology_options.csv'
-data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'GMB', filename))
+data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'CRI', filename))
 
 names(data)[names(data) == 'GID_0'] <- 'country'
 
@@ -78,19 +78,21 @@ ggplot(data, aes(y=value, x=strategy_short, fill=Cost_Type)) +
             size = 2.5, data = totals, hjust=-.2) +
   coord_flip() +
   scale_fill_manual(values=c("#E1BE6A", "#40B0A6"), name=NULL) +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust=1)) +
   labs(title = "Social Cost of Universal Broadband by Technology", 
        colour=NULL,
        subtitle = "Reported for all scenarios and capacity per user targets",
        x = NULL, y = "Social Cost (Billions $USD)") +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, max_value+0.9)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, max_value+20)) +
   theme(panel.spacing = unit(0.6, "lines")) +
   guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
   facet_grid(scenario_capacity~scenario_adopt)
 
 path = file.path(folder, 'figures', 'social_costs_by_strategy.png')
 ggsave(path, units="in", width=8, height=7, dpi=300)
-path = file.path(folder, '..', 'reports', 'images', 'GMB', 'social_costs_by_strategy.png')
+dir.create(file.path(folder, '..', 'reports', 'images', 'CRI'), showWarnings = FALSE)
+path = file.path(folder, '..', 'reports', 'images', 'CRI', 'social_costs_by_strategy.png')
 ggsave(path, units="in", width=8, height=7, dpi=300)
 dev.off()
 
@@ -99,7 +101,7 @@ dev.off()
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 
 filename = 'national_market_cost_results_business_model_options.csv'
-data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'GMB', filename))
+data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'CRI', filename))
 
 names(data)[names(data) == 'GID_0'] <- 'country'
 
@@ -181,14 +183,14 @@ ggplot(data, aes(y=value, x=strategy, fill=Cost_Type)) +
        colour=NULL,
        subtitle = "Reported using 4G (W) for all scenarios and capacity per user targets",
        x = NULL, y = "Social Cost (Billions $USD)") +
-  scale_y_continuous(expand = c(0, 0), limits = c(-min_value, max_value+0.35)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-min_value, max_value+5)) +
   theme(panel.spacing = unit(0.6, "lines")) +
   guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
   facet_grid(scenario_capacity~scenario_adopt)
 
 path = file.path(folder, 'figures', 'social_costs_by_sharing_strategy.png')
 ggsave(path, units="in", width=8, height=7, dpi=300)
-path = file.path(folder, '..', 'reports', 'images', 'GMB', 'social_costs_by_sharing_strategy.png')
+path = file.path(folder, '..', 'reports', 'images', 'CRI', 'social_costs_by_sharing_strategy.png')
 ggsave(path, units="in", width=8, height=7, dpi=300)
 dev.off()
 
@@ -197,7 +199,7 @@ dev.off()
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
 
 filename = 'national_market_cost_results_policy_options.csv'
-data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'GMB', filename))
+data <- read.csv(file.path(folder, '..', 'results', 'model_results', 'CRI', filename))
 
 names(data)[names(data) == 'GID_0'] <- 'country'
 
@@ -234,7 +236,12 @@ data = data[complete.cases(data),]
 data$scenario_capacity = factor(data$scenario_capacity, 
                                 levels=c("20 Mbps Per User",
                                          "10 Mbps Per User",
-                                         "5 Mbps Per User"))
+                                         "5 Mbps Per User"),
+                                labels=c(
+                                  "~20 Mbps Per User",
+                                  "~10 Mbps Per User",
+                                  "~5 Mbps Per User"
+                                ))
 
 data$scenario_adopt = factor(data$scenario_adopt, 
                              levels=c("Low (2% Adoption Growth)",
@@ -279,13 +286,13 @@ ggplot(data, aes(y=value, x=strategy, fill=Cost_Type)) +
        colour=NULL,
        subtitle = "Reported using 4G (W) for all scenarios and capacity per user targets",
        x = NULL, y = "Social Cost (Billions $USD)") +
-  scale_y_continuous(expand = c(0, 0), limits = c(-0, max_value+.4)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-0, max_value+5)) +
   theme(panel.spacing = unit(0.6, "lines")) +
   guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
   facet_grid(scenario_capacity~scenario_adopt)
 
 path = file.path(folder, 'figures', 'social_costs_by_policy_options.png')
 ggsave(path, units="in", width=8, height=7, dpi=300)
-path = file.path(folder, '..', 'reports', 'images', 'GMB', 'social_costs_by_policy_options.png')
+path = file.path(folder, '..', 'reports', 'images', 'CRI', 'social_costs_by_policy_options.png')
 ggsave(path, units="in", width=8, height=7, dpi=300)
 dev.off()

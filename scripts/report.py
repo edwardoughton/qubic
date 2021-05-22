@@ -25,6 +25,91 @@ IMAGES = "D:\\Github\\qubic\\reports\\images" #unfortunately needs hard coding
 OUTPUT = os.path.join(BASE_PATH, '..', 'reports', 'countries')
 
 
+def generate_report(country):
+    """
+    Meta function to generate a report.
+
+    """
+    iso3 = country['iso3']
+
+    sites = get_sites(iso3)
+    tech_percs = get_tech_percentages(iso3)
+    share_percs = get_sharing_data(iso3)
+    policy_percs = get_policy_data(iso3)
+
+    policy_inputs = get_policy_inputs(iso3)
+
+    path = os.path.join(BASE_PATH, '..', 'reports', 'templates')
+    env = Environment(loader=FileSystemLoader(path))
+
+    template = env.get_template('qubic_template.html')
+
+    template_vars = {
+        "css_location": "D:\\Github\\qubic\\reports\\templates\\style_template.css",
+        "preferred_name" : country['preferred_name'],
+        "country": iso3,
+        "figure_1": os.path.join(IMAGES, iso3, 'social_costs_by_strategy.png'),
+        "upgraded_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_upgraded_sites'],
+        "new_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_new_sites'],
+        "upgraded_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_upgraded_sites'],
+        "new_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_new_sites'],
+        "upgraded_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_upgraded_sites'],
+        "new_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_new_sites'],
+        "baseline_10mbps_3g_w": tech_percs['baseline_10mbps_3g_w']['social_cost_bn'],
+        "baseline_10mbps_4g_w": tech_percs['baseline_10mbps_4g_w']['social_cost_bn'],
+        "baseline_10mbps_5g_w": tech_percs['baseline_10mbps_5g_w']['social_cost_bn'],
+        "w_over_fb_3g_10mbps": round(abs(tech_percs['baseline_10mbps_3g_w']['w_over_fb'])),
+        "w_over_fb_4g_10mbps": round(abs(tech_percs['baseline_10mbps_4g_w']['w_over_fb'])),
+        "w_over_fb_5g_10mbps": round(abs(tech_percs['baseline_10mbps_5g_w']['w_over_fb'])),
+        "perc_saving_vs_3g_4g_10mbps": round(abs(tech_percs['baseline_10mbps_4g_w']['perc_saving_vs_3g'])),
+        "perc_saving_vs_3g_5g_10mbps": round(abs(tech_percs['baseline_10mbps_5g_w']['perc_saving_vs_3g'])),
+        "low_10mbps_3g_w": tech_percs['low_10mbps_3g_w']['social_cost_bn'],
+        "low_10mbps_4g_w": tech_percs['low_10mbps_4g_w']['social_cost_bn'],
+        "low_10mbps_5g_w": tech_percs['low_10mbps_5g_w']['social_cost_bn'],
+        "high_10mbps_3g_w": tech_percs['high_10mbps_3g_w']['social_cost_bn'],
+        "high_10mbps_4g_w": tech_percs['high_10mbps_4g_w']['social_cost_bn'],
+        "high_10mbps_5g_w": tech_percs['high_10mbps_5g_w']['social_cost_bn'],
+        "baseline_5mbps_3g_w": tech_percs['baseline_5mbps_3g_w']['social_cost_bn'],
+        "baseline_5mbps_4g_w": tech_percs['baseline_5mbps_4g_w']['social_cost_bn'],
+        "baseline_5mbps_5g_w": tech_percs['baseline_5mbps_5g_w']['social_cost_bn'],
+        "baseline_20mbps_3g_w": tech_percs['baseline_20mbps_3g_w']['social_cost_bn'],
+        "baseline_20mbps_4g_w": tech_percs['baseline_20mbps_4g_w']['social_cost_bn'],
+        "baseline_20mbps_5g_w": tech_percs['baseline_20mbps_5g_w']['social_cost_bn'],
+        "figure_2": os.path.join(IMAGES, iso3, 'social_costs_by_sharing_strategy.png'),
+        "passive_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_passive']['saving_against_baseline'])),
+        "active_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_active']['saving_against_baseline'])),
+        "srn_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_srn']['saving_against_baseline'])),
+        "passive_cost_4g_10mbps": share_percs['baseline_10mbps_passive']['social_cost_bn'],
+        "active_cost_4g_10mbps": share_percs['baseline_10mbps_active']['social_cost_bn'],
+        "srn_cost_4g_10mbps": share_percs['baseline_10mbps_srn']['social_cost_bn'],
+        "figure_3": os.path.join(IMAGES, iso3, 'social_costs_by_policy_options.png'),
+        "tax_low": int(float(policy_inputs['tax_low'])),
+        "tax_baseline": int(float(policy_inputs['tax_baseline'])),
+        "tax_high": int(float(policy_inputs['tax_high'])),
+        "perc_lowtax": policy_percs['baseline_10mbps_lowtax']['perc_against_baseline'],
+        "perc_hightax": policy_percs['baseline_10mbps_hightax']['perc_against_baseline'],
+        "lowtax_cost_4g_10mbps": policy_percs['baseline_10mbps_lowtax']['social_cost_bn'],
+        "hightax_cost_4g_10mbps": policy_percs['baseline_10mbps_hightax']['social_cost_bn'],
+        "baselinetax_cost_4g_10mbps": policy_percs['baseline_10mbps_baseline']['social_cost_bn'],
+        "profit_margin": int(float(policy_inputs['profit_margin'])),
+        "spectrum_coverage_baseline_usd_mhz_pop": policy_inputs['spectrum_coverage_baseline_usd_mhz_pop'],
+        "spectrum_capacity_baseline_usd_mhz_pop": policy_inputs['spectrum_capacity_baseline_usd_mhz_pop'],
+        "spectrum_cost_low": int(float(policy_inputs['spectrum_cost_low'])),
+        "spectrum_cost_high": int(float(policy_inputs['spectrum_cost_high'])),
+        "perc_lowspectrum": policy_percs['baseline_10mbps_lowspectrumfees']['perc_against_baseline'],
+        "perc_highspectrum": policy_percs['baseline_10mbps_highspectrumfees']['perc_against_baseline'],
+        "lowspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_lowspectrumfees']['social_cost_bn'],
+        "highspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_highspectrumfees']['social_cost_bn'],
+    }
+
+    html_out = template.render(template_vars)
+
+    path = os.path.join(OUTPUT, '{}.pdf'.format(iso3))
+
+    pisa.showLogging()
+    convert_html_to_pdf(html_out, path)
+
+
 def get_sites(iso3):
     """
     Load data.
@@ -197,84 +282,9 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        iso3 = country['iso3']
+        # iso3 = country['iso3']
 
-        if not iso3 == 'GMB':
-            continue
+        # if not iso3 == 'GMB':
+        #     continue
 
-        sites = get_sites(iso3)
-        tech_percs = get_tech_percentages(iso3)
-        share_percs = get_sharing_data(iso3)
-        policy_percs = get_policy_data(iso3)
-
-        policy_inputs = get_policy_inputs(iso3)
-
-        path = os.path.join(BASE_PATH, '..', 'reports', 'templates')
-        env = Environment(loader=FileSystemLoader(path))
-
-        template = env.get_template('qubic_template.html')
-
-        template_vars = {
-            "css_location": "D:\\Github\\qubic\\reports\\templates\\style_template.css",
-            "preferred_name" : country['preferred_name'],
-            "country": iso3,
-            "figure_1": os.path.join(IMAGES, iso3, 'social_costs_by_strategy.png'),
-            "upgraded_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_upgraded_sites'],
-            "new_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_new_sites'],
-            "upgraded_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_upgraded_sites'],
-            "new_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_new_sites'],
-            "upgraded_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_upgraded_sites'],
-            "new_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_new_sites'],
-            "baseline_10mbps_3g_w": tech_percs['baseline_10mbps_3g_w']['social_cost_bn'],
-            "baseline_10mbps_4g_w": tech_percs['baseline_10mbps_4g_w']['social_cost_bn'],
-            "baseline_10mbps_5g_w": tech_percs['baseline_10mbps_5g_w']['social_cost_bn'],
-            "w_over_fb_3g_10mbps": round(abs(tech_percs['baseline_10mbps_3g_w']['w_over_fb'])),
-            "w_over_fb_4g_10mbps": round(abs(tech_percs['baseline_10mbps_4g_w']['w_over_fb'])),
-            "w_over_fb_5g_10mbps": round(abs(tech_percs['baseline_10mbps_5g_w']['w_over_fb'])),
-            "perc_saving_vs_3g_4g_10mbps": round(abs(tech_percs['baseline_10mbps_4g_w']['perc_saving_vs_3g'])),
-            "perc_saving_vs_3g_5g_10mbps": round(abs(tech_percs['baseline_10mbps_5g_w']['perc_saving_vs_3g'])),
-            "low_10mbps_3g_w": tech_percs['low_10mbps_3g_w']['social_cost_bn'],
-            "low_10mbps_4g_w": tech_percs['low_10mbps_4g_w']['social_cost_bn'],
-            "low_10mbps_5g_w": tech_percs['low_10mbps_5g_w']['social_cost_bn'],
-            "high_10mbps_3g_w": tech_percs['high_10mbps_3g_w']['social_cost_bn'],
-            "high_10mbps_4g_w": tech_percs['high_10mbps_4g_w']['social_cost_bn'],
-            "high_10mbps_5g_w": tech_percs['high_10mbps_5g_w']['social_cost_bn'],
-            "baseline_5mbps_3g_w": tech_percs['baseline_5mbps_3g_w']['social_cost_bn'],
-            "baseline_5mbps_4g_w": tech_percs['baseline_5mbps_4g_w']['social_cost_bn'],
-            "baseline_5mbps_5g_w": tech_percs['baseline_5mbps_5g_w']['social_cost_bn'],
-            "baseline_20mbps_3g_w": tech_percs['baseline_20mbps_3g_w']['social_cost_bn'],
-            "baseline_20mbps_4g_w": tech_percs['baseline_20mbps_4g_w']['social_cost_bn'],
-            "baseline_20mbps_5g_w": tech_percs['baseline_20mbps_5g_w']['social_cost_bn'],
-            "figure_2": os.path.join(IMAGES, iso3, 'social_costs_by_sharing_strategy.png'),
-            "passive_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_passive']['saving_against_baseline'])),
-            "active_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_active']['saving_against_baseline'])),
-            "srn_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_srn']['saving_against_baseline'])),
-            "passive_cost_4g_10mbps": share_percs['baseline_10mbps_passive']['social_cost_bn'],
-            "active_cost_4g_10mbps": share_percs['baseline_10mbps_active']['social_cost_bn'],
-            "srn_cost_4g_10mbps": share_percs['baseline_10mbps_srn']['social_cost_bn'],
-            "figure_3": os.path.join(IMAGES, iso3, 'social_costs_by_policy_options.png'),
-            "tax_low": int(float(policy_inputs['tax_low'])),
-            "tax_baseline": int(float(policy_inputs['tax_baseline'])),
-            "tax_high": int(float(policy_inputs['tax_high'])),
-            "perc_lowtax": policy_percs['baseline_10mbps_lowtax']['perc_against_baseline'],
-            "perc_hightax": policy_percs['baseline_10mbps_hightax']['perc_against_baseline'],
-            "lowtax_cost_4g_10mbps": policy_percs['baseline_10mbps_lowtax']['social_cost_bn'],
-            "hightax_cost_4g_10mbps": policy_percs['baseline_10mbps_hightax']['social_cost_bn'],
-            "baselinetax_cost_4g_10mbps": policy_percs['baseline_10mbps_baseline']['social_cost_bn'],
-            "profit_margin": int(float(policy_inputs['profit_margin'])),
-            "spectrum_coverage_baseline_usd_mhz_pop": policy_inputs['spectrum_coverage_baseline_usd_mhz_pop'],
-            "spectrum_capacity_baseline_usd_mhz_pop": policy_inputs['spectrum_capacity_baseline_usd_mhz_pop'],
-            "spectrum_cost_low": int(float(policy_inputs['spectrum_cost_low'])),
-            "spectrum_cost_high": int(float(policy_inputs['spectrum_cost_high'])),
-            "perc_lowspectrum": policy_percs['baseline_10mbps_lowspectrumfees']['perc_against_baseline'],
-            "perc_highspectrum": policy_percs['baseline_10mbps_highspectrumfees']['perc_against_baseline'],
-            "lowspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_lowspectrumfees']['social_cost_bn'],
-            "highspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_highspectrumfees']['social_cost_bn'],
-        }
-
-        html_out = template.render(template_vars)
-
-        path = os.path.join(OUTPUT, '{}.pdf'.format(iso3))
-
-        pisa.showLogging()
-        convert_html_to_pdf(html_out, path)
+        generate_report(country)

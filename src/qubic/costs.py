@@ -208,7 +208,9 @@ def get_backhaul_costs(region, backhaul, costs, core_lut):
     for asset_type in ['core_node', 'regional_node']:
         for age in ['new', 'existing']:
             combined_key = '{}_{}'.format(region['GID_id'], age)
-            nodes += core_lut[asset_type][combined_key]
+            if 'core_node' in core_lut:
+                # if combined_key in core_lut[asset_type]:
+                nodes += core_lut[asset_type][combined_key]
 
     node_density_km2 = nodes / region['area_km2']
     if node_density_km2 > 0:
@@ -496,7 +498,8 @@ def discount_capex_and_opex(capex, global_parameters, country_parameters):
 
     costs_over_time_period.append(capex)
 
-    opex = round(capex * (global_parameters['opex_percentage_of_capex'] / 100))
+    opex = round(float(capex) *
+        (float(global_parameters['opex_percentage_of_capex']) / 100))
 
     for i in range(0, return_period):
         costs_over_time_period.append(

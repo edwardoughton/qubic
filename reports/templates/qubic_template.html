@@ -30,10 +30,10 @@ h1, h2, h3, h4, h5, h6 {
     universal broadband. The analysis focuses on exploring the impact of different
     technologies, infrastructure sharing business models and policy options.
     The required investment is broken down based on the social cost, which is a
-    combination of the quantity of private sector investment and government subsidies.
-    The private sector investment represents the portion that can be viably achieved,
-    whereas the government investment in the form of subsidies makes up
-    any shortfall in unviable locations.
+    combination of the quantity of private sector investment and government subsidies
+    (minus any government tax revenues). The private sector investment represents the
+    portion that can be viably achieved, whereas the net government investment in the
+    form of subsidies makes up any shortfall in unviable locations.
 </p>
 <p>
     For a detailed description of the method used, please refer to the affiliated
@@ -43,7 +43,7 @@ h1, h2, h3, h4, h5, h6 {
 <h2>Technology options</h2>
 <p>
     There are a variety of technology options available to provide universal broadband
-    connectivity. This assessment focuses on assessing cellular technologies (3G, 4G
+    connectivity. This assessment focuses on evaluating cellular technologies (3G, 4G
     and 5G) using licensed spectrum as this is one of the most cost-effective ways to
     provide wide-area broadband connectivity (Oughton et al. 2021b).
 </p>
@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, h6 {
     the ‘backhaul’ connection. This component links each tower back to a fiber Point of
     Presence, enabling data to be transported to and from the wider Internet. If data needs
     to traverse long distances (especially over irregular terrain), then this can push
-    the cost of the backhaul connection up significantly and make deployment unviable.
+    the cost of the backhaul connection up significantly and make rural deployment unviable.
     This warrants exploration of the costs of different backhaul technologies.
 </p>
 <p>
@@ -82,28 +82,22 @@ h1, h2, h3, h4, h5, h6 {
     capacity increases.
 </p>
 <p>
-    For example, to deliver a mean capacity per user of ~10 Mbps in the baseline,
-    3G (W) requires {{ upgraded_sites_baseline_10mbps_3g_w }} upgraded sites and
-    {{ new_sites_baseline_10mbps_3g_w }} new sites, based on 3G using 'Single In,
-    Single Out' (SISO) radio technology. This compares with 4G requiring
-    {{ upgraded_sites_baseline_10mbps_4g_w }} upgraded sites and
-    {{ new_sites_baseline_10mbps_4g_w }} new sites, based on 4G using 2x2 'Multiple In,
-    Multiple Out' (MIMO) radio technology. Finally, with 5G gaining a significant
-    capacity boost from using 4x4 MIMO, this strategy requires
-    {{ upgraded_sites_baseline_10mbps_5g_w }} upgraded sites and
-    {{ new_sites_baseline_10mbps_5g_w }} new sites.
+    A key factor determining the capacity provided by each generation is the number
+    of antennas the cell and user cellphone have. In 3G most cells use 'Single In,
+    Single Out' (SISO) radio technology, so essentially a transmitter and receiver.
+    This contrasts with 4G which is commonly deployed with 2x2 'Multiple In, Multiple
+    Out' (MIMO) radio technology, using two transmitter and receiver antennas. In 5G,
+    much higher order MIMO is possible, although here only 4x4 MIMO is assumed.
 </p>
 <p>
-    As the MIMO level has a large impact on the cost results, this technology
-    deserves attention. Just imagine in practical terms that the MIMO level
-    reflects the number of streams of simultaneously transmitted information
+    As the MIMO level has a large impact on the cost results,
+    this technology deserves attention. Just imagine in practical terms that the MIMO
+    level reflects the number of streams of simultaneously transmitted information
     sent over a radio channel. This is achieved thanks to 'multipath propagation',
-    where radio waves can take many different paths between the site antenna and the
+    where radio waves can take many different routes between the site antenna and the
     receiving antenna on a user's smartphone. Newer devices are clever enough to
-    detect these simultaneous streams thanks to the use of multiple antennas.
-    The only caveat is that generally for this technique to enable additional
-    capacity gains, the user needs to be close enough to the cell site to
-    achieve a strong radio signal.
+    detect these simultaneous streams thanks to the use of multiple antennas, enabling
+    impressive  capacity gains.
 </p>
 
 <h3>Figure 1 Assessment of universal broadband technology strategies</h3>
@@ -119,19 +113,19 @@ h1, h2, h3, h4, h5, h6 {
     The scenario variants help to capture the uncertainty around future cellphone and
     smartphone adoption, and the potential impact on the social cost. For example,
     providing ~10 Mbps per user with a wireless backhaul ranges for 3G from
-    ${{ low_10mbps_3g_w }} billion to ${{ high_10mbps_3g_w }} billion, for 4G from
-    ${{ low_10mbps_4g_w }} billion to ${{ high_10mbps_4g_w }} billion, and for 5G
-    from ${{ low_10mbps_5g_w }} billion to ${{ high_10mbps_5g_w }} billion.
+    ${{ low_10mbps_3g_w }}-{{ high_10mbps_3g_w }} billion, for 4G from
+    ${{ low_10mbps_4g_w }}-{{ high_10mbps_4g_w }} billion, and for 5G
+    from ${{ low_10mbps_5g_w }}-{{ high_10mbps_5g_w }} billion.
 </p>
 <p>
     It is equally important to capture the impact of varying the universal broadband
     targets, which in this case are highly ambitious, ranging from a conservative ~5 Mbps,
     up to ~20 Mbps per user. This translates to a baseline cost using wireless
-    backhaul of ${{ baseline_5mbps_3g_w }} billion (~5 Mbps) to ${{ baseline_20mbps_3g_w }}
-    billion (~20 Mbps) for 3G, ${{ baseline_5mbps_4g_w }} billion (~5 Mbps) to
-    ${{ baseline_20mbps_4g_w }} billion (~20 Mbps) for 4G, and finally
-    ${{ baseline_5mbps_5g_w }} billion (~5 Mbps) to ${{ baseline_20mbps_5g_w }}
-    billion (~20 Mbps) for 5G. This generational improvement reflects the combination
+    backhaul of ${{ baseline_5mbps_3g_w }}-{{ baseline_20mbps_3g_w }}
+    billion for 3G, ${{ baseline_5mbps_4g_w }}-{{ baseline_20mbps_4g_w }} billion for 4G,
+    and finally
+    ${{ baseline_5mbps_5g_w }}-{{ baseline_20mbps_5g_w }}
+    billion for 5G. This generational improvement reflects the combination
     of greater spectral efficiency and wider spectrum bandwidth.
 </p>
 <p>
@@ -217,7 +211,7 @@ h1, h2, h3, h4, h5, h6 {
     This contrasts with a much more substantial savings from moving to an actively-shared
     MORAN, where the cost relative to the baseline is estimated to reduce by up to
     {{ active_vs_base_4g_10mbps }}%. This relates to a reduction from the baseline cost
-    of ${{ baseline_10mbps_4g_w }} billion to ${{ active_cost_4g_10mbps }} billion.
+    from ${{ baseline_10mbps_4g_w }} billion to ${{ active_cost_4g_10mbps }} billion.
 </p>
 <p>
     The caveat to these aforementioned strategies is that they could end up compromising
@@ -226,7 +220,7 @@ h1, h2, h3, h4, h5, h6 {
     balance out these benefits by retaining market-based infrastructure competition in
     urban areas, while reducing the deployment costs in rural areas. When considering
     the cost saving provided for sharing in rural areas, based on using 4G (W) and a
-    wireless backhaul, the cost drops from the baseline investment of
+    wireless backhaul, the cost drops from the baseline investment from
     ${{ baseline_10mbps_4g_w }} billion to ${{ srn_cost_4g_10mbps }} billion, equating
     to an approximate {{ srn_vs_base_4g_10mbps }}% saving.
 </p>
@@ -267,7 +261,7 @@ h1, h2, h3, h4, h5, h6 {
 <img src="{{ figure_3 }}">
 
 <p>
-    To complete this national assessment, the focus of this policy section is on both
+    To complete this national assessment, the focus of this policy section is on
     taxation and spectrum licensing costs.
     In terms of the strategies tested, a baseline is used which matches the
     existing spectrum prices and corporation tax rates reported in both Figures 1

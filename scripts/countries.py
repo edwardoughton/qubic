@@ -11,9 +11,9 @@ COUNTRY_LIST = [
         'iso2': 'SV',
         'regional_level': 2,
         'region': 'LAC',
-        # 'coverage_4G': 70,
-        'pop_density_km2': 100,
-        'settlement_size': 200,
+        'coverage_4G': 70,
+        'pop_density_km2': 500,
+        'settlement_size': 500,
         'core_node_size': 2000,
         'subs_growth_low': 2,
         'sp_growth_low_urban': 2,
@@ -123,44 +123,44 @@ COUNTRY_PARAMETERS = {
                 {
                     'frequency': 850,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
                 {
                     'frequency': 2100,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'inactive',
                 },
             ],
             '4G': [
                 {
                     'frequency': 1800,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
                 {
                     'frequency': 2600,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'inactive',
                 },
             ],
             '5G': [
                 {
                     'frequency': 700,
                     'bandwidth': '2x10',
-                    'status': 'inactive',
+                    # 'status': 'inactive',
                 },
                 {
                     'frequency': 3500,
                     'bandwidth': '1x50',
-                    'status': 'inactive',
+                    # 'status': 'inactive',
                 },
             ]
         },
         'financials': {
             'wacc': 9.5, #http://www.waccexpert.com/
             'profit_margin': 20,
-            'spectrum_coverage_baseline_usd_mhz_pop': 0.04, #refine
-            'spectrum_capacity_baseline_usd_mhz_pop': 0.03,
+            'spectrum_coverage_baseline_usd_mhz_pop': 0.3, #refine
+            'spectrum_capacity_baseline_usd_mhz_pop': 0.2,
             'spectrum_cost_low': 25,
             'spectrum_cost_high': 200,
             'tax_low': 10,
@@ -192,36 +192,36 @@ COUNTRY_PARAMETERS = {
                 {
                     'frequency': 900,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
                 {
                     'frequency': 2100,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
             ],
             '4G': [
                 {
                     'frequency': 800,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
                 {
                     'frequency': 1800,
                     'bandwidth': '2x10',
-                    'status': 'inactive',
+                    # 'status': 'inactive',
                 },
             ],
             '5G': [
                 {
                     'frequency': 700,
                     'bandwidth': '2x10',
-                    'status': 'inactive',
+                    # 'status': 'inactive',
                 },
                 {
                     'frequency': 3500,
                     'bandwidth': '1x50',
-                    'status': 'inactive',
+                    # 'status': 'inactive',
                 },
             ]
         },
@@ -235,6 +235,75 @@ COUNTRY_PARAMETERS = {
             'tax_low': 10,
             'tax_baseline': 31,
             'tax_high': 45,
+            'administration_percentage_of_network_cost': 20,
+            },
+        },
+    'SLV': {
+        'luminosity': {
+            'high': 5,
+            'medium': 1,
+        },
+        'arpu': {
+            'high': 8,
+            'medium': 6,
+            'low': 2,
+        },
+        'networks': {
+            'baseline_urban': 3,
+            'baseline_suburban': 3,
+            'baseline_rural': 3,
+            'srn_urban': 3,
+            'srn_suburban': 3,
+            'srn_rural': 1,
+        },
+        'frequencies': {
+            '3G': [
+                {
+                    'frequency': 1700,
+                    'bandwidth': '2x10',
+                    # 'status': 'active',
+                },
+                {
+                    'frequency': 1900,
+                    'bandwidth': '2x10',
+                    # 'status': 'inactive',
+                },
+            ],
+            '4G': [
+                {
+                    'frequency': 850,
+                    'bandwidth': '2x10',
+                    # 'status': 'active',
+                },
+                {
+                    'frequency': 1800,
+                    'bandwidth': '2x10',
+                    # 'status': 'inactive',
+                },
+            ],
+            '5G': [
+                {
+                    'frequency': 700,
+                    'bandwidth': '2x10',
+                    # 'status': 'inactive',
+                },
+                {
+                    'frequency': 3500,
+                    'bandwidth': '1x50',
+                    # 'status': 'inactive',
+                },
+            ],
+        },
+        'financials': {
+            'wacc': 15,
+            'profit_margin': 10,
+            'spectrum_coverage_baseline_usd_mhz_pop': 0.1,
+            'spectrum_capacity_baseline_usd_mhz_pop': 0.08,
+            'spectrum_cost_low': 25,
+            'spectrum_cost_high': 200,
+            'tax_low': 10,
+            'tax_baseline': 30,
+            'tax_high': 40,
             'administration_percentage_of_network_cost': 20,
             },
         },
@@ -261,36 +330,36 @@ COUNTRY_PARAMETERS = {
                 {
                     'frequency': 1800,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
                 {
                     'frequency': 2100,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
             ],
             '4G': [
                 {
                     'frequency': 800,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
                 {
                     'frequency': 1800,
                     'bandwidth': '2x10',
-                    'status': 'active',
+                    # 'status': 'active',
                 },
             ],
             '5G': [
                 {
                     'frequency': 700,
                     'bandwidth': '2x10',
-                    'status': 'inactive',
+                    # 'status': 'inactive',
                 },
                 {
                     'frequency': 3500,
                     'bandwidth': '1x50',
-                    'status': 'inactive',
+                    # 'status': 'inactive',
                 },
             ],
         },
@@ -299,6 +368,8 @@ COUNTRY_PARAMETERS = {
             'profit_margin': 10,
             'spectrum_coverage_baseline_usd_mhz_pop': 0.04,
             'spectrum_capacity_baseline_usd_mhz_pop': 0.03,
+            'spectrum_cost_low': 25,
+            'spectrum_cost_high': 200,
             'tax_low': 10,
             'tax_baseline': 30,
             'tax_high': 40,
