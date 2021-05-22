@@ -21,6 +21,64 @@ RESULTS = os.path.join(BASE_PATH, '..', 'results', 'model_results')
 OUTPUT = os.path.join(BASE_PATH, '..', 'results', 'percentages')
 
 
+def generate_percentages(iso3, decision_option):
+    """
+    Meta function to hold all other function calls.
+
+    """
+    if decision_option == 'technology_options':
+
+        filename = 'national_market_results_technology_options.csv'
+        path = os.path.join(RESULTS, iso3, filename)
+
+        if os.path.exists(path):
+            data = pd.read_csv(path)
+            data = process_technology_data(data)
+            filename = 'percentages_technologies_{}.csv'.format(iso3)
+            path = os.path.join(OUTPUT, filename)
+            data.to_csv(path, index=False)
+
+    if decision_option == 'business_model_options':
+
+        filename = 'national_market_results_business_model_options.csv'
+        path = os.path.join(RESULTS, iso3, filename)
+
+        if os.path.exists(path):
+
+            data = pd.read_csv(path)
+            data = process_sharing_data(data)
+            filename = 'percentages_sharing_{}.csv'.format(iso3)
+            path = os.path.join(OUTPUT, filename)
+            data.to_csv(path, index=False)
+
+    if decision_option == 'policy_options':
+
+        filename = 'national_market_results_policy_options.csv'
+        path = os.path.join(RESULTS, iso3, filename)
+
+        if os.path.exists(path):
+
+            data = pd.read_csv(path)
+            data = process_policy_data(data)
+            filename = 'percentages_policy_{}.csv'.format(iso3)
+            path = os.path.join(OUTPUT, filename)
+            data.to_csv(path, index=False)
+
+    if decision_option == 'mixed_options':
+        filename = 'national_market_results_mixed_options.csv'
+        path = os.path.join(RESULTS, iso3, filename)
+
+        if os.path.exists(path):
+
+            data = pd.read_csv(path)
+            data = process_mixed_data(data)
+            filename = 'percentages_mixed_{}.csv'.format(iso3)
+            path = os.path.join(OUTPUT, filename)
+            data.to_csv(path, index=False)
+
+    print('--Finished percentages: {}'.format(decision_option))
+
+
 def find_scenario_variants(data):
     """
 
@@ -269,60 +327,19 @@ if __name__ == '__main__':
     if not os.path.exists(os.path.join(OUTPUT)):
         os.makedirs(os.path.join(OUTPUT))
 
-    # cost_types = [
-    #     'social_cost',
-    #     # 'government_cost'
-    # ]
+    decision_options = [
+        'technology_options',
+        'business_model_options',
+        'policy_options',
+        'mixed_options',
+    ]
 
-    for country in COUNTRY_LIST:
+    for decision_option in decision_options:
+        for country in COUNTRY_LIST:
 
-        iso3 = country['iso3']
+            iso3 = country['iso3']
 
-        if not iso3 == 'GMB':
-            continue
+            # if not iso3 == 'GMB':
+            #     continue
 
-        #technologies
-        filename = 'national_market_results_technology_options.csv'
-        path = os.path.join(RESULTS, iso3, filename)
-        data = pd.read_csv(path)
-
-        data = process_technology_data(data)
-
-        filename = 'percentages_technologies_{}.csv'.format(iso3)
-        path = os.path.join(OUTPUT, filename)
-        data.to_csv(path, index=False)
-
-        #infra sharing
-        filename = 'national_market_results_business_model_options.csv'
-        path = os.path.join(RESULTS, iso3, filename)
-        data = pd.read_csv(path)
-
-        data = process_sharing_data(data)
-
-        filename = 'percentages_sharing_{}.csv'.format(iso3)
-        path = os.path.join(OUTPUT, filename)
-        data.to_csv(path, index=False)
-
-        #policy options
-        filename = 'national_market_results_policy_options.csv'
-        path = os.path.join(RESULTS, iso3, filename)
-        data = pd.read_csv(path)
-
-        data = process_policy_data(data)
-
-        filename = 'percentages_policy_{}.csv'.format(iso3)
-        path = os.path.join(OUTPUT, filename)
-        data.to_csv(path, index=False)
-
-        #policy options
-        filename = 'national_market_results_mixed_options.csv'
-        path = os.path.join(RESULTS, iso3, filename)
-        data = pd.read_csv(path)
-
-        data = process_mixed_data(data)
-
-        filename = 'percentages_mixed_{}.csv'.format(iso3)
-        path = os.path.join(OUTPUT, filename)
-        data.to_csv(path, index=False)
-
-    # print('-- Processing completed')
+            generate_percentages(iso3, decision_option)

@@ -7,7 +7,7 @@ def setup_region():
     'GID_0': 'MWI',
     'GID_id': 'MWI.1.1.1_1',
     'mean_luminosity_km2': 26.736407691655717,
-    'population': 10000,
+    'population_total': 10000,
     'pop_under_10_pop': 0,
     'area_km2': 2,
     'population_km2': 5000,
@@ -24,7 +24,7 @@ def setup_region_rural():
     'GID_0': 'MWI',
     'GID_id': 'MWI.1.1.1_1',
     'mean_luminosity_km2': 26.736407691655717,
-    'population': 10000,
+    'population_total': 10000,
     'pop_under_10_pop': 0,
     'area_km2': 2,
     'population_km2': 5000,
@@ -86,20 +86,34 @@ def setup_country_parameters():
                 {
                     'frequency': 800,
                     'bandwidth': '2x10',
+                    'status': 'inactive',
                 },
                 {
                     'frequency': 1800,
                     'bandwidth': '2x10',
+                    'status': 'inactive',
+                },
+                {
+                    'frequency': 2100,
+                    'bandwidth': '2x10',
+                    'status': 'active',
                 },
             ],
             '5G': [
                 {
                     'frequency': 700,
                     'bandwidth': '2x10',
+                    'status': 'inactive',
                 },
                 {
                     'frequency': 3500,
                     'bandwidth': '1x50',
+                    'status': 'inactive',
+                },
+                {
+                    'frequency': 26000,
+                    'bandwidth': '2x10',
+                    'status': 'active',
                 },
             ]
         },

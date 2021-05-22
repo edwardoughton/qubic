@@ -179,8 +179,8 @@ def get_spectrum_costs(region, strategy, global_parameters, country_parameters):
 
     for frequency in frequencies:
 
-        if frequency['status'] == 'active':
-            continue
+        # if frequency['status'] == 'active':
+        #     continue
 
         channel_number = int(frequency['bandwidth'].split('x')[0])
         channel_bandwidth = int(frequency['bandwidth'].split('x')[1])

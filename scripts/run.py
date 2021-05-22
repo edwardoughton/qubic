@@ -19,6 +19,7 @@ from qubic.supply import estimate_supply
 from qubic.assess import assess
 from write import define_deciles, write_demand, write_results, write_inputs
 from countries import COUNTRY_LIST, COUNTRY_PARAMETERS
+from percentages import generate_percentages
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
@@ -56,11 +57,11 @@ def load_regions(country, path, sites_lut):
                     'population_m_over_10': item['population_m_over_10'],
                     'area_km2': item['area_km2'],
                     'population_km2': item['population_km2'],
-                    'population_over_10km2': item['population_over_10km2'],
+                    'population_over_10yrs_km2': item['population_over_10yrs_km2'],
                     'mean_luminosity_km2': item['mean_luminosity_km2'],
                     'geotype': item['geotype'],
-                    'sites_2G': value['sites_2G'],
-                    'sites_3G': value['sites_3G'],
+                    # 'sites_2G': value['sites_2G'],
+                    # 'sites_3G': value['sites_3G'],
                     'sites_4G': value['sites_4G'],
                     'total_estimated_sites': value['total_estimated_sites'],
                     'backhaul_wireless': value['backhaul_wireless'],
@@ -271,8 +272,8 @@ def load_sites(country, path):
         for row in reader:
             output[row[GID_id]] = {
                 'GID_0': row['GID_0'],
-                'sites_2G': int(row['sites_2G']),
-                'sites_3G': int(row['sites_3G']),
+                # 'sites_2G': int(row['sites_2G']),
+                # 'sites_3G': int(row['sites_3G']),
                 'sites_4G': int(row['sites_4G']),
                 'total_estimated_sites': int(row['total_estimated_sites']),
                 'backhaul_wireless': float(row['backhaul_wireless']),
@@ -289,6 +290,9 @@ def load_core_lut(path):
     """
     interim = []
 
+    # if not os.path.exists(path):
+    #     print('CAUTION: COULD NOT FIND CORE LUT')
+    # else:
     with open(path, 'r') as source:
         reader = csv.DictReader(source)
         for row in reader:
@@ -352,7 +356,7 @@ if __name__ == '__main__':
         'technology_options',
         'business_model_options',
         'policy_options',
-        'mixed_options',
+        # 'mixed_options',
     ]
 
     all_results = []
@@ -376,8 +380,8 @@ if __name__ == '__main__':
             if not os.path.exists(OUTPUT_COUNTRY):
                 os.makedirs(OUTPUT_COUNTRY)
 
-            if not iso3 == 'GMB':
-                continue
+            # if not iso3 == 'CRI':
+            #     continue
 
             print('Working on {}'.format(iso3))
 
@@ -467,6 +471,10 @@ if __name__ == '__main__':
 
             write_inputs(OUTPUT_COUNTRY, country, country_parameters,
                             GLOBAL_PARAMETERS, COSTS, decision_option)
+
+        generate_percentages(iso3, decision_option)
+
+
 
     write_results(all_results, OUTPUT, 'all_options_all_countries')
 

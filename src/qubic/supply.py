@@ -222,6 +222,7 @@ def lookup_capacity(capacity_lut, env, ant_type, frequency,
     Use lookup table to find the combination of spectrum bands
     which meets capacity by clutter environment geotype, frequency,
     bandwidth, technology generation and site density.
+
     Parameters
     ----------
     capacity_lut : dict
@@ -236,11 +237,21 @@ def lookup_capacity(capacity_lut, env, ant_type, frequency,
         The cellular generation such as 4G or 5G.
     ci : int
         Confidence interval.
+
     Returns
     -------
     site_densities_to_capacities : list of tuples
         Returns a list of site density to capacity tuples.
+
     """
+    # if frequency == '850':
+    #     frequency = '800'
+    # if frequency == '1700':
+    #     frequency = '1800'
+    # if frequency == '1900':
+    #     frequency = '1800'
+    # if frequency == '2600':
+    #     frequency = '2100'
     if (env, ant_type, frequency, generation, ci) not in capacity_lut:
         raise KeyError("Combination %s not found in lookup table",
                        (env, ant_type, frequency, generation, ci))

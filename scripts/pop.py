@@ -462,7 +462,7 @@ def get_regional_data(country):
             'area_km2': area_km2,
             'population_km2': (pop['population_summation'] /
                 area_km2 if pop['population_summation'] else 0),
-            'population_over_10km2': (
+            'population_over_10yrs_km2': (
                 (pop['population_f_over_10'] + pop['population_m_over_10']) /
                 area_km2 if pop['population_summation'] else 0),
             'mean_luminosity_km2': (luminosity_summation /
@@ -975,6 +975,7 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
             for item in data:
 
                 if not item['settlement_type'].lower() == settlement_type:
+
                     continue
 
                 for year in range(start_point, end_point + 1):
