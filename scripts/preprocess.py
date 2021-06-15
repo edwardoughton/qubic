@@ -875,8 +875,8 @@ def generate_agglomeration_lut(country):
         os.makedirs(folder)
     path_output = os.path.join(folder, 'agglomerations.shp')
 
-    # if os.path.exists(path_output):
-    #     return print('Agglomeration processing has already completed')
+    if os.path.exists(path_output):
+        return print('Agglomeration processing has already completed')
 
     print('Working on {} agglomeration lookup table'.format(iso3))
 
@@ -1569,8 +1569,8 @@ def generate_core_lut(country):
     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network')
     output_path = os.path.join(folder, filename)
 
-    # if os.path.exists(output_path):
-    #     return print('Core LUT already generated')
+    if os.path.exists(output_path):
+        return print('Core LUT already generated')
 
     filename = 'regions_{}_{}.shp'.format(level, iso3)
     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'regions')

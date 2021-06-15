@@ -8,6 +8,7 @@ March 2021.
 
 """
 import os
+import sys
 import configparser
 import json
 import csv
@@ -21,16 +22,16 @@ import rasterio
 from rasterio.mask import mask
 from rasterstats import zonal_stats
 
-from ..countries import COUNTRY_LIST
-
 CONFIG = configparser.ConfigParser()
-CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
+CONFIG.read(os.path.join(os.path.dirname(__file__), '..', 'script_config.ini'))
 BASE_PATH = CONFIG['file_locations']['base_path']
 
 DATA_RAW = os.path.join(BASE_PATH, 'raw')
 DATA_INTERMEDIATE = os.path.join(BASE_PATH, 'intermediate')
 DATA_PROCESSED = os.path.join(BASE_PATH, 'processed')
 
+sys.path.append(os.path.join(BASE_PATH, '..', 'scripts'))
+from countries import COUNTRY_LIST
 
 def find_country_list(continent_list):
     """
@@ -129,31 +130,28 @@ def process_country_shapes(country):
 
     path = os.path.join(DATA_INTERMEDIATE, iso3)
 
-    if os.path.exists(os.path.join(path, 'national_outline.shp')):
-        return 'Completed national outline processing'
+    # if os.path.exists(os.path.join(path, 'national_outline.shp')):
+    #     return 'Completed national outline processing'
 
     if not os.path.exists(path):
         os.makedirs(path)
 
     shape_path = os.path.join(path, 'national_outline.shp')
 
-    path = os.path.join(DATA_RAW, 'gadm36_levels_shp', 'gadm36_0.shp')
+    filename = 'mdv_admbnda_adm0_gov_20210329.shp'
+    path = os.path.join(DATA_RAW, 'MDV_regions', filename)
     countries = gpd.read_file(path)
 
-    single_country = countries[countries.GID_0 == iso3].reset_index()
+    single_country = countries[countries.ADM0_PCODE == country['iso2']].reset_index()
 
-    # if not iso3 == 'MDV':
-    single_country['geometry'] = single_country.apply(
-        remove_small_shapes, axis=1)
-
-    # print('Adding ISO country code and other global information')
     glob_info_path = os.path.join(BASE_PATH, 'global_information.csv')
     load_glob_info = pd.read_csv(glob_info_path, encoding = "ISO-8859-1",
         keep_default_na=False)
     single_country = single_country.merge(
-        load_glob_info,left_on='GID_0', right_on='ISO_3digit')
+        load_glob_info,left_on='ADM0_PCODE', right_on='ISO_2digit')
 
-    # print('Exporting processed country shape')
+    single_country.rename(columns={'ISO_3digit':'GID_0'}, inplace=True)
+
     single_country.to_file(shape_path, driver='ESRI Shapefile')
 
     return print('Processing country shape complete')
@@ -181,24 +179,33 @@ def process_regions(country):
         folder = os.path.join(DATA_INTERMEDIATE, iso3, 'regions')
         path_processed = os.path.join(folder, filename)
 
-        if os.path.exists(path_processed):
-            continue
+        # if os.path.exists(path_processed):
+        #     continue
 
         print('Working on {} level {}'.format(iso3, regional_level))
 
         if not os.path.exists(folder):
             os.mkdir(folder)
 
-        filename = 'gadm36_{}.shp'.format(regional_level)
-        path_regions = os.path.join(DATA_RAW, 'gadm36_levels_shp', filename)
+        filename = 'mdv_admbnda_adm{}_gov_20210329.shp'.format(regional_level)
+        path_regions = os.path.join(DATA_RAW, 'MDV_regions', filename)
         regions = gpd.read_file(path_regions)
 
-        print('Subsetting {} level {}'.format(iso3, regional_level))
-        regions = regions[regions.GID_0 == iso3]
+        # print('Subsetting {} level {}'.format(iso3, regional_level))
+        # regions = regions[regions.GID_0 == iso3]
 
-        print('Excluding small shapes')
-        regions['geometry'] = regions.apply(remove_small_shapes, axis=1)
+        # print('Excluding small shapes')
+        # regions['geometry'] = regions.apply(remove_small_shapes, axis=1)
 
+        glob_info_path = os.path.join(BASE_PATH, 'global_information.csv')
+        load_glob_info = pd.read_csv(glob_info_path, encoding = "ISO-8859-1",
+            keep_default_na=False)
+        regions = regions.merge(
+            load_glob_info,left_on='ADM0_PCODE', right_on='ISO_2digit')
+
+        regions.rename(columns={'ISO_3digit':'GID_0'}, inplace=True)
+        region_id = 'ADM{}_PCODE'.format(regional_level)
+        regions.rename(columns={region_id:'GID_{}'.format(regional_level)}, inplace=True)
         try:
             print('Writing global_regions.shp to file')
             regions.to_file(path_processed, driver='ESRI Shapefile')
@@ -358,8 +365,8 @@ def process_age_sex_structure(country):
         filename = os.path.basename(path)
         path_out = os.path.join(directory_out, filename)
 
-        if os.path.exists(path_out):
-            continue
+        # if os.path.exists(path_out):
+        #     continue
 
         settlements = rasterio.open(path, 'r+')
         settlements.nodata = 0
@@ -412,13 +419,13 @@ def get_regional_data(country):
     filename = 'regional_data.csv'
     path_output = os.path.join(DATA_INTERMEDIATE, iso3, filename)
 
-    if os.path.exists(path_output):
-        return print('Regional data already exists')
+    # if os.path.exists(path_output):
+    #     return print('Regional data already exists')
 
     path_country = os.path.join(DATA_INTERMEDIATE, iso3,
         'national_outline.shp')
 
-    single_country = gpd.read_file(path_country)
+    # single_country = gpd.read_file(path_country)
 
     path_night_lights = os.path.join(DATA_INTERMEDIATE, iso3,
         'night_lights.tif')
@@ -478,7 +485,7 @@ def get_regional_data(country):
 
     results_df.to_csv(path_output, index=False)
 
-    print('Completed {}'.format(single_country.NAME_0.values[0]))
+    # print('Completed {}'.format(single_country.NAME_0.values[0]))
 
     return print('Completed night lights data querying')
 
@@ -1014,11 +1021,8 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:#[:1]:
 
-        if country['iso3'] == 'MDV': #MDV has it's own set of scripts
-            continue #see -> ~/qubic/scripts/MDV/
-
-        # if not country['iso3'] == 'BGD':
-        #     continue
+        if not country['iso3'] == 'MDV':
+            continue
 
         print('----')
         print('-- Working on {}'.format(country['country_name']))
