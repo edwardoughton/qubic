@@ -76,9 +76,15 @@ def generate_report(country):
         "baseline_20mbps_4g_w": tech_percs['baseline_20mbps_4g_w']['social_cost_bn'],
         "baseline_20mbps_5g_w": tech_percs['baseline_20mbps_5g_w']['social_cost_bn'],
         "figure_2": os.path.join(IMAGES, iso3, 'social_costs_by_sharing_strategy.png'),
+        "passive_vs_base_4g_5mbps": round(abs(share_percs['baseline_5mbps_passive']['saving_against_baseline'])),
         "passive_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_passive']['saving_against_baseline'])),
+        "passive_vs_base_4g_20mbps": round(abs(share_percs['baseline_20mbps_passive']['saving_against_baseline'])),
+        "active_vs_base_4g_5mbps": round(abs(share_percs['baseline_5mbps_active']['saving_against_baseline'])),
         "active_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_active']['saving_against_baseline'])),
+        "active_vs_base_4g_20mbps": round(abs(share_percs['baseline_20mbps_active']['saving_against_baseline'])),
+        "srn_vs_base_4g_5mbps": round(abs(share_percs['baseline_5mbps_srn']['saving_against_baseline'])),
         "srn_vs_base_4g_10mbps": round(abs(share_percs['baseline_10mbps_srn']['saving_against_baseline'])),
+        "srn_vs_base_4g_20mbps": round(abs(share_percs['baseline_20mbps_srn']['saving_against_baseline'])),
         "passive_cost_4g_10mbps": share_percs['baseline_10mbps_passive']['social_cost_bn'],
         "active_cost_4g_10mbps": share_percs['baseline_10mbps_active']['social_cost_bn'],
         "srn_cost_4g_10mbps": share_percs['baseline_10mbps_srn']['social_cost_bn'],
@@ -100,9 +106,15 @@ def generate_report(country):
         "perc_highspectrum": policy_percs['baseline_10mbps_highspectrumfees']['perc_against_baseline'],
         "lowspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_lowspectrumfees']['social_cost_bn'],
         "highspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_highspectrumfees']['social_cost_bn'],
+        #Method note
+        "figure_4": os.path.join(IMAGES, '..', '..', 'clustering', 'figures', 'cluster_panel.png'),
+        "figure_5": os.path.join(IMAGES, '..', '..', 'method', 'figures', 'method_box_diagram.jpg'),
     }
 
     html_out = template.render(template_vars)
+
+    # with open(os.path.join(OUTPUT, "my_new_file.html"), "w", encoding="utf-8") as fh:
+    #     fh.write(html_out)
 
     path = os.path.join(OUTPUT, '{}.pdf'.format(iso3))
 
@@ -282,7 +294,7 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        # iso3 = country['iso3']
+        print('Reporting for {}'.format(country['iso3']))
 
         # if not iso3 == 'GMB':
         #     continue
