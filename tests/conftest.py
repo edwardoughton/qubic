@@ -8,7 +8,10 @@ def setup_region():
     'GID_id': 'MWI.1.1.1_1',
     'mean_luminosity_km2': 26.736407691655717,
     'population_total': 10000,
-    'pop_under_10_pop': 0,
+    # 'pop_under_10_pop': 10000,
+    'population_over_10': 10000,
+    'population_f_over_10': 5000,
+    'population_m_over_10': 5000,
     'area_km2': 2,
     'population_km2': 5000,
     'decile': 100,
@@ -25,6 +28,9 @@ def setup_region_rural():
     'GID_id': 'MWI.1.1.1_1',
     'mean_luminosity_km2': 26.736407691655717,
     'population_total': 10000,
+    'population_over_10': 10000,
+    'population_f_over_10': 5000,
+    'population_m_over_10': 5000,
     'pop_under_10_pop': 0,
     'area_km2': 2,
     'population_km2': 5000,
@@ -93,11 +99,11 @@ def setup_country_parameters():
                     'bandwidth': '2x10',
                     'status': 'inactive',
                 },
-                {
-                    'frequency': 2100,
-                    'bandwidth': '2x10',
-                    'status': 'active',
-                },
+                # {
+                #     'frequency': 2100,
+                #     'bandwidth': '2x10',
+                #     'status': 'active',
+                # },
             ],
             '5G': [
                 {
@@ -110,11 +116,11 @@ def setup_country_parameters():
                     'bandwidth': '1x50',
                     'status': 'inactive',
                 },
-                {
-                    'frequency': 26000,
-                    'bandwidth': '2x10',
-                    'status': 'active',
-                },
+                # {
+                #     'frequency': 26000,
+                #     'bandwidth': '2x10',
+                #     'status': 'active',
+                # },
             ]
         },
         'financials': {
@@ -202,6 +208,20 @@ def setup_lookup():
             (0.15, 40),
             (2, 1000)
         ],
+        # ('urban', 'macro', '2100', '4G', '50'): [
+        #     (0.01, 5),
+        #     (0.02, 10),
+        #     (0.05, 20),
+        #     (0.15, 40),
+        #     (2, 1000)
+        # ],
+        # ('urban', 'macro', '1800', '4G', '50'): [
+        #     (0.01, 5),
+        #     (0.02, 10),
+        #     (0.05, 20),
+        #     (0.15, 40),
+        #     (2, 1000)
+        # ],
     }
 
 

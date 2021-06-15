@@ -15,6 +15,7 @@ def test_estimate_demand(
     ):
     """
     Integration test.
+
     """
     answer, annual_answer = estimate_demand(
         setup_region,
@@ -181,7 +182,7 @@ def test_estimate_demand(
         setup_smartphone_lut
     )
 
-    assert answer[0]['population_with_phones'] == 0
+    assert answer[0]['population_with_phones'] == 5000
 
 
 def test_get_per_user_capacity():
