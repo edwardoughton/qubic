@@ -380,7 +380,7 @@ if __name__ == '__main__':
             if not os.path.exists(OUTPUT_COUNTRY):
                 os.makedirs(OUTPUT_COUNTRY)
 
-            # if not iso3 == 'CRI':
+            # if not iso3 == 'CMR':
             #     continue
 
             print('Working on {}'.format(iso3))
@@ -403,7 +403,7 @@ if __name__ == '__main__':
             print('Working on {} in {}'.format(decision_option, iso3))
             print(' ')
 
-            for option in options:
+            for option in options:#[:10]:
 
                 print('Working on {} and {}'.format(option['scenario'], option['strategy']))
 
@@ -472,10 +472,8 @@ if __name__ == '__main__':
             write_inputs(OUTPUT_COUNTRY, country, country_parameters,
                             GLOBAL_PARAMETERS, COSTS, decision_option)
 
-        generate_percentages(iso3, decision_option)
+            generate_percentages(iso3, decision_option)
 
-
-
-    write_results(all_results, OUTPUT, 'all_options_all_countries')
+    # write_results(all_results, OUTPUT, 'all_options_all_countries')
 
     print('Completed model run')
