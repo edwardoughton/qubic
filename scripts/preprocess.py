@@ -870,13 +870,16 @@ def generate_agglomeration_lut(country):
     regional_level = country['regional_level']
     GID_level = 'GID_{}'.format(regional_level)
 
+    core_node_level = 'GID_{}'.format(country['core_node_level'])
+    regional_node_level = 'GID_{}'.format(country['regional_node_level'])
+
     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations')
     if not os.path.exists(folder):
         os.makedirs(folder)
     path_output = os.path.join(folder, 'agglomerations.shp')
 
-    if os.path.exists(path_output):
-        return print('Agglomeration processing has already completed')
+    # if os.path.exists(path_output):
+    #     return print('Agglomeration processing has already completed')
 
     print('Working on {} agglomeration lookup table'.format(iso3))
 
@@ -953,6 +956,8 @@ def generate_agglomeration_lut(country):
                         'id': idx1,
                         'GID_0': region['GID_0'],
                         GID_level: region[GID_level],
+                        core_node_level: region[core_node_level],
+                        regional_node_level: region[regional_node_level],
                         'population': node['sum'],
                     }
                 })
@@ -995,6 +1000,8 @@ def generate_agglomeration_lut(country):
                             'id': 'regional_node',
                             'GID_0': region['GID_0'],
                             GID_level: region[GID_level],
+                            core_node_level: region[core_node_level],
+                            regional_node_level: region[regional_node_level],
                             'population': shapes_df['value'].values[0],
                         }
                     })
@@ -1007,6 +1014,8 @@ def generate_agglomeration_lut(country):
                         'id': item['properties']['id'],
                         'GID_0':item['properties']['GID_0'],
                         GID_level: item['properties'][GID_level],
+                        core_node_level: item['properties'][core_node_level],
+                        regional_node_level: item['properties'][regional_node_level],
                         'population': item['properties']['population'],
                     }
                 }
@@ -1039,6 +1048,9 @@ def find_settlement_nodes(country, regions):
     iso3 = country['iso3']
     regional_level = country['regional_level']
     GID_level = 'GID_{}'.format(regional_level)
+
+    core_node_level = 'GID_{}'.format(country['core_node_level'])
+    regional_node_level = 'GID_{}'.format(country['regional_node_level'])
 
     threshold = country['pop_density_km2']
     settlement_size = country['settlement_size']
@@ -1074,7 +1086,9 @@ def find_settlement_nodes(country, regions):
             {
                 'geometry': region['geometry'],
                 'properties': {
-                    GID_level: region[GID_level]
+                    GID_level: region[GID_level],
+                    core_node_level: region[core_node_level],
+                    regional_node_level: region[regional_node_level],
                 }
             }
         ]
@@ -1083,7 +1097,9 @@ def find_settlement_nodes(country, regions):
                 [
                     {'geometry': poly['geometry'],
                     'properties':{
-                        GID_level: poly['properties'][GID_level]
+                        GID_level: poly['properties'][GID_level],
+                        core_node_level: region[core_node_level],
+                        regional_node_level: region[regional_node_level],
                         }}
                     for poly in geojson_region
                 ], crs='epsg:4326'
@@ -1110,6 +1126,8 @@ def find_settlement_nodes(country, regions):
                     'geometry': item['geometry'].centroid,
                     'properties': {
                         GID_level: region[GID_level],
+                        core_node_level: region[core_node_level],
+                        regional_node_level: region[regional_node_level],
                         'count': item['count'],
                         'sum': item['sum']
                     }
@@ -1135,11 +1153,11 @@ def find_nodes_on_existing_infrastructure(country):
     filename = 'core_nodes_existing.shp'
     path_output = os.path.join(folder, filename)
 
-    if os.path.exists(path_output):
-        return print('Already found nodes on existing infrastructure')
-    else:
-        if not os.path.dirname(path_output):
-            os.makedirs(os.path.dirname(path_output))
+    # if os.path.exists(path_output):
+    #     return print('Already found nodes on existing infrastructure')
+    # else:
+    #     if not os.path.dirname(path_output):
+    #         os.makedirs(os.path.dirname(path_output))
 
     path = os.path.join(folder, 'core_edges_existing.shp')
     if not os.path.exists(path):
@@ -1255,8 +1273,10 @@ def find_regional_nodes(country):
 
     """
     iso3 = country['iso3']
-    regional_level = country['regional_level']
-    GID_level = 'GID_{}'.format(regional_level)
+
+    core_node_level = 'GID_{}'.format(country['core_node_level'])
+    regional_node_level = 'GID_{}'.format(country['regional_node_level'])
+    GID_level = 'GID_{}'.format(country['regional_level'])
 
     folder = os.path.join(DATA_INTERMEDIATE, iso3)
     input_path = os.path.join(folder, 'agglomerations', 'agglomerations.shp')
@@ -1265,10 +1285,10 @@ def find_regional_nodes(country):
     regional_output_path = os.path.join(folder, 'network', 'regional_nodes')
 
     regions = gpd.read_file(input_path, crs="epsg:4326")
-    unique_regions = regions[GID_level].unique()
+    unique_regions = regions[core_node_level].unique()
 
-    if os.path.exists(output_path):
-        return print('Regional nodes layer already generated')
+    # if os.path.exists(output_path):
+    #     return print('Regional nodes layer already generated')
 
     folder = os.path.dirname(output_path)
     if not os.path.exists(folder):
@@ -1282,12 +1302,14 @@ def find_regional_nodes(country):
     for unique_region in unique_regions:
         agglomerations = []
         for idx, region in regions.iterrows():
-            if unique_region == region[GID_level]:
+            if unique_region == region[core_node_level]:
                 agglomerations.append({
                     'type': 'Feature',
                     'geometry': region['geometry'],
                     'properties': {
                         GID_level: region[GID_level],
+                        core_node_level: region[core_node_level],
+                        regional_node_level: region[regional_node_level],
                         'population': region['population'],
                         'source': 'existing',
                     }
@@ -1311,12 +1333,15 @@ def find_regional_nodes(country):
         existing_nodes = existing_nodes.to_dict('records')
 
         for item in existing_nodes:
-            seen.add(item[GID_level])
+
+            seen.add(item[core_node_level])
             output.append({
                 'type': 'Point',
                 'geometry': mapping(item['geometry']),
                 'properties': {
                     GID_level: item[GID_level],
+                    core_node_level: item[core_node_level],
+                    regional_node_level: item[regional_node_level],
                     'population': item['population'],
                     'source': 'existing',
                 }
@@ -1329,6 +1354,8 @@ def find_regional_nodes(country):
                     'geometry': mapping(item['geometry']),
                     'properties': {
                         GID_level: item['properties'][GID_level],
+                        core_node_level: item['properties'][core_node_level],
+                        regional_node_level: item['properties'][regional_node_level],
                         'population': item['properties']['population'],
                         'source': 'new',
                     }
@@ -1517,17 +1544,18 @@ def fit_regional_edges(country):
 
     """
     iso3 = country['iso3']
-    regional_level = country['regional_level']
-    GID_level = 'GID_{}'.format(regional_level)
+    # regional_level = country['regional_level']
+    regional_node_level = 'GID_{}'.format(country['core_node_level'])
 
     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network')
     path = os.path.join(folder, 'core_nodes.shp')
 
     nodes = gpd.read_file(path, crs="epsg:4326")
-    unique_regions = nodes[GID_level].unique()
+    unique_regions = nodes[regional_node_level].unique()
 
     for unique_region in unique_regions:
-
+        if unique_region == None:
+            continue
         input_path = os.path.join(folder, 'regional_nodes', unique_region + '.shp')
         output_path = os.path.join(DATA_INTERMEDIATE, country['iso3'], 'network', 'regional_edges', unique_region + '.shp')
         fit_edges(input_path, output_path)
@@ -1535,7 +1563,8 @@ def fit_regional_edges(country):
     output = []
 
     for unique_region in unique_regions:
-
+        if unique_region == None:
+            continue
         path = os.path.join(DATA_INTERMEDIATE, country['iso3'], 'network', 'regional_edges', unique_region + '.shp')
         if os.path.exists(path):
             regional_edges = gpd.read_file(path, crs='epsg:4326')
