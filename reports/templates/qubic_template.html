@@ -28,16 +28,21 @@ h1, h2, h3, h4, h5, h6 {
     This country briefing contains estimated investment costs for providing
     universal broadband. The analysis focuses on exploring the impact of different
     technologies, infrastructure sharing business models and policy options.
+
+</p>
+<p align="justify">
     The required investment is broken down based on the social cost, which is a
     combination of the quantity of private sector investment and government subsidies
     (minus any government tax revenues). The private sector investment represents the
-    portion that can be viably achieved, whereas the net government investment in the
-    form of subsidies makes up any shortfall in unviable locations.
-</p>
-<p align="justify">
-    For a detailed description of the method used, please refer to the affiliated
-    method document which provides a comprehensive overview of the approach, as
-    applied in a recent World Bank working paper (Oughton et al. 2021a).
+    portion that can be viably achieved through private actors, such as Mobile Network
+    Operators, and usually represents the majority of the capital required. In contrast,
+    the net government investment (after accounting for tax and spectrum
+    licensing revenues) represents any public subsidies required to make up
+    capital shortfall in unviable locations, and is usually only a small portion of
+    the overall cost.
+    For a detailed description of the method used, please refer to the recent World Bank
+    working paper which provides a comprehensive overview applied to 8 Low and Middle
+    Income Countries (Oughton et al. 2021a).
 </p>
 <h2>Technology options</h2>
 <p align="justify">
@@ -57,11 +62,14 @@ h1, h2, h3, h4, h5, h6 {
 <p align="justify">
     Three different scenarios are explored here given different cellphone and smartphone
     adoption rates, for low (2%), baseline (4%) and high (6%) variants. Moreover, three
-    capacity per user targets are applied (~5, ~10 and ~20 Mbps) based on the mean speed
+    capacity per user targets are applied (~2, ~5, and ~10 Mbps) based on the mean speed
     available for the busiest hour of the day. Figure 1 illustrates the results, with
     the social cost of the different technology strategies tested based on the
     required private sector and government investment to reach 100% population
-    coverage.
+    coverage. 'Cost' is defined as the Net Present Value (NPV) of the Total Cost of
+    Ownership (TCO) over the next decade, 2020-2030, aligning with the horizon of the
+    Sustainable Development Goals (SDGs) (specifically target SDG 9c on universal
+    affordable broadband access).
 </p>
 <p align="justify">
     The results demonstrate that as newer, more spectrally efficient, technologies
@@ -100,37 +108,39 @@ h1, h2, h3, h4, h5, h6 {
 </p>
 
 <h3>Figure 1 Assessment of universal broadband technology strategies</h3>
-
 <img src="{{ figure_1 }}", width="900", height="800">
+
 <p align="justify">
     When comparing the required investment across strategies in the baseline, using
-    wireless backhaul to deliver ~10 Mbps per user, 3G is estimated to cost
-    ${{ baseline_10mbps_3g_w }} billion, versus a 4G cost of ${{ baseline_10mbps_4g_w }}
-    billion and a 5G cost of ${{ baseline_10mbps_5g_w }} billion.
+    wireless backhaul to deliver ~5 Mbps per user, 3G is estimated to cost
+    ${{ baseline_5mbps_3g_w }} billion, versus a 4G cost of ${{ baseline_5mbps_4g_w }}
+    billion and a 5G cost of ${{ baseline_5mbps_5g_w }} billion.
 </p>
 <p align="justify">
     The scenario variants help to capture the uncertainty around future cellphone and
     smartphone adoption, and the potential impact on the social cost. For example,
-    providing ~10 Mbps per user with a wireless backhaul ranges for 3G from
-    ${{ low_10mbps_3g_w }}-{{ high_10mbps_3g_w }} billion, for 4G from
-    ${{ low_10mbps_4g_w }}-{{ high_10mbps_4g_w }} billion, and for 5G
-    from ${{ low_10mbps_5g_w }}-{{ high_10mbps_5g_w }} billion.
+    between the low and the high adoption scenarios, providing ~5 Mbps per user
+    with a wireless backhaul ranges for 3G from
+    ${{low_5mbps_3g_w}}-{{high_5mbps_3g_w}} billion, for 4G from
+    ${{low_5mbps_4g_w}}-{{high_5mbps_4g_w}} billion, and for 5G
+    from ${{low_5mbps_5g_w}}-{{high_5mbps_5g_w}} billion. If in some circumstances
+    the social cost is lower when there is higher adoption, this arises because there
+    is more available revenue to support private sector investment, reducing the need
+    for government subidies.
 </p>
 <p align="justify">
     It is equally important to capture the impact of varying the universal broadband
-    targets, which in this case are highly ambitious, ranging from a conservative ~5 Mbps,
-    up to ~20 Mbps per user. This translates to a baseline cost using wireless
-    backhaul of ${{ baseline_5mbps_3g_w }}-{{ baseline_20mbps_3g_w }}
-    billion for 3G, ${{ baseline_5mbps_4g_w }}-{{ baseline_20mbps_4g_w }} billion for 4G,
-    and finally
-    ${{ baseline_5mbps_5g_w }}-{{ baseline_20mbps_5g_w }}
+    targets, which in this case are highly ambitious, ranging from a conservative ~2 Mbps,
+    up to ~10 Mbps per user. This translates to a baseline cost using wireless
+    backhaul of ${{ baseline_2mbps_3g_w }}-{{ baseline_10mbps_3g_w }}
+    billion for 3G, ${{ baseline_2mbps_4g_w }}-{{ baseline_10mbps_4g_w }} billion for 4G,
+    and finally ${{ baseline_2mbps_5g_w }}-{{ baseline_10mbps_5g_w }}
     billion for 5G. This generational improvement reflects the combination
     of greater spectral efficiency and wider spectrum bandwidth.
 </p>
+
 <p align="justify">
-    <b>There are a number of caveats to these results.</b>
-</p>
-<p align="justify">
+    There are a number of caveats to these results.
     Firstly, users would need to have either 4G- or 5G-enabled smartphones in
     order to make use of these technologies. Given that handset prices for newer
     generations are more expensive, this weakens the case for leapfrogging to newer
@@ -155,15 +165,34 @@ h1, h2, h3, h4, h5, h6 {
     The use of different backhaul technologies has a large impact on investment.
     While fiber optic backhaul links are highly desirable thanks to their large capacity,
     the reality is that this option costs much more than using a wireless connection (using
-    either microwave or millimeter wave frequencies). Fiber also takes much longer to deploy,
-    relative to a wireless link. For example, when deploying wireless rather than fiber, a
+    either microwave or millimeter wave frequencies), and fiber also takes much longer to
+    deploy. For example, when deploying wireless rather than fiber, a cost
     saving can be achieved of {{ w_over_fb_3g_10mbps }}% for 3G, {{ w_over_fb_4g_10mbps }}%
     for 4G and {{ w_over_fb_5g_10mbps }}% for 5G, when targeting ~10 Mbps per user.
+    Figure 2 illustrates the percentage composition of the private cost across the different
+    strategies and capacity per user targets, for the baseline adoption scenario.
+</p>
 
-    Given how large the investment would need to be in order to deploy fiber to every site,
-    the most probable future for providing universal broadband will continue to include the
-    use of wireless backhaul connections between the cell site and the closest connection
-    point (due to advantages in cost efficiency and deployment speed).
+<h3>Figure 2 Assessment of universal broadband technology strategies</h3>
+<img src="{{ figure_2 }}", width="900", height="450">
+
+<p align="justify">
+    Figure 2 captures the capex and opex proportion required for the RAN, backhaul
+    and core, as well as the one-off capex requirement for any civil engineering costs.
+    The other balance sheet components cover MNO operational costs (opex) such as
+    administration, spectrum licensing, taxation and a profit margin.
+</p>
+
+<p align="justify">
+    Across the technology strategies, Figure 2 demonstrates that the percentage composition
+    of the backhaul and core network components is larger in the fiber strategy, relative
+    to using wireless backhaul. This percentage composition needs to be considered in tandem
+    with the absolute values of investment presented in Figure 1. Given how large the
+    investment would need to be in order to deploy fiber to every site, the most probable
+    future for providing
+    universal broadband will continue to include the use of wireless backhaul connections
+    between the cell site and the closest connection point (due to advantages in cost
+    efficiency and deployment speed).
 </p>
 
 <h2>Infrastructure sharing options</h2>
@@ -188,11 +217,12 @@ h1, h2, h3, h4, h5, h6 {
     the method document for additional information.
 </p>
 <p align="justify">
-    Figure 2 reports the relative differences across the sharing strategies, as they
+    Figure 3 reports the relative differences across the sharing strategies, as they
     translate to cost savings, using 4G with a wireless backhaul as the common
     deployment strategy. The variation across the scenarios and capacity
     targets will be similar to the results reported in Figure 1, therefore the
     focus here will be on business model options.
+
 </p>
 <p align="justify">
     Between the baseline and the passive sharing strategies, a percentage saving of
@@ -200,22 +230,18 @@ h1, h2, h3, h4, h5, h6 {
     per user. This equates to a reduction from ${{baseline_10mbps_4g_w}} billion to
     ${{passive_cost_4g_10mbps}} billion. When considering other capacity targets,
     a percentage saving against the baseline is estimated of approximately
-    {{passive_vs_base_4g_5mbps}}% for 5 Mbps and {{passive_vs_base_4g_20mbps}}% for
-    20 Mbps.
+    {{passive_vs_base_4g_5mbps}}% for ~5 Mbps and {{passive_vs_base_4g_2mbps}}% for
+    ~2 Mbps.
 </p>
 <p align="justify">
     This contrasts with a much more substantial saving from moving to an actively-shared
     MORAN, where the cost relative to the baseline is estimated to reduce by up to
-    {{ active_vs_base_4g_10mbps }}% for 10 Mbps. This relates to a reduction from the baseline
-    cost from ${{ baseline_10mbps_4g_w }} billion to ${{ active_cost_4g_10mbps }} billion.
-    For a target of only 5 Mbps, a saving against the baseline of
-    {{active_vs_base_4g_5mbps}}% is estimated, or a {{active_vs_base_4g_20mbps}}%
-    saving for 20 Mbps.
+    {{active_vs_base_4g_10mbps}}% for ~10 Mbps. This relates to a reduction from the baseline
+    cost from ${{baseline_10mbps_4g_w}} billion to ${{active_cost_4g_10mbps}} billion.
+    For a target of only ~5 Mbps, a saving against the baseline of
+    {{active_vs_base_4g_5mbps}}% is estimated, or a {{active_vs_base_4g_2mbps}}%
+    saving for ~2 Mbps.
 </p>
-
-<h3>Figure 2 Assessment of universal broadband infrastructure sharing strategies</h3>
-
-<img src="{{ figure_2 }}", width="900", height="800">
 
 <p align="justify">
     The caveat to these aforementioned strategies is that they could end up compromising
@@ -224,12 +250,16 @@ h1, h2, h3, h4, h5, h6 {
     balance out these benefits by retaining market-based infrastructure competition in
     urban areas, while reducing the deployment costs in rural areas. When considering
     the cost saving provided for sharing in rural areas, based on using 4G and a
-    wireless backhaul to deliver 10 Mbps per user, the cost drops from the baseline
+    wireless backhaul to deliver ~10 Mbps per user, the cost drops from the baseline
     investment from ${{ baseline_10mbps_4g_w }} billion to ${{ srn_cost_4g_10mbps }} billion,
-    equating to an approximate {{srn_vs_base_4g_10mbps}}% saving. In the 5 Mbps per user case
-    the saving was {{srn_vs_base_4g_5mbps }}%, versus an approximate {{srn_vs_base_4g_20mbps }}%
-    saving when aiming to deliver 20 Mbps per user.
+    equating to an approximate {{srn_vs_base_4g_10mbps}}% saving. In the ~5 Mbps per user case
+    the saving was {{srn_vs_base_4g_5mbps }}%, versus an approximate {{srn_vs_base_4g_2mbps }}%
+    saving when aiming to deliver ~2 Mbps per user.
 </p>
+
+<h3>Figure 3 Assessment of universal broadband infrastructure sharing strategies</h3>
+<img src="{{ figure_3 }}", width="900", height="800">
+
 <p align="justify">
     Regulators need to make a judgement call based on their preferred direction. On the one
     hand, increased infrastructure sharing can help to reduce the costs of deployment,
@@ -254,11 +284,6 @@ h1, h2, h3, h4, h5, h6 {
     to have a strategic understanding of how different strategies perform, given their
     role in managing market rules and public resources, such as radio spectrum.
 </p>
-
-<h3>Figure 3 Assessment of universal broadband policy strategies</h3>
-
-<img src="{{ figure_3 }}", width="900", height="800">
-
 <p align="justify">
     For example, governments need to help encourage the technologies operators will deploy
     by understanding which general market direction to set, including identifying and
@@ -266,15 +291,19 @@ h1, h2, h3, h4, h5, h6 {
     acceptable level of infrastructure sharing (if any), given the trade-off with
     market competition benefits.
 </p>
+
+<h3>Figure 4 Assessment of universal broadband policy strategies</h3>
+<img src="{{ figure_4 }}", width="900", height="800">
+
 <p align="justify">
     To complete this national assessment, the focus of this policy section is on
     taxation and spectrum licensing costs.
-    In terms of the strategies tested, a baseline is used which matches the
-    existing spectrum prices and corporation tax rates reported in both Figures 1
-    and 2 using 4G with a wireless backhaul. The new policy strategies explore a reduction
+    In terms of the strategies tested, a baseline is used for 4G with a wireless backhaul
+    which matches the existing spectrum prices and corporation tax rate used.
+    The new policy strategies explore a reduction
     in the corporation tax rate on profits to {{tax_low}}% (Low Tax), versus a
     situation where this rate is raised to {{tax_high}}% (High Tax). This is relative
-    to a baseline of {{tax_baseline}}%. Figure 3 presents the results generated from
+    to a baseline of {{tax_baseline}}%. Figure 4 presents the results generated from
     testing these strategies.
 </p>
 <p align="justify">

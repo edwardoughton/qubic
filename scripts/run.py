@@ -421,7 +421,7 @@ if __name__ == '__main__':
 
                 for ci in confidence_intervals:
 
-                    print('CI: {}'.format(ci))
+                    print('{} CI: {}'.format(iso3, ci))
 
                     filename = 'regional_data.csv'
                     path = os.path.join(DATA_INTERMEDIATE, iso3, filename)

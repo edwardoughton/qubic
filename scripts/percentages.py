@@ -120,6 +120,7 @@ def process_technology_data(data):
         All processed model results.
 
     """
+    data.loc[data['scenario'].str.endswith('2_2_2', na=False), 'capacity'] = '2 Mbps'
     data.loc[data['scenario'].str.endswith('5_5_5', na=False), 'capacity'] = '5 Mbps'
     data.loc[data['scenario'].str.endswith('10_10_10', na=False), 'capacity'] = '10 Mbps'
     data.loc[data['scenario'].str.endswith('20_20_20', na=False), 'capacity'] = '20 Mbps'
@@ -188,6 +189,7 @@ def process_sharing_data(data):
         All processed model results.
 
     """
+    data.loc[data['scenario'].str.endswith('2_2_2', na=False), 'capacity'] = '2 Mbps'
     data.loc[data['scenario'].str.endswith('5_5_5', na=False), 'capacity'] = '5 Mbps'
     data.loc[data['scenario'].str.endswith('10_10_10', na=False), 'capacity'] = '10 Mbps'
     data.loc[data['scenario'].str.endswith('20_20_20', na=False), 'capacity'] = '20 Mbps'
@@ -236,6 +238,7 @@ def process_policy_data(data):
         All processed model results.
 
     """
+    data.loc[data['scenario'].str.endswith('2_2_2', na=False), 'capacity'] = '2 Mbps'
     data.loc[data['scenario'].str.endswith('5_5_5', na=False), 'capacity'] = '5 Mbps'
     data.loc[data['scenario'].str.endswith('10_10_10', na=False), 'capacity'] = '10 Mbps'
     data.loc[data['scenario'].str.endswith('20_20_20', na=False), 'capacity'] = '20 Mbps'
@@ -286,6 +289,7 @@ def process_mixed_data(data):
         All processed model results.
 
     """
+    data.loc[data['scenario'].str.endswith('2_2_2', na=False), 'capacity'] = '2 Mbps'
     data.loc[data['scenario'].str.endswith('5_5_5', na=False), 'capacity'] = '5 Mbps'
     data.loc[data['scenario'].str.endswith('10_10_10', na=False), 'capacity'] = '10 Mbps'
     data.loc[data['scenario'].str.endswith('20_20_20', na=False), 'capacity'] = '20 Mbps'
