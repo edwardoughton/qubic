@@ -435,6 +435,8 @@ def calc_costs(region, strategy, cost_structure, backhaul_quantity,
 
     backhaul_fronthaul = [
         'backhaul',
+        'regional_node',
+        'regional_edge',
     ]
 
     civils = [
@@ -443,8 +445,6 @@ def calc_costs(region, strategy, cost_structure, backhaul_quantity,
     ]
 
     core = [
-        'regional_node',
-        'regional_edge',
         'core_node',
         'core_edge',
     ]

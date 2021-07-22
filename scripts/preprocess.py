@@ -1145,6 +1145,10 @@ def find_nodes_on_existing_infrastructure(country):
     iso3 = country['iso3']
     core_node_size = country['core_node_size']
 
+    GID_level = 'GID_{}'.format(country['regional_level'])
+    core_node_level = 'GID_{}'.format(country['core_node_level'])
+    regional_node_level = 'GID_{}'.format(country['regional_node_level'])
+
     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network')
     if not os.path.exists(folder):
         os.makedirs(folder)
@@ -1183,7 +1187,36 @@ def find_nodes_on_existing_infrastructure(country):
 
     agglomerations = agglomerations[agglomerations[0] == True].drop(columns=0)
 
-    agglomerations['source'] = 'existing'
+    unique_regions = agglomerations[core_node_level].unique()#[:1]
+
+    agglomerations = agglomerations.to_dict('records')
+
+    output = []
+
+    for unique_region in unique_regions:
+
+        nodes_by_region = []
+
+        for item in agglomerations:
+            if unique_region == item[core_node_level]:
+                nodes_by_region.append(item)
+
+        main_node = max(nodes_by_region, key=lambda x:x['population'])
+
+        output.append({
+            'type': 'Point',
+            'geometry': main_node['geometry'],
+            'properties': {
+                'GID_0': main_node['GID_0'],
+                GID_level: main_node[GID_level],
+                core_node_level: main_node[core_node_level],
+                regional_node_level: main_node[regional_node_level],
+                'population': main_node['population'],
+                'source': 'existing',
+            }
+        })
+
+    agglomerations = gpd.GeoDataFrame.from_features(output, crs='epsg:4326')
 
     agglomerations.to_file(path_output, crs='epsg:4326')
 
