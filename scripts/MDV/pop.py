@@ -179,8 +179,8 @@ def process_regions(country):
         folder = os.path.join(DATA_INTERMEDIATE, iso3, 'regions')
         path_processed = os.path.join(folder, filename)
 
-        # if os.path.exists(path_processed):
-        #     continue
+        if os.path.exists(path_processed):
+            continue
 
         print('Working on {} level {}'.format(iso3, regional_level))
 
@@ -206,6 +206,10 @@ def process_regions(country):
         regions.rename(columns={'ISO_3digit':'GID_0'}, inplace=True)
         region_id = 'ADM{}_PCODE'.format(regional_level)
         regions.rename(columns={region_id:'GID_{}'.format(regional_level)}, inplace=True)
+
+        if 'ADM1_PCODE' in regions.columns:
+            regions.rename(columns={'ADM1_PCODE':'GID_1'}, inplace=True)
+
         try:
             print('Writing global_regions.shp to file')
             regions.to_file(path_processed, driver='ESRI Shapefile')
@@ -1035,22 +1039,22 @@ if __name__ == '__main__':
         print('Processing regions')
         process_regions(country)
 
-        print('Processing night lights')
-        process_night_lights(country)
+    #     print('Processing night lights')
+    #     process_night_lights(country)
 
-        print('Processing settlement layers')
-        process_settlement_layer(country)
+    #     print('Processing settlement layers')
+    #     process_settlement_layer(country)
 
-        print('Processing age/sex structure')
-        process_age_sex_structure(country)
+    #     print('Processing age/sex structure')
+    #     process_age_sex_structure(country)
 
-        print('Getting regional data')
-        get_regional_data(country)
+    #     print('Getting regional data')
+    #     get_regional_data(country)
 
-        print('Create subscription forcast')
-        forecast_subscriptions(country)
+    #     print('Create subscription forcast')
+    #     forecast_subscriptions(country)
 
-        print('Forecasting smartphones')
-        forecast_smartphones(country)
+    #     print('Forecasting smartphones')
+    #     forecast_smartphones(country)
 
-    print('--Completed regional population data estimation')
+    # print('--Completed regional population data estimation')
