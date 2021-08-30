@@ -801,7 +801,8 @@ def process_existing_fiber(country):
     if os.path.exists(path_output):
         return print('Existing fiber already processed')
 
-    if not iso3 in ['GMB', 'UGA', 'MWI', 'KEN', 'SEN']:
+    # if not iso3 in ['CMR','GMB', 'UGA', 'MWI', 'KEN', 'SEN']:
+    if not iso3 in ['AGO','CMR','EGY','GMB','KEN','MAR','MDG','MOZ','MWI','NGA', 'SEN']:
         path = os.path.join(DATA_RAW, 'fiber_maps', iso3, 'existing_network.shp')
         if os.path.exists(path):
             data = gpd.read_file(path, crs='epsg:3857')
@@ -878,8 +879,8 @@ def generate_agglomeration_lut(country):
         os.makedirs(folder)
     path_output = os.path.join(folder, 'agglomerations.shp')
 
-    # if os.path.exists(path_output):
-    #     return print('Agglomeration processing has already completed')
+    if os.path.exists(path_output):
+        return print('Agglomeration processing has already completed')
 
     print('Working on {} agglomeration lookup table'.format(iso3))
 
@@ -1157,13 +1158,14 @@ def find_nodes_on_existing_infrastructure(country):
     filename = 'core_nodes_existing.shp'
     path_output = os.path.join(folder, filename)
 
-    # if os.path.exists(path_output):
-    #     return print('Already found nodes on existing infrastructure')
-    # else:
-    #     if not os.path.dirname(path_output):
-    #         os.makedirs(os.path.dirname(path_output))
+    if os.path.exists(path_output):
+        return print('Already found nodes on existing infrastructure')
+    else:
+        if not os.path.dirname(path_output):
+            os.makedirs(os.path.dirname(path_output))
 
     path = os.path.join(folder, 'core_edges_existing.shp')
+
     if not os.path.exists(path):
         return print('No existing infrastructure')
 
@@ -1320,8 +1322,8 @@ def find_regional_nodes(country):
     regions = gpd.read_file(input_path, crs="epsg:4326")
     unique_regions = regions[core_node_level].unique()
 
-    # if os.path.exists(output_path):
-    #     return print('Regional nodes layer already generated')
+    if os.path.exists(output_path):
+        return print('Regional nodes layer already generated')
 
     folder = os.path.dirname(output_path)
     if not os.path.exists(folder):
@@ -1982,6 +1984,9 @@ def load_subscription_data(path, iso3):
 if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
+
+        # if not country['iso3'] == 'HND':
+        #     continue
 
         print('--Working on {}'.format(country['iso3']))
 
