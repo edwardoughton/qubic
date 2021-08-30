@@ -21,7 +21,7 @@ import rasterio
 from rasterio.mask import mask
 from rasterstats import zonal_stats
 
-from ..countries import COUNTRY_LIST
+from countries import COUNTRY_LIST
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
@@ -1017,7 +1017,7 @@ if __name__ == '__main__':
         if country['iso3'] == 'MDV': #MDV has it's own set of scripts
             continue #see -> ~/qubic/scripts/MDV/
 
-        # if not country['iso3'] == 'BGD':
+        # if not country['iso3'] == 'IND':
         #     continue
 
         print('----')
