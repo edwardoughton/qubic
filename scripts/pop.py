@@ -1017,7 +1017,7 @@ if __name__ == '__main__':
         if country['iso3'] == 'MDV': #MDV has it's own set of scripts
             continue #see -> ~/qubic/scripts/MDV/
 
-        # if not country['iso3'] == 'IND':
+        # if not country['iso3'] == 'CRI':
         #     continue
 
         print('----')

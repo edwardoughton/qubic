@@ -1,22 +1,33 @@
 ###VISUALISE MODEL OUTPUTS###
+# install.packages('tidyverse')
 library(tidyverse)
+# install.packages('ggpubr')
 library(ggpubr)
 
 my_list = list(
+  c("AFG", 1, -.3, 1, -.4, 2, -.3),
+  c("AGO", 1, -.3, 1, -.4, 2, -.3),
+  c("BGD", 0, -.2, 0, -.5, 1, -.42),
+  c("BTN", 1, -.3, 1, -.4, 2, -.3),
+  c("CMR", 0, -.2, 0, -.5, 1, -.42),
   c("CRI", 1, -.3, 1, -.4, 2, -.3),
-  c("SLV", 1, -.3, 1, -.7, 1, -.4)
+  c("EGY", 0, -.2, 0, -.7, 1, -.42),
+  c("SLV", 1, -.3, 1, -.7, 1, -.4),
+  c("GMB", 2, -.2, 2, -.5, 2, -.42),
+  c("HND", 2, -.2, 2, -.5, 2, -.42),
+  c("IND", 1, -.3, 1, -.4, 2, -.3),
+  c("KEN", 0, -.2, 0, -.6, 1, -.42),
+  c("LKA", 1, -.3, 1, -.4, 2, -.3),
+  c("MAR", 0, -.2, 0, -.7, 2, -.42),
+  c("MDG", 0, -.2, 0, -.7, 2, -.42),
+  c("MDV", 2, -.2, 2, -.5, 2, -.42),
+  c("MOZ", 2, -.2, 2, -.5, 2, -.42),
+  c("MWI", 1, -.2, 1, -.5, 1, -.42),
+  c("NPL", 1, -.2, 1, -.5, 1, -.42),
+  c("NGA", 1, -.2, 1, -.5, 1, -.42),
+  c("PAK", 1, -.2, 1, -.5, 1, -.42),
+  c("SEN", 0, -.2, 1, -.7, 1, -.42)
 )
-
-# c("BGD", 0, -.2, 0, -.5, 1, -.42),
-# c("CMR", 0, -.2, 0, -.5, 1, -.42),
-# c("EGY", 0, -.2, 0, -.7, 1, -.42),
-# c("GMB", 2, -.2, 2, -.5, 2, -.42),
-# c("HND", 0, -.2, 0, -.5, 1, -.42),
-# c("KEN", 0, -.2, 0, -.6, 1, -.42),
-# c("MAR", 0, -.2, 0, -.7, 2, -.42),
-# c("MDV", 2, -.2, 2, -.5, 2, -.42),
-# c("MWI", 1, -.2, 1, -.5, 1, -.42),
-# c("SEN", 0, -.2, 1, -.7, 1, -.42),
 
 for(i in 1:length(my_list)) {
   print(i)
@@ -129,10 +140,10 @@ for(i in 1:length(my_list)) {
   guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
   facet_grid(scenario_capacity~scenario_adopt)
   
-  # dir.create(file.path(folder, 'figures', iso3), showWarnings = FALSE)
+  dir.create(file.path(folder, 'figures', iso3), showWarnings = FALSE)
   path = file.path(folder, 'figures', iso3, 'social_costs_by_strategy.png')
   ggsave(path, plot = last_plot(), units="in", width=8, height=7, dpi=300)
-  # dir.create(file.path(folder, '..', 'reports', 'images', iso3), showWarnings = FALSE)
+  dir.create(file.path(folder, '..', 'reports', 'images', iso3), showWarnings = FALSE)
   path = file.path(folder, '..', 'reports', 'images', iso3, 'social_costs_by_strategy.png')
   ggsave(path, plot = last_plot(), units="in", width=8, height=7, dpi=300)
 

@@ -107,6 +107,16 @@ def generate_report(country):
         "perc_highspectrum": policy_percs['baseline_10mbps_highspectrumfees']['perc_against_baseline'],
         "lowspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_lowspectrumfees']['social_cost_bn'],
         "highspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_highspectrumfees']['social_cost_bn'],
+        "figure_a1": os.path.join(IMAGES, iso3, '{}_by_pop_density.png'.format(iso3)),
+        "figure_a2": os.path.join(IMAGES, iso3, 'financial_cost_sq_km_2_mbps.png'),
+        "figure_a3": os.path.join(IMAGES, iso3, 'financial_cost_sq_km_5_mbps.png'),
+        "figure_a4": os.path.join(IMAGES, iso3, 'financial_cost_sq_km_10_mbps.png'),
+        "figure_a5": os.path.join(IMAGES, iso3, 'financial_cost_sq_km_20_mbps.png'),
+        "figure_a6": os.path.join(IMAGES, iso3, 'financial_cost_per_user_2_mbps.png'),
+        "figure_a7": os.path.join(IMAGES, iso3, 'financial_cost_per_user_5_mbps.png'),
+        "figure_a8": os.path.join(IMAGES, iso3, 'financial_cost_per_user_10_mbps.png'),
+        "figure_a9": os.path.join(IMAGES, iso3, 'financial_cost_per_user_20_mbps.png'),
+
         ###Method note
         # "figure_5": os.path.join(IMAGES, '..', '..', 'clustering', 'figures', 'cluster_panel.png'),
         # "figure_6": os.path.join(IMAGES, '..', '..', 'method', 'figures', 'method_box_diagram.jpg'),

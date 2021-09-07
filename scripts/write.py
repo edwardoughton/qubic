@@ -37,6 +37,8 @@ def write_demand(regional_annual_demand, folder):
     """
     print('Writing annual_mno_demand')
     regional_annual_demand = pd.DataFrame(regional_annual_demand)
+    regional_annual_demand = regional_annual_demand.loc[
+        regional_annual_demand['scenario'] == 'baseline_10_10_10']
     # regional_annual_mno_demand = regional_annual_demand[[
     #     'GID_0', 'GID_id', 'scenario', 'strategy',
     #     'confidence', 'year', 'population', 'area_km2', 'population_km2',

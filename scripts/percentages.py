@@ -26,6 +26,9 @@ def generate_percentages(iso3, decision_option):
     Meta function to hold all other function calls.
 
     """
+    if not os.path.exists(os.path.join(OUTPUT)):
+        os.makedirs(os.path.join(OUTPUT))
+
     if decision_option == 'technology_options':
 
         filename = 'national_market_results_technology_options.csv'
