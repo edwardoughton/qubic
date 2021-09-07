@@ -359,15 +359,13 @@ if __name__ == '__main__':
         # 'mixed_options',
     ]
 
-    all_results = []
-
     for decision_option in decision_options:#[:1]:
 
         print('Working on {}'.format(decision_option))
 
         options = OPTIONS[decision_option]
 
-        for country in COUNTRY_LIST:#[:1]:
+        for country in COUNTRY_LIST:
 
             regional_annual_demand = []
             regional_results = []
@@ -380,7 +378,7 @@ if __name__ == '__main__':
             if not os.path.exists(OUTPUT_COUNTRY):
                 os.makedirs(OUTPUT_COUNTRY)
 
-            # if not iso3 == 'CMR':
+            # if not iso3 == 'NGA':
             #     continue
 
             print('Working on {}'.format(iso3))
@@ -465,15 +463,11 @@ if __name__ == '__main__':
 
             write_demand(regional_annual_demand, OUTPUT_COUNTRY)
 
-            all_results = all_results + regional_results
-
             write_results(regional_results, OUTPUT_COUNTRY, decision_option)
 
             write_inputs(OUTPUT_COUNTRY, country, country_parameters,
                             GLOBAL_PARAMETERS, COSTS, decision_option)
 
             generate_percentages(iso3, decision_option)
-
-    # write_results(all_results, OUTPUT, 'all_options_all_countries')
 
     print('Completed model run')
