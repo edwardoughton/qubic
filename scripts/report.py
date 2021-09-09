@@ -306,9 +306,9 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        print('Reporting for {}'.format(country['iso3']))
+        if not country['iso3'] == 'HND':
+            continue
 
-        # if not iso3 == 'GMB':
-        #     continue
+        print('Reporting for {}'.format(country['iso3']))
 
         generate_report(country)
