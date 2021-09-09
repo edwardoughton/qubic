@@ -5,28 +5,28 @@ library(tidyverse)
 library(ggpubr)
 
 my_list = list(
-  c("AFG", 1, -.3, 1, -.4, 2, -.3),
-  c("AGO", 1, -.3, 1, -.4, 2, -.3),
-  c("BGD", 0, -.2, 0, -.5, 1, -.42),
-  c("BTN", 1, -.3, 1, -.4, 2, -.3),
-  c("CMR", 0, -.2, 0, -.5, 1, -.42),
-  c("CRI", 1, -.3, 1, -.4, 2, -.3),
-  c("EGY", 0, -.2, 0, -.7, 1, -.42),
-  c("SLV", 1, -.3, 1, -.7, 1, -.4),
-  c("GMB", 2, -.2, 2, -.5, 2, -.42),
-  c("HND", 2, -.2, 2, -.5, 2, -.42),
-  c("IND", 1, -.3, 1, -.4, 2, -.3),
-  c("KEN", 0, -.2, 0, -.6, 1, -.42),
-  c("LKA", 1, -.3, 1, -.4, 2, -.3),
-  c("MAR", 0, -.2, 0, -.7, 2, -.42),
-  c("MDG", 0, -.2, 0, -.7, 2, -.42),
-  c("MDV", 2, -.2, 2, -.5, 2, -.42),
-  c("MOZ", 2, -.2, 2, -.5, 2, -.42),
-  c("MWI", 1, -.2, 1, -.5, 1, -.42),
-  c("NPL", 1, -.2, 1, -.5, 1, -.42),
-  c("NGA", 1, -.2, 1, -.5, 1, -.42),
-  c("PAK", 1, -.2, 1, -.5, 1, -.42),
-  c("SEN", 0, -.2, 1, -.7, 1, -.42)
+  # c("AFG", 0, -.3, 0, -.4, 1, -.3),
+  # c("AGO", 0, -.5, 0, -1.2, 1, -.6)
+  c("BGD", 0, -.2, 0, -.5, 1, -.42)
+  # c("BTN", 1, -.3, 1, -.4, 2, -.3),
+  # c("CMR", 0, -.2, 0, -.5, 1, -.42),
+  # c("CRI", 1, -.3, 1, -.4, 2, -.3),
+  # c("EGY", 0, -.2, 0, -.7, 1, -.42),
+  # c("SLV", 1, -.3, 1, -.7, 1, -.4),
+  # c("GMB", 2, -.2, 2, -.5, 2, -.42),
+  # c("HND", 1, -.4, 1, -1.1, 2, -.7),
+  # c("IND", 1, -.3, 1, -.4, 2, -.3),
+  # c("KEN", 0, -.2, 0, -.6, 1, -.42),
+  # c("LKA", 1, -.3, 1, -.4, 2, -.3),
+  # c("MAR", 0, -.2, 0, -.7, 2, -.42),
+  # c("MDG", 0, -.2, 0, -.7, 2, -.42),
+  # c("MDV", 2, -.2, 2, -.5, 2, -.42),
+  # c("MOZ", 2, -.2, 2, -.5, 2, -.42),
+  # c("MWI", 1, -.2, 1, -.5, 1, -.42),
+  # c("NPL", 1, -.2, 1, -.5, 1, -.42),
+  # c("NGA", 1, -.2, 1, -.5, 1, -.42),
+  # c("PAK", 1, -.2, 1, -.5, 1, -.42),
+  # c("SEN", 0, -.2, 1, -.7, 1, -.42)
 )
 
 for(i in 1:length(my_list)) {
@@ -243,7 +243,7 @@ for(i in 1:length(my_list)) {
          colour=NULL,
          subtitle = "The Private Cost is invested by operators. The Government Cost is invested by Government.",
          x = NULL, y = "Social Cost (Billions $USD)") +
-    scale_y_continuous(expand = c(0, 0), limits = c(-min_value, max_value+(max_value/6))) +
+    scale_y_continuous(expand = c(0, 0), limits = c(-min_value, max_value+(max_value/5))) +
     theme(panel.spacing = unit(0.6, "lines")) +
     guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
     facet_grid(scenario_capacity~scenario_adopt)
@@ -352,7 +352,7 @@ for(i in 1:length(my_list)) {
          colour=NULL,
          subtitle = "The Private Cost is invested by operators. The Government Cost is invested by Government.",
          x = NULL, y = "Social Cost (Billions $USD)") +
-    scale_y_continuous(expand = c(0, 0), limits = c(-0,max_value+(max_value/5))) +
+    scale_y_continuous(expand = c(0, 0), limits = c(-0,max_value+(max_value/4))) +
     theme(panel.spacing = unit(0.6, "lines")) +
     guides(fill=guide_legend(ncol=3, reverse = TRUE)) +
     facet_grid(scenario_capacity~scenario_adopt)

@@ -378,8 +378,8 @@ if __name__ == '__main__':
             if not os.path.exists(OUTPUT_COUNTRY):
                 os.makedirs(OUTPUT_COUNTRY)
 
-            # if not iso3 == 'NGA':
-            #     continue
+            if not iso3 == 'BGD':
+                continue
 
             print('Working on {}'.format(iso3))
 

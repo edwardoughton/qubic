@@ -131,7 +131,7 @@ def plot_regions_by_geotype(country, data, regions, path):
     fig.suptitle(name)
 
     fig.tight_layout()
-    fig.savefig(path)
+    fig.savefig(path, dpi=600)
 
     plt.close(fig)
 
@@ -160,15 +160,14 @@ def plot_sub_national_cost_per_square_km(country, data, regions, cost_type):
 
     metric = 'cost_per_km2'
 
-    bins = [-1e9, 0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 1e9]
+    bins = [-1e9, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1e9]
 
-    if cost_type[1] == 'total_government_cost':
-        bottom_label = '0 (Viable)'
-    else:
-        bottom_label = '0 '
+    # if cost_type[1] == 'total_government_cost':
+    #     bottom_label = '0 (Viable)'
+    # else:
+    #     bottom_label = '0 '
 
     labels = [
-        bottom_label,
         '<5k USD $\mathregular{km^2}$',
         '<10k USD $\mathregular{km^2}$',
         '<20k USD $\mathregular{km^2}$',
@@ -178,7 +177,8 @@ def plot_sub_national_cost_per_square_km(country, data, regions, cost_type):
         '<60k USD $\mathregular{km^2}$',
         '<70k USD $\mathregular{km^2}$',
         '<80k USD $\mathregular{km^2}$',
-        '>80k USD $\mathregular{km^2}$',
+        '<90k USD $\mathregular{km^2}$',
+        '>90k USD $\mathregular{km^2}$',
     ]
     regions['bin'] = pd.cut(
         regions[metric],
@@ -211,8 +211,8 @@ def plot_sub_national_cost_per_square_km(country, data, regions, cost_type):
     fig.tight_layout()
     filename = '{}_cost_sq_km_{}_mbps.png'.format(
         cost_type[0].split(' ')[0].lower(), capacity)
-    fig.savefig(os.path.join(VIS, iso3, filename))
-    fig.savefig(os.path.join(REPORTS, iso3, filename))
+    fig.savefig(os.path.join(VIS, iso3, filename), dpi=600)
+    fig.savefig(os.path.join(REPORTS, iso3, filename), dpi=600)
 
     plt.close(fig)
 
@@ -278,8 +278,8 @@ def plot_sub_national_cost_per_user(country, data, regions, capacity, cost_type)
     fig.tight_layout()
     filename = '{}_cost_per_user_{}_mbps.png'.format(
         cost_type[0].split(' ')[0].lower(), capacity)
-    fig.savefig(os.path.join(VIS, iso3, filename))
-    fig.savefig(os.path.join(REPORTS, iso3, filename))
+    fig.savefig(os.path.join(VIS, iso3, filename), dpi=600)
+    fig.savefig(os.path.join(REPORTS, iso3, filename), dpi=600)
 
     plt.close(fig)
 
@@ -351,8 +351,8 @@ def plot_investment_as_gdp_percent(data, gdp, regions, capacity, cost_type):
     fig.tight_layout()
     filename = 'gdp_percentage_spatially_{}_{}_mbps.png'.format(
         cost_type[0].split(' ')[0], capacity)
-    fig.savefig(os.path.join(VIS, filename))
-    fig.savefig(os.path.join(REPORTS, filename))
+    fig.savefig(os.path.join(VIS, filename), dpi=600)
+    fig.savefig(os.path.join(REPORTS, filename), dpi=600)
 
     plt.close(fig)
 
@@ -371,8 +371,8 @@ if __name__ == '__main__':
 
         iso3 = country['iso3']
 
-        # if not iso3 == 'CRI':
-        #     continue
+        if not iso3 == 'HND':
+            continue
 
         print('-- {} --'.format(iso3))
 
