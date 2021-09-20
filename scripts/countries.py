@@ -622,7 +622,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ]
@@ -682,7 +682,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ]
@@ -746,7 +746,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -805,7 +805,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -864,7 +864,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -923,7 +923,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ]
@@ -982,7 +982,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1041,7 +1041,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1110,7 +1110,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ]
@@ -1169,7 +1169,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1238,7 +1238,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1307,7 +1307,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1376,7 +1376,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1445,7 +1445,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1514,7 +1514,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1583,7 +1583,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1652,7 +1652,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1721,7 +1721,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1790,7 +1790,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1859,7 +1859,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1928,7 +1928,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],
@@ -1997,7 +1997,7 @@ COUNTRY_PARAMETERS = {
                 },
                 {
                     'frequency': 3500,
-                    'bandwidth': '1x50',
+                    'bandwidth': ' 1x40',
                     # 'status': 'inactive',
                 },
             ],

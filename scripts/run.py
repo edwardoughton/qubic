@@ -111,19 +111,21 @@ def read_capacity_lut(path):
             environment = row["environment"].lower()
             ant_type = row["ant_type"]
             frequency_GHz = str(int(float(row["frequency_GHz"]) * 1e3))
+            bandwidth_MHz = str(int(row['bandwidth_MHz']))
             generation = str(row["generation"])
             ci = str(row['confidence_interval'])
 
-            if (environment, ant_type, frequency_GHz, generation, ci) \
+            if (environment, ant_type, frequency_GHz, bandwidth_MHz, generation, ci) \
                 not in capacity_lut:
                 capacity_lut[(
-                    environment, ant_type, frequency_GHz, generation, ci)
+                    environment, ant_type, frequency_GHz, bandwidth_MHz, generation, ci)
                     ] = []
 
             capacity_lut[(
                 environment,
                 ant_type,
                 frequency_GHz,
+                bandwidth_MHz,
                 generation,
                 ci)].append((
                     float(row["sites_per_km2"]),
@@ -378,8 +380,8 @@ if __name__ == '__main__':
             if not os.path.exists(OUTPUT_COUNTRY):
                 os.makedirs(OUTPUT_COUNTRY)
 
-            if not iso3 == 'BGD':
-                continue
+            # if not iso3 == 'BGD':
+            #     continue
 
             print('Working on {}'.format(iso3))
 

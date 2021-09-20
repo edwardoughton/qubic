@@ -127,7 +127,9 @@ def generate_report(country):
     # with open(os.path.join(OUTPUT, "my_new_file.html"), "w", encoding="utf-8") as fh:
     #     fh.write(html_out)
 
-    path = os.path.join(OUTPUT, '{}.pdf'.format(iso3))
+    name = '{} - Quantified Universal Broadband Investment by Country (Qubic).pdf'.format(
+        country['preferred_name'])
+    path = os.path.join(OUTPUT, name)
 
     pisa.showLogging()
     convert_html_to_pdf(html_out, path)
@@ -306,8 +308,8 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        if not country['iso3'] == 'HND':
-            continue
+        # if not country['iso3'] == 'BGD':
+        #     continue
 
         print('Reporting for {}'.format(country['iso3']))
 

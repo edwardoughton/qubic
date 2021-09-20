@@ -140,6 +140,7 @@ def find_site_density(region, option, global_parameters, country_parameters,
             geotype,
             ant_type,
             frequency,
+            bandwidth,
             generation,
             ci
         )
@@ -160,15 +161,16 @@ def find_site_density(region, option, global_parameters, country_parameters,
             channels, bandwidth = item['bandwidth'].split('x')
             channels, bandwidth = float(channels), float(bandwidth)
 
-            if channels == 1: #allocate downlink channel width when using TDD
-                downlink = float(global_parameters['tdd_dl_to_ul'].split(':')[0])
-                bandwidth = bandwidth * (downlink / 100)
+#            if channels == 1: #allocate downlink channel width when using TDD
+#                downlink = float(global_parameters['tdd_dl_to_ul'].split(':')[0])
+#                bandwidth = bandwidth * (downlink / 100)
 
             density_capacities = lookup_capacity(
                 capacity_lut,
                 geotype,
                 ant_type,
                 frequency,
+                str(int(bandwidth)),
                 generation,
                 ci
             )
@@ -185,8 +187,8 @@ def find_site_density(region, option, global_parameters, country_parameters,
     max_density, max_capacity = density_lut[-1]
     min_density, min_capacity = density_lut[0]
 
-    max_capacity = max_capacity * bandwidth
-    min_capacity = min_capacity * bandwidth
+    # max_capacity = max_capacity * bandwidth
+    # min_capacity = min_capacity * bandwidth
 
     if demand > max_capacity:
 
@@ -203,8 +205,8 @@ def find_site_density(region, option, global_parameters, country_parameters,
             lower_density, lower_capacity  = a
             upper_density, upper_capacity  = b
 
-            lower_capacity = lower_capacity * bandwidth
-            upper_capacity = upper_capacity * bandwidth
+            # lower_capacity = lower_capacity * bandwidth
+            # upper_capacity = upper_capacity * bandwidth
 
             if lower_capacity <= demand < upper_capacity:
 
@@ -213,10 +215,11 @@ def find_site_density(region, option, global_parameters, country_parameters,
                     upper_capacity, upper_density,
                     demand
                 )
+
                 return site_density
 
 
-def lookup_capacity(capacity_lut, env, ant_type, frequency,
+def lookup_capacity(capacity_lut, env, ant_type, frequency, bandwidth,
     generation, ci):
     """
     Use lookup table to find the combination of spectrum bands
@@ -233,6 +236,8 @@ def lookup_capacity(capacity_lut, env, ant_type, frequency,
         The antenna type, such as a macro cell or micro cell.
     frequency : string
         The frequency band in Megahertz.
+    bandwidth : string
+        Channel bandwidth.
     generation : string
         The cellular generation such as 4G or 5G.
     ci : int
@@ -252,12 +257,12 @@ def lookup_capacity(capacity_lut, env, ant_type, frequency,
     #     frequency = '1800'
     # if frequency == '2600':
     #     frequency = '2100'
-    if (env, ant_type, frequency, generation, ci) not in capacity_lut:
+    if (env, ant_type, frequency, bandwidth, generation, ci) not in capacity_lut:
         raise KeyError("Combination %s not found in lookup table",
-                       (env, ant_type, frequency, generation, ci))
+                       (env, ant_type, frequency, bandwidth, generation, ci))
 
     density_capacities = capacity_lut[
-        (env, ant_type,  frequency, generation, ci)
+        (env, ant_type,  frequency, bandwidth, generation, ci)
     ]
 
     return density_capacities

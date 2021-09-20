@@ -194,15 +194,15 @@ def setup_costs():
 @fixture(scope='function')
 def setup_lookup():
     return {
-        ('urban', 'macro', '800', '4G', '50'): [
-            (0.01, 1),
+        ('urban', 'macro', '800', '10', '4G', '50'): [
+            (0.01, 1), #tuple is listed as density, capacity
             (0.02, 2),
             (0.05, 5),
             (0.15, 15),
             (2, 100)
         ],
-        ('urban', 'macro', '1800', '4G', '50'): [
-            (0.01, 5),
+        ('urban', 'macro', '1800', '10', '4G', '50'): [
+            (0.01, 5), #tuple is listed as density, capacity
             (0.02, 10),
             (0.05, 20),
             (0.15, 40),
