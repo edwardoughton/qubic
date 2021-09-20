@@ -117,7 +117,7 @@ def test_find_network_cost(setup_region, setup_costs,
         setup_core_lut
     )
 
-    assert answer['network_cost'] == 708926.6999999998
+    assert answer['network_cost'] == 708926.7
 
     setup_region[0]['new_mno_sites'] = 1
     setup_region[0]['upgraded_mno_sites'] = 1
@@ -133,7 +133,7 @@ def test_find_network_cost(setup_region, setup_costs,
         setup_core_lut
     )
 
-    assert answer['network_cost'] == 875055.6999999998
+    assert answer['network_cost'] == 875055.7
 
     answer = find_network_cost(
         setup_region[0],
@@ -144,7 +144,7 @@ def test_find_network_cost(setup_region, setup_costs,
         setup_core_lut
     )
 
-    assert answer['network_cost'] == 875055.6999999998
+    assert answer['network_cost'] == 875055.7
 
     setup_region[0]['geotype'] = 'rural'
 
