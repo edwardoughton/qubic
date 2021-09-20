@@ -51,7 +51,7 @@ def test_find_site_density(
         setup_ci
     )
 
-    assert answer == 0.05
+    assert round(answer, 2) == 0.5
 
     answer = find_site_density(
         {'demand_mbps_km2': 120,
@@ -63,7 +63,7 @@ def test_find_site_density(
         setup_ci
     )
 
-    assert answer == 0.02
+    assert round(answer, 2) == 0.27
 
 
 def test_estimate_site_upgrades(
@@ -199,7 +199,7 @@ def test_estimate_supply(
         setup_ci
     )
 
-    assert round(answer[0]['mno_site_density'], 1) == 0.9
+    assert round(answer[0]['mno_site_density'], 1) == 2
 
 
 def test_estimate_backhaul_upgrades(
