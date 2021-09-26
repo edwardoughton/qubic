@@ -924,6 +924,7 @@ def load_smartphone_data(path, country):
     output = []
 
     if country['iso3']  in countries_with_data:
+        print('here')
         for item in survey_data:
                 if item['iso3'] == country['iso3']:
                     output.append({
@@ -977,6 +978,8 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
 
             smartphone_growth = country['sp_growth_{}_{}'.format(scenario, settlement_type)]
 
+            seen_years = set()
+
             for item in data:
 
                 if not item['settlement_type'].lower() == settlement_type:
@@ -984,6 +987,9 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
                     continue
 
                 for year in range(start_point, end_point + 1):
+
+                    if year in seen_years:
+                        continue
 
                     if year == start_point:
 
@@ -1004,6 +1010,8 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
                         'penetration': round(penetration, 2),
                     })
 
+                    seen_years.add(year)
+
     return output
 
 
@@ -1017,7 +1025,7 @@ if __name__ == '__main__':
         if country['iso3'] == 'MDV': #MDV has it's own set of scripts
             continue #see -> ~/qubic/scripts/MDV/
 
-        # if not country['iso3'] == 'CRI':
+        # if not country['iso3'] == 'AGO':
         #     continue
 
         print('----')

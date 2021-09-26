@@ -1,0 +1,439 @@
+<!-- <link rel="stylesheet" href="https://latex.now.sh/style.min.css" /> -->
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<style>
+body {
+  background-color: white;
+  font-size: 11pt;
+}
+body {
+	font-family: 'Latin Modern Roman', serif;
+	counter-reset: theorem;
+	counter-reset: definition;
+}
+h1, h2, h3, h4, h5, h6 {
+	border: none;
+	font-weight: bold;
+}
+table {
+    border-collapse: collapse;
+      border: 1px solid rgb(200,200,200);
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+}
+td, th {
+      border: 1px solid rgb(190,190,190);
+      padding: 2px 2px;
+    }
+td {
+    text-align: center;
+}
+caption {
+    padding: 10px;
+}
+</style>
+<meta charset="UTF-8">
+<h1>Quantified Universal Broadband Investment by Country (Qubic)</h1>
+<h2>Qubic Method for {{preferred_name}} by Edward Oughton</h2>
+</head>
+<body>
+<p align="justify">
+    Policy decisions require transparent and reproducible analytics.
+    However, there are many policy reports that fail to explicitly report their
+    method and assumptions for the whole policy community
+    (both industry and government) to scrutinize and evaluate.
+    The method presented in this document directly addresses the
+    current reproducibility crises which exists with many pieces of
+    policy evidence, particularly in the field of broadband assessment
+    and telecommunication policy.
+</p>
+<p align="justify">
+        In the Quantified Universal Broadband Investment by Country (Qubic) project,
+        the method provides an innovative analytical approach which combines the
+        use of remote sensing and least-cost infrastructure network designs, with
+        traditional telecommunications regulatory assessment techniques. This
+        method builds off the previous open-source codebases developed, including
+        the Policy Options for Digital Infrastructure Strategies (podis) and
+        the Python Telecommunications Assessment Library repositories, both of
+        which adhere to gold-standard software engineering methods (fully-tested,
+        fully-documented) and are available openly from the repository for all
+        to access.
+    </p>
+<p align="justify">
+    A ‘what-if’ scenario approach is adopted enabling different questions
+    pertaining to universal broadband to be tested. In scientific research
+    areas where considerable uncertainties exist, and we lack comprehensive
+    scientific information, a common approach is to use scenario analysis.
+    Quantitative models are developed which can be explored in different ways,
+    enabling comparative analytics to be developed against different potential
+    futures. Decision makers in industry and government can then use these results
+    as discussion tools to develop strategic insight on an important matter,
+    such as universal broadband connectivity.
+</p>
+<p align="justify">
+    An important caveat is that the Qubic work does not explicitly model a
+    single operator’s spectrum and asset portfolio, market share etc.,
+    instead focusing on modeling a ‘hypothetical operator’ with an average
+    quantity of sunk costs and users. Explicitly modeling an operator’s
+    supply and demand conditions can be challenging due to a lack of available
+    data. Even if comprehensive information was available, explicit modeling
+    often raises commercially sensitive issues which can hinder engagement
+    with industry. Therefore, this approach is considered superior, but comes
+    with the caveat that the model inputs will purposefully not identically
+    match any of the operators currently active in the market (as is common in
+    decision analytics for telecom regulation).
+</p>
+<p align="justify">
+    In the field of infrastructure modeling, a standard methodological approach
+    consists of three distinct steps. Firstly, a demand module is developed
+    which uses past data combined with forecasts to produce plausible scenarios
+    of future change over a study period (e.g. the next decade, up to 2030).
+    Secondly, a supply-side infrastructure module is developed which designs
+    different network configurations, for different technologies, based on a
+    least-cost algorithmic approach. Finally, an assessment model is used to
+    apply different industry decisions or government policies, to quantitatively
+    represent the implications of the strategic options available. Before a
+    description of these three stages is presented, with regard to the open-source
+    model developed, a method for clustering similar countries into groups will
+    first be articulated.
+</p>
+
+<h2>Country clustering</h2>
+
+<p align="justify">
+    We do not always have complete evidence for all countries in the world which makes
+    it challenging to undertake systematic cross-country analysis. Often survey data
+    from one country, could be used to inform other countries, providing a suitable
+    comparison can be made. Country-to-country variation needs to be controlled for
+    in this process. Therefore, in this assessment a representative set of country
+    clusters is developed for all 135 emerging economies by using a k-means clustering
+    approach based on four key metrics which affect the supply and demand of broadband
+    infrastructure.
+</p>
+<p align="justify">
+        Firstly, Gross Domestic Product (GDP) per capita represents the economic
+        purchasing power of consumers, and secondly, population density represents
+        the general spatial distribution of humans living in a particular country
+        (World Bank, 2020). Thirdly, 4G coverage provides insight into the level of
+        existing availability of telecom infrastructure and wireless broadband
+        availability, and finally, the penetration rate for unique cellphone subscribers
+        is used (recognizing that as many people multiple SIM cards, therefore
+        the unique number of users is required) (GSMA, 2020). While these metrics
+        are by no means a fully comprehensive set of country indicators, it is
+        preferable to use a small number of metrics when clustering. This keeps the
+        analysis as explainable as possible (e.g. for why certain countries are in
+        each cluster), as well as keeping any illustrations visually succinct (e.g.
+        making it possible to visualize the inputs and results in a single set of
+        plots). Figure 1 reports the mean centered results of the clustering process,
+        along with the six different country segments selected.
+</p>
+
+
+<h3>Figure 1 K-means clustering results for each country grouping</h3>
+<img src="{{figure_1}}">
+
+<p align="justify">
+    To avoid overcomplicating this assessment, high-income countries are excluded
+    as the focus of this analysis is Low- and Middle-Income Countries (LMICs).
+    Due to the unique geographic characteristics of very small countries, we drop
+    those under 5,000 square kilometers, so the focus can be on providing wide-area
+    access in challenging deployment conditions. This generally excludes very small
+    islands, such as Grenada, Saint Lucia, or The Maldives. Countries with very
+    high population density (over 5,000 inhabitants per square kilometer) are also
+    excluded as these nations have favorable economic conditions that may not
+    warrant the type of universal broadband analysis carried out in this assessment
+    (such as Lebanon). The exact R code uses the inbuilt kmeans function from the
+    R stats package and is available for inspection in the Qubic code repository
+    (Oughton, 2021).
+</p>
+
+<h2>Open-source engineering-economic model</h2>
+<p align="justify">
+    The modeling techniques have been applied to many countries around the world,
+    with the foundations of the method developed for national 5G assessments in
+    OECD markets, such as the UK (Oughton et al., 2018; Oughton and Frias, 2018,
+    2016; Oughton and Russell, 2020) and the Netherlands (Oughton et al., 2019).
+    More recently, the methods have been deployed in the Pytal and Podis
+    repositories. Figure 2 visualizes the assessment method, divided into the
+    three software modules, which will now be presented.
+</p>
+
+<h2>Figure 2 Universal broadband assessment method applied in Qubic</h2>
+<img src="{{figure_2}}">
+
+<h2>Demand module</h2>
+
+The demand module uses a variety of data inputs. For a detailed description of
+the mathematical model, see the affiliated document.
+
+<h3>Figure 3 Demand forecasts for {{preferred_name}}</h3>
+<img src="{{figure_3}}">
+
+<pdf:nextpage></pdf:nextpage>
+<h3>Table 1 General country information for {{preferred_name}}</h3>
+
+<table>
+    <tr>
+        <th>Country Parameter</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Global Region</td>
+        <td>{{global_region}}</td>
+    </tr>
+    <tr>
+        <td>ISO3</td>
+        <td>{{iso3}}</td>
+    </tr>
+    <tr>
+        <td>ISO2</td>
+        <td>{{iso2}}</td>
+    </tr>
+    <tr>
+        <td>GADM GID level for core nodes</td>
+        <td>{{core_node_level}}</td>
+    </tr>
+    <tr>
+        <td>GADM GID level for regional nodes</td>
+        <td>{{regional_node_level}}</td>
+    </tr>
+    <tr>
+        <td>Settlement population density (km^2)</td>
+        <td>{{pop_density_km2}}</td>
+    </tr>
+    <tr>
+        <td>Aggregate settlement size</td>
+        <td>{{settlement_size}}</td>
+    </tr>
+    <tr>
+        <td>Core node settlement size</td>
+        <td>{{core_node_size}}</td>
+    </tr>
+    <tr>
+        <td>Country cluster</td>
+        <td>{{cluster}}</td>
+    </tr>
+  </table>
+
+  <pdf:nextpage>
+
+<h3>Table 2 Model parameters for {{preferred_name}}</h3>
+<table>
+    <tr>
+        <th>Model Parameter</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Weighted average cost of capital (%)</td>
+        <td>{{wacc}}</td>
+    </tr>
+    <tr>
+        <td>Allowed return on capital employed (%)</td>
+        <td>{{profit_margin}}</td>
+    </tr>
+    <tr>
+        <td>Baseline coverage spectrum cost (USD/MHz/pop)</td>
+        <td>{{spectrum_coverage_baseline_usd_mhz_pop}}</td>
+    </tr>
+    <tr>
+        <td>Baseline capacity spectrum cost (USD/MHz/pop)</td>
+        <td>{{spectrum_capacity_baseline_usd_mhz_pop}}</td>
+    </tr>
+    <tr>
+        <td>Low spectrum price cost decrease (%)</td>
+        <td>{{spectrum_cost_low}}</td>
+    </tr>
+    <tr>
+        <td>High spectrum price cost increase (%)</td>
+        <td>{{spectrum_cost_high}}</td>
+    </tr>
+    <tr>
+        <td>High tax rate (%)</td>
+        <td>{{tax_high}}</td>
+    </tr>
+    <tr>
+        <td>Baseline tax rate (%)</td>
+        <td>{{tax_baseline}}</td>
+    </tr>
+    <tr>
+        <td>Low tax rate (%)</td>
+        <td>{{tax_low}}</td>
+    </tr>
+    <tr>
+        <td>Admin cost based on network investment (%)</td>
+        <td>{{administration_percentage_of_network_cost}}</td>
+    </tr>
+    <tr>
+        <td>Overbooking factor</td>
+        <td>{{overbooking_factor}}</td>
+    </tr>
+    <tr>
+        <td>Investment return period (years)</td>
+        <td>{{return_period}}</td>
+    </tr>
+    <tr>
+        <td>Discount rate (%)</td>
+        <td>{{discount_rate}}</td>
+    </tr>
+    <tr>
+        <td>Opex cost based on network capex (%)</td>
+        <td>{{opex_percentage_of_capex}}</td>
+    </tr>
+    <tr>
+        <td>Confidence interval (%)</td>
+        <td>{{confidence}}</td>
+    </tr>
+    <tr>
+        <td>TDD DL to UL ratio</td>
+        <td>{{tdd_dl_to_ul}}</td>
+    </tr>
+    </table>
+
+    <pdf:nextpage>
+
+<h3>Table 4 Cost parameters for {{preferred_name}}</h3>
+
+<table>
+    <tr>
+        <th>Cost Parameter</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Site equipment cost ($)</td>
+        <td>{{equipment}}</td>
+    </tr>
+    <tr>
+        <td>Site civil engineering cost ($)</td>
+        <td>{{site_build}}</td>
+    </tr>
+    <tr>
+        <td>Equipment installation cost ($)</td>
+        <td>{{installation}}</td>
+    </tr>
+    <tr>
+        <td>Operation and maintenance cost ($)</td>
+        <td>{{operation_and_maintenance}}</td>
+    </tr>
+    <tr>
+        <td>Power cost ($)</td>
+        <td>{{power}}</td>
+    </tr>
+    <tr>
+        <td>Annual site rental cost (urban) ($)</td>
+        <td>{{site_rental_urban}}</td>
+    </tr>
+    <tr>
+        <td>Annual site rental cost (suburban) ($)</td>
+        <td>{{site_rental_suburban}}</td>
+    </tr>
+    <tr>
+        <td>Annual site rental cost (suburban) ($)</td>
+        <td>{{site_rental_rural}}</td>
+    </tr>
+    <tr>
+        <td>Fiber optic cost (urban) ($ per meter)</td>
+        <td>{{fiber_urban_m}}</td>
+    </tr>
+    <tr>
+        <td>Fiber optic cost (suburban) ($ per meter)</td>
+        <td>{{fiber_suburban_m}}</td>
+    </tr>
+    <tr>
+        <td>Fiber optic cost (rural) ($ per meter)</td>
+        <td>{{fiber_rural_m}}</td>
+    </tr>
+    <tr>
+        <td>Wireless backhaul (small) ($)</td>
+        <td>{{wireless_small}}</td>
+    </tr>
+    <tr>
+        <td>Wireless backhaul (medium) ($)</td>
+        <td>{{wireless_medium}}</td>
+    </tr>
+    <tr>
+        <td>Wireless backhaul (large) ($)</td>
+        <td>{{wireless_large}}</td>
+    </tr>
+    <tr>
+        <td>Core node ($)</td>
+        <td>{{core_node}}</td>
+    </tr>
+    <tr>
+        <td>Core edge fiber optic cost ($ per meter)</td>
+        <td>{{core_edge}}</td>
+    </tr>
+    <tr>
+        <td>Regional node ($)</td>
+        <td>{{regional_node}}</td>
+    </tr>
+    <tr>
+        <td>Regional edge fiber optic cost ($ per meter)</td>
+        <td>{{regional_edge}}</td>
+    </tr>
+    </table>
+
+    <pdf:nextpage>
+
+
+<h2>References</h2>
+
+<p align="justify">
+    GSMA, 2020. GSMA Intelligence Global Data. URL:
+    <a href="https://www.gsmaintelligence.com/">https://www.gsmaintelligence.com/</a>
+    (accessed 2.5.20).
+</p>
+<p align="justify">
+    Oughton, E.J., Comini, N., Foster, V., Hall, J.W., 2021a. Policy Choices Can Help
+    Keep 4G and 5G Universal Broadband Affordable. World Bank, Policy Research Working Paper.
+    <a href="https://documents.worldbank.org/en/publication/documents-reports/documentdetail/658521614715617195/Policy-Choices-Can-Help-Keep-4G-and-5G-Universal-Broadband-Affordable">World Bank, Policy Research Working Paper
+        </a>
+</p>
+<p align="justify">
+    Oughton, E.J., Lehr, W., Katsaros, K., Selinis, I., Bubley, D., Kusuma, J., 2021b.
+    Revisiting Wireless Internet Connectivity: 5G vs Wi-Fi 6. Telecommunications
+    Policy 45, 102127. <a href="https://doi.org/10.1016/j.telpol.2021.102127">https://doi.org/10.1016/j.telpol.2021.102127</a>
+</p>
+<p align="justify">
+    Oughton, E.J., 2021. edwardoughton/qubic [WWW Document]. URL:
+    <a href="https://github.com/edwardoughton/qubic">https://github.com/edwardoughton/qubic</a>
+    (accessed 5.14.21).
+</p>
+<p align="justify">
+    Oughton, E.J., Frias, Z., 2016. Exploring the cost, coverage and rollout implications of
+    5G in Britain: A report for the UK’s National Infrastructure Commission. Centre for Risk
+    Studies, Cambridge Judge Business School, Cambridge.
+</p>
+<p align="justify">
+    Oughton, E.J., Frias, Z., 2018. The cost, coverage and rollout implications of 5G
+    infrastructure in Britain. Telecommunications Policy, The implications of 5G networks:
+    Paving the way for mobile innovation? 42, 636–652.
+    <a href="https://doi.org/10.1016/j.telpol.2017.07.009">https://doi.org/10.1016/j.telpol.2017.07.009</a>
+</p>
+<p align="justify">
+    Oughton, E.J., Frias, Z., Russell, T., Sicker, D., Cleevely, D.D., 2018. Towards 5G:
+    Scenario-based assessment of the future supply and demand for mobile telecommunications
+    infrastructure. Technological Forecasting and Social Change 133, 141–155.
+    <a href="https://doi.org/10.1016/j.techfore.2018.03.016">https://doi.org/10.1016/j.techfore.2018.03.016</a>
+</p>
+<p align="justify">
+    Oughton, E.J., Frias, Z., van der Gaast, S., van der Berg, R., 2019. Assessing the
+    capacity, coverage and cost of 5G infrastructure strategies: Analysis of the Netherlands.
+    Telematics and Informatics 37, 50–69.
+    <a href="https://doi.org/10.1016/j.tele.2019.01.003">https://doi.org/10.1016/j.tele.2019.01.003</a>
+</p>
+<p align="justify">
+    Oughton, E.J., Russell, T., 2020. The importance of spatio-temporal infrastructure
+    assessment: Evidence for 5G from the Oxford–Cambridge Arc. Computers, Environment and
+    Urban Systems 83, 101515.
+    <a href="https://doi.org/10.1016/j.compenvurbsys.2020.101515">https://doi.org/10.1016/j.compenvurbsys.2020.101515</a>
+</p>
+<p align="justify">
+    World Bank, 2020. World Bank Open Data | Data [WWW Document].
+    URL:
+    <a href="https://data.worldbank.org/">https://data.worldbank.org/</a>
+    (accessed 5.16.20).
+</p>
+
+</body>
+</html>

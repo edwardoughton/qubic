@@ -21,6 +21,7 @@ CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
 BASE_PATH = CONFIG['file_locations']['base_path']
 
 RESULTS = os.path.join(BASE_PATH, '..', 'results')
+FIGURES = "D:\\Github\\qubic\\reports\\figures" #unfortunately needs hard coding
 IMAGES = "D:\\Github\\qubic\\reports\\images" #unfortunately needs hard coding
 OUTPUT = os.path.join(BASE_PATH, '..', 'reports', 'countries')
 
@@ -37,7 +38,9 @@ def generate_report(country):
     share_percs = get_sharing_data(iso3)
     policy_percs = get_policy_data(iso3)
 
+    technology_inputs = get_technology_inputs(iso3)
     policy_inputs = get_policy_inputs(iso3)
+    spectrum_bands = get_frequencies(iso3)
 
     path = os.path.join(BASE_PATH, '..', 'reports', 'templates')
     env = Environment(loader=FileSystemLoader(path))
@@ -107,6 +110,64 @@ def generate_report(country):
         "perc_highspectrum": policy_percs['baseline_10mbps_highspectrumfees']['perc_against_baseline'],
         "lowspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_lowspectrumfees']['social_cost_bn'],
         "highspectrum_cost_4g_10mbps": policy_percs['baseline_10mbps_highspectrumfees']['social_cost_bn'],
+
+        ###Method note
+        "figure_m1": os.path.join(FIGURES, '..', '..', 'clustering', 'figures', 'cluster_panel.png'),
+        "figure_m2": os.path.join(FIGURES, '..', '..', 'method', 'figures', 'method_box_diagram.jpg'),
+        "figure_m3": os.path.join(IMAGES, iso3, 'demand_graphic.png'),
+        "iso3": technology_inputs['iso3'],
+        "iso2": technology_inputs['iso2'],
+        "global_region": technology_inputs['region'],
+        "regional_node_level": technology_inputs['regional_node_level'],
+        "core_node_level": technology_inputs['core_node_level'],
+        "pop_density_km2": technology_inputs['pop_density_km2'],
+        "settlement_size": technology_inputs['settlement_size'],
+        "core_node_size": technology_inputs['core_node_size'],
+        "cluster": technology_inputs['cluster'],
+        "wacc": int(float(technology_inputs['wacc'])),
+        "profit_margin": int(float(technology_inputs['profit_margin'])),
+        "spectrum_coverage_baseline_usd_mhz_pop": technology_inputs['spectrum_coverage_baseline_usd_mhz_pop'],
+        "spectrum_capacity_baseline_usd_mhz_pop": technology_inputs['spectrum_capacity_baseline_usd_mhz_pop'],
+        "spectrum_cost_low": int(float(technology_inputs['spectrum_cost_low'])),
+        "spectrum_cost_high": int(float(technology_inputs['spectrum_cost_high'])),
+        "tax_baseline": int(float(technology_inputs['tax_baseline'])),
+        "tax_low": int(float(technology_inputs['tax_low'])),
+        "tax_high": int(float(technology_inputs['tax_high'])),
+        "administration_percentage_of_network_cost": int(float(technology_inputs['administration_percentage_of_network_cost'])),
+        "overbooking_factor": technology_inputs['overbooking_factor'],
+        "return_period": technology_inputs['return_period'],
+        "discount_rate": technology_inputs['discount_rate'],
+        "opex_percentage_of_capex": technology_inputs['opex_percentage_of_capex'],
+        "confidence": technology_inputs['confidence'],
+        "tdd_dl_to_ul": technology_inputs['tdd_dl_to_ul'],
+        "equipment": int(float(technology_inputs['equipment'])),
+        "site_build": int(float(technology_inputs['site_build'])),
+        "installation": int(float(technology_inputs['installation'])),
+        "operation_and_maintenance": int(float(technology_inputs['operation_and_maintenance'])),
+        "power": int(float(technology_inputs['power'])),
+        "site_rental_urban": int(float(technology_inputs['site_rental_urban'])),
+        "site_rental_suburban": int(float(technology_inputs['site_rental_suburban'])),
+        "site_rental_rural": int(float(technology_inputs['site_rental_rural'])),
+        "fiber_urban_m": int(float(technology_inputs['fiber_urban_m'])),
+        "fiber_suburban_m": int(float(technology_inputs['fiber_suburban_m'])),
+        "fiber_rural_m": int(float(technology_inputs['fiber_rural_m'])),
+        "wireless_small": int(float(technology_inputs['wireless_small'])),
+        "wireless_medium": int(float(technology_inputs['wireless_medium'])),
+        "wireless_large": int(float(technology_inputs['wireless_large'])),
+        "core_node": int(float(technology_inputs['core_node'])),
+        "core_edge": int(float(technology_inputs['core_edge'])),
+        "regional_node": int(float(technology_inputs['regional_node'])),
+        "regional_edge": int(float(technology_inputs['regional_edge'])),
+
+        ##Spectrum
+        "bands_3G": spectrum_bands['3G']['bands_3G'][0],
+        "bandwidth_3G": spectrum_bands['3G']['bandwidth_3G'][0],
+        "bands_4G": spectrum_bands['4G']['bands_4G'][0],
+        "bandwidth_4G": spectrum_bands['4G']['bandwidth_4G'][0],
+        "bands_5G": spectrum_bands['5G']['bands_5G'][0],
+        "bandwidth_5G": spectrum_bands['5G']['bandwidth_5G'][0],
+
+        ##Appendix
         "figure_a1": os.path.join(IMAGES, iso3, '{}_by_pop_density.png'.format(iso3)),
         "figure_a2": os.path.join(IMAGES, iso3, 'financial_cost_sq_km_2_mbps.png'),
         "figure_a3": os.path.join(IMAGES, iso3, 'financial_cost_sq_km_5_mbps.png'),
@@ -116,10 +177,6 @@ def generate_report(country):
         "figure_a7": os.path.join(IMAGES, iso3, 'financial_cost_per_user_5_mbps.png'),
         "figure_a8": os.path.join(IMAGES, iso3, 'financial_cost_per_user_10_mbps.png'),
         "figure_a9": os.path.join(IMAGES, iso3, 'financial_cost_per_user_20_mbps.png'),
-
-        ###Method note
-        # "figure_5": os.path.join(IMAGES, '..', '..', 'clustering', 'figures', 'cluster_panel.png'),
-        # "figure_6": os.path.join(IMAGES, '..', '..', 'method', 'figures', 'method_box_diagram.jpg'),
     }
 
     html_out = template.render(template_vars)
@@ -265,6 +322,26 @@ def get_policy_data(iso3):
     return output
 
 
+def get_technology_inputs(iso3):
+    """
+
+    """
+    output = {}
+
+    filename = 'parameters_technology_options_*.csv'
+    path = os.path.join(RESULTS, 'model_results', iso3, filename)
+    files = glob.glob(path)
+    latest_file_path = max(files, key=os.path.getctime)
+
+    data = pd.read_csv(latest_file_path)
+
+    for idx, row in data.iterrows():
+
+        output[row['parameter'].lower()] = row['value']
+
+    return output
+
+
 def get_policy_inputs(iso3):
     """
 
@@ -281,6 +358,45 @@ def get_policy_inputs(iso3):
     for idx, row in data.iterrows():
 
         output[row['parameter'].lower()] = row['value']
+
+    return output
+
+
+def get_frequencies(iso3):
+    """
+
+    """
+    output = {}
+
+    filename = 'parameters_frequencies_technology_options_*.csv'
+    path = os.path.join(RESULTS, 'model_results', iso3, filename)
+    files = glob.glob(path)
+    latest_file_path = max(files, key=os.path.getctime)
+
+    data = pd.read_csv(latest_file_path)
+
+    generations = ['3G', '4G', '5G']
+
+    for generation in generations:
+
+        my_dict = {}
+
+        all_bands = []
+        all_bandwidths = []
+
+        for idx, row in data.iterrows():
+            if row['generation'] == generation:
+
+                all_bands.append(row['frequency'])
+                all_bandwidths.append(row['bandwidth'])
+
+        bands = 'bands_{}'.format(generation)
+        bandwidths = 'bandwidth_{}'.format(generation)
+
+        my_dict[bands] = all_bands
+        my_dict[bandwidths] = all_bandwidths
+
+        output[generation] = my_dict
 
     return output
 
@@ -308,8 +424,8 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        # if not country['iso3'] == 'BGD':
-        #     continue
+        if not country['iso3'] == 'BGD':
+            continue
 
         print('Reporting for {}'.format(country['iso3']))
 
