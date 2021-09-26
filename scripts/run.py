@@ -186,7 +186,7 @@ def find_country_list(continent_list):
 def load_cluster(path, iso3):
     """
     Load cluster number. You need to make sure the
-    R clustering script (podis/vis/clustering/clustering.r)
+    R clustering script (qubic/vis/clustering/clustering.r)
     has been run first.
 
     """
@@ -213,7 +213,10 @@ def load_cluster(path, iso3):
                     if row['ISO_3digit'] == item:
                         output[item] = row['cluster']
 
-    return output
+    if iso3 in ['BGD', 'MDV']:
+        return 'C3'
+
+    return output[iso3]
 
 
 def load_penetration(scenario, path):
@@ -387,7 +390,7 @@ if __name__ == '__main__':
 
             country_parameters = COUNTRY_PARAMETERS[iso3]
 
-            folder = os.path.join(DATA_RAW, 'clustering')
+            folder = os.path.join(BASE_PATH, '..', 'clustering', 'results')
             filename = 'data_clustering_results.csv'
             country['cluster'] = load_cluster(os.path.join(folder, filename), iso3)
 
@@ -403,73 +406,73 @@ if __name__ == '__main__':
             print('Working on {} in {}'.format(decision_option, iso3))
             print(' ')
 
-            for option in options:#[:10]:
+            # for option in options:#[:10]:
 
-                print('Working on {} and {}'.format(option['scenario'], option['strategy']))
+            #     print('Working on {} and {}'.format(option['scenario'], option['strategy']))
 
-                confidence_intervals = GLOBAL_PARAMETERS['confidence']
+            #     confidence_intervals = GLOBAL_PARAMETERS['confidence']
 
-                folder = os.path.join(DATA_INTERMEDIATE, iso3, 'subscriptions')
-                filename = 'subs_forecast.csv'
-                path = os.path.join(folder, filename)
-                penetration_lut = load_penetration(option['scenario'], path)
+            #     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'subscriptions')
+            #     filename = 'subs_forecast.csv'
+            #     path = os.path.join(folder, filename)
+            #     penetration_lut = load_penetration(option['scenario'], path)
 
-                folder = os.path.join(DATA_INTERMEDIATE, iso3, 'subscriptions')
-                filename = 'smartphone_forecast.csv'
-                path = os.path.join(folder, filename)
-                smartphone_lut = load_smartphones(option['scenario'], path)
+            #     folder = os.path.join(DATA_INTERMEDIATE, iso3, 'subscriptions')
+            #     filename = 'smartphone_forecast.csv'
+            #     path = os.path.join(folder, filename)
+            #     smartphone_lut = load_smartphones(option['scenario'], path)
 
-                for ci in confidence_intervals:
+            #     for ci in confidence_intervals:
 
-                    print('{} CI: {}'.format(iso3, ci))
+            #         print('{} CI: {}'.format(iso3, ci))
 
-                    filename = 'regional_data.csv'
-                    path = os.path.join(DATA_INTERMEDIATE, iso3, filename)
-                    data_initial = load_regions(country, path, sites_lut)#[:1]
+            #         filename = 'regional_data.csv'
+            #         path = os.path.join(DATA_INTERMEDIATE, iso3, filename)
+            #         data_initial = load_regions(country, path, sites_lut)#[:1]
 
-                    data_demand, annual_demand = estimate_demand(
-                        data_initial,
-                        option,
-                        GLOBAL_PARAMETERS,
-                        country_parameters,
-                        TIMESTEPS,
-                        penetration_lut,
-                        smartphone_lut
-                    )
+            #         data_demand, annual_demand = estimate_demand(
+            #             data_initial,
+            #             option,
+            #             GLOBAL_PARAMETERS,
+            #             country_parameters,
+            #             TIMESTEPS,
+            #             penetration_lut,
+            #             smartphone_lut
+            #         )
 
-                    data_supply = estimate_supply(
-                        country,
-                        data_demand,
-                        capacity_lut,
-                        option,
-                        GLOBAL_PARAMETERS,
-                        country_parameters,
-                        COSTS,
-                        core_lut,
-                        ci
-                    )
+            #         data_supply = estimate_supply(
+            #             country,
+            #             data_demand,
+            #             capacity_lut,
+            #             option,
+            #             GLOBAL_PARAMETERS,
+            #             country_parameters,
+            #             COSTS,
+            #             core_lut,
+            #             ci
+            #         )
 
-                    data_assess = assess(
-                        country,
-                        data_supply,
-                        option,
-                        GLOBAL_PARAMETERS,
-                        country_parameters,
-                        TIMESTEPS
-                    )
+            #         data_assess = assess(
+            #             country,
+            #             data_supply,
+            #             option,
+            #             GLOBAL_PARAMETERS,
+            #             country_parameters,
+            #             TIMESTEPS
+            #         )
 
-                    final_results = allocate_deciles(data_assess)
+            #         final_results = allocate_deciles(data_assess)
 
-                    regional_annual_demand = regional_annual_demand + annual_demand
-                    regional_results = regional_results + final_results
+            #         regional_annual_demand = regional_annual_demand + annual_demand
+            #         regional_results = regional_results + final_results
 
-            write_demand(regional_annual_demand, OUTPUT_COUNTRY)
+            # write_demand(regional_annual_demand, OUTPUT_COUNTRY)
 
-            write_results(regional_results, OUTPUT_COUNTRY, decision_option)
+            # write_results(regional_results, OUTPUT_COUNTRY, decision_option)
 
             write_inputs(OUTPUT_COUNTRY, country, country_parameters,
                             GLOBAL_PARAMETERS, COSTS, decision_option)
 
-            generate_percentages(iso3, decision_option)
+            # generate_percentages(iso3, decision_option)
 
     print('Completed model run')

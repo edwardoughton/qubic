@@ -391,3 +391,23 @@ def write_inputs(folder, country, country_parameters, global_parameters,
     filename = 'parameters_{}_{}.csv'.format(decision_option, timenow)
     path = os.path.join(folder, filename)
     parameters.to_csv(path, index=False)
+
+    ###write out spectrum frequencies
+    frequencies = country_parameters['frequencies']
+    generations = ['3G', '4G', '5G']
+    all_frequencies = []
+    for generation in generations:
+        for key, item in frequencies.items():
+            if generation == key:
+                all_frequencies.append({
+                    'generation': generation,
+                    'frequency': item[0]['frequency'],
+                    'bandwidth': item[0]['bandwidth'],
+                })
+    frequency_lut = pd.DataFrame(all_frequencies)
+
+    timenow = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+    filename = 'parameters_frequencies_{}_{}.csv'.format(decision_option, timenow)
+    path = os.path.join(folder, filename)
+    frequency_lut.to_csv(path, index=False)
