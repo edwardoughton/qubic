@@ -1,0 +1,174 @@
+ISO_3digit,country,cluster
+AFG,afghanistan,C1
+ALB,albania,C4
+DZA,algeria,C5
+AGO,angola,C2
+ARG,argentina,C6
+ARM,armenia,C4
+AZE,azerbaijan,C4
+BLR,belarus,C5
+BLZ,belize,C5
+BEN,benin,C2
+BTN,bhutan,C2
+BOL,bolivia,C2
+BIH,bosniaandherzegovina,C1
+BWA,botswana,C5
+BRA,brazil,C6
+BGR,bulgaria,C6
+BFA,burkinafaso,C1
+BDI,burundi,C3
+KHM,cambodia,C2
+CMR,cameroon,C2
+TCD,chad,C1
+CHN,china,C6
+COL,colombia,C5
+COD,"congo,dem.rep.",C1
+COG,"congo,rep.",C1
+CRI,costarica,C6
+CIV,coted'ivoire,C1
+DJI,djibouti,C1
+DOM,dominicanrepublic,C4
+ECU,ecuador,C5
+EGY,"egypt,arabrep.",C2
+SLV,elsalvador,C3
+SWZ,eswatini,C1
+ETH,ethiopia,C2
+FJI,fiji,C4
+GAB,gabon,C5
+GMB,"gambia,the",C1
+GEO,georgia,C4
+GHA,ghana,C2
+GTM,guatemala,C4
+GNB,guinea-bissau,C1
+GUY,guyana,C1
+HTI,haiti,C3
+HND,honduras,C2
+IND,india,C3
+IDN,indonesia,C4
+IRN,iran(islamicrepublicof),C5
+IRQ,iraq,C1
+JAM,jamaica,C3
+JOR,jordan,C4
+KAZ,kazakhstan,C6
+KEN,kenya,C2
+KGZ,kyrgyzrepublic,C2
+LAO,laopdr,C2
+LSO,lesotho,C2
+LBR,liberia,C2
+LBY,libya,C5
+MDG,madagascar,C2
+MWI,malawi,C1
+MYS,malaysia,C6
+MLI,mali,C1
+MEX,mexico,C6
+MDA,moldova,C4
+MNG,mongolia,C5
+MNE,montenegro,C6
+MAR,morocco,C4
+MOZ,mozambique,C1
+MMR,myanmar,C1
+NAM,namibia,C5
+NPL,nepal,C1
+NIC,nicaragua,C2
+NGA,nigeria,C3
+PAK,pakistan,C3
+PNG,papuanewguinea,C2
+PRY,paraguay,C5
+PER,peru,C5
+PHL,philippines,C3
+ROU,romania,C6
+RUS,russianfederation,C6
+RWA,rwanda,C3
+SEN,senegal,C2
+SRB,serbia,C4
+SLE,sierraleone,C1
+SLB,solomonislands,C1
+SOM,somalia,C1
+ZAF,southafrica,C5
+LKA,srilanka,C3
+SDN,sudan(the),C1
+SUR,suriname,C5
+SYR,syrianarabrepublic,C2
+TJK,tajikistan,C2
+TZA,tanzania,C1
+THA,thailand,C4
+TLS,timor-leste,C1
+TGO,togo,C1
+TUN,tunisia,C4
+TUR,turkey,C6
+TKM,turkmenistan,C5
+UGA,uganda,C1
+UKR,ukraine,C2
+UZB,uzbekistan,C2
+VUT,vanuatu,C2
+VEN,venezuela(bolivarianrepublicof),C6
+VNM,vietnam,C3
+ZMB,zambia,C1
+ZWE,zimbabwe,C1
+AND,andorra,High Income
+ATG,antiguaandbarbuda,High Income
+ABW,aruba,High Income
+AUS,australia,High Income
+AUT,austria,High Income
+BHR,bahrain,High Income
+BRB,barbados,High Income
+BEL,belgium,High Income
+BMU,bermuda,High Income
+BRN,bruneidarussalam,High Income
+CAN,canada,High Income
+CHL,chile,High Income
+HRV,croatia,High Income
+CYP,cyprus,High Income
+CZE,czechrepublic,High Income
+DNK,denmark,High Income
+EST,estonia,High Income
+FIN,finland,High Income
+FRA,france,High Income
+PYF,frenchpolynesia,High Income
+DEU,germany,High Income
+GIB,gibraltar,High Income
+GRC,greece,High Income
+GRL,greenland,High Income
+GUM,guam,High Income
+HUN,hungary,High Income
+ISL,iceland,High Income
+IRL,ireland,High Income
+IMN,isleofman,High Income
+ISR,israel,High Income
+ITA,italy,High Income
+JPN,japan,High Income
+KOR,"korea,rep.",High Income
+KWT,kuwait,High Income
+LVA,latvia,High Income
+LIE,liechtenstein,High Income
+LTU,lithuania,High Income
+LUX,luxembourg,High Income
+MAC,"macaosar,china",High Income
+MLT,malta,High Income
+MCO,monaco,High Income
+NLD,netherlands,High Income
+NCL,newcaledonia,High Income
+NZL,newzealand,High Income
+NOR,norway,High Income
+OMN,oman,High Income
+PLW,palau,High Income
+PAN,panama,High Income
+POL,poland,High Income
+PRT,portugal,High Income
+PRI,puertorico,High Income
+QAT,qatar,High Income
+SAU,saudiarabia,High Income
+SYC,seychelles,High Income
+SGP,singapore,High Income
+SXM,sintmaarten(dutchpart),High Income
+SVN,slovenia,High Income
+ESP,spain,High Income
+SWE,sweden,High Income
+CHE,switzerland,High Income
+TTO,trinidadandtobago,High Income
+TCA,turksandcaicosislands,High Income
+ARE,unitedarabemirates,High Income
+GBR,unitedkingdom,High Income
+USA,unitedstates,High Income
+URY,uruguay,High Income
+VIR,virginislands(u.s.),High Income
