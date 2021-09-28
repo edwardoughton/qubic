@@ -32,11 +32,14 @@ def generate_report(country):
 
     """
     iso3 = country['iso3']
+    rounding = country['rounding']
 
     sites = get_sites(iso3)
-    tech_percs = get_tech_percentages(iso3)
-    share_percs = get_sharing_data(iso3)
-    policy_percs = get_policy_data(iso3)
+    tech_costs = get_tech_costs(iso3, rounding)
+
+    tech_percs = get_tech_percentages(iso3, rounding)
+    share_percs = get_sharing_data(iso3, rounding)
+    policy_percs = get_policy_data(iso3, country['rounding_policy'])
 
     technology_inputs = get_technology_inputs(iso3)
     policy_inputs = get_policy_inputs(iso3)
@@ -51,13 +54,16 @@ def generate_report(country):
         "css_location": "D:\\Github\\qubic\\reports\\templates\\style_template.css",
         "preferred_name" : country['preferred_name'],
         "country": iso3,
+        "total_estimated_sites": sites['total_estimated_sites'],
+        # "sites_4G": sites['sites_4G'],
+        "backhaul_wireless": sites['backhaul_wireless'],
         "figure_1": os.path.join(IMAGES, iso3, 'social_costs_by_strategy.png'),
-        "upgraded_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_upgraded_sites'],
-        "new_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_new_sites'],
-        "upgraded_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_upgraded_sites'],
-        "new_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_new_sites'],
-        "upgraded_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_upgraded_sites'],
-        "new_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_new_sites'],
+        # "upgraded_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_upgraded_sites'],
+        # "new_sites_baseline_10mbps_3g_w": sites['baseline_10mbps_3g_w']['total_new_sites'],
+        # "upgraded_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_upgraded_sites'],
+        # "new_sites_baseline_10mbps_4g_w": sites['baseline_10mbps_4g_w']['total_new_sites'],
+        # "upgraded_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_upgraded_sites'],
+        # "new_sites_baseline_10mbps_5g_w": sites['baseline_10mbps_5g_w']['total_new_sites'],
         "baseline_10mbps_3g_w": tech_percs['baseline_10mbps_3g_w']['social_cost_bn'],
         "baseline_10mbps_4g_w": tech_percs['baseline_10mbps_4g_w']['social_cost_bn'],
         "baseline_10mbps_5g_w": tech_percs['baseline_10mbps_5g_w']['social_cost_bn'],
@@ -78,6 +84,20 @@ def generate_report(country):
         "baseline_2mbps_3g_w": tech_percs['baseline_2mbps_3g_w']['social_cost_bn'],
         "baseline_2mbps_4g_w": tech_percs['baseline_2mbps_4g_w']['social_cost_bn'],
         "baseline_2mbps_5g_w": tech_percs['baseline_2mbps_5g_w']['social_cost_bn'],
+        "perc_private_base_5mbps_3g_w":
+        tech_costs['baseline_5_5_5_3g_umts_wireless_baseline_baseline_baseline_baseline']['perc_private'],
+        "perc_govt_base_5mbps_3g_w":
+        tech_costs['baseline_5_5_5_3g_umts_wireless_baseline_baseline_baseline_baseline']['perc_govt'],
+        "perc_private_base_5mbps_4g_w":
+        tech_costs['baseline_5_5_5_4g_epc_wireless_baseline_baseline_baseline_baseline']['perc_private'],
+        "perc_govt_base_5mbps_4g_w":
+        tech_costs['baseline_5_5_5_4g_epc_wireless_baseline_baseline_baseline_baseline']['perc_govt'],
+        "perc_private_base_5mbps_5g_w":
+        tech_costs['baseline_5_5_5_5g_nsa_wireless_baseline_baseline_baseline_baseline']['perc_private'],
+        "perc_govt_base_5mbps_5g_w":
+        tech_costs['baseline_5_5_5_5g_nsa_wireless_baseline_baseline_baseline_baseline']['perc_govt'],
+
+
         "figure_2": os.path.join(IMAGES, iso3, 'private_cost_composition.png'),
         "figure_3": os.path.join(IMAGES, iso3, 'social_costs_by_sharing_strategy.png'),
         "passive_vs_base_4g_5mbps": round(abs(share_percs['baseline_5mbps_passive']['saving_against_baseline'])),
@@ -138,7 +158,7 @@ def generate_report(country):
         "return_period": technology_inputs['return_period'],
         "discount_rate": technology_inputs['discount_rate'],
         "opex_percentage_of_capex": technology_inputs['opex_percentage_of_capex'],
-        "confidence": technology_inputs['confidence'],
+        "confidence": technology_inputs['confidence'][0],
         "tdd_dl_to_ul": technology_inputs['tdd_dl_to_ul'],
         "equipment": int(float(technology_inputs['equipment'])),
         "site_build": int(float(technology_inputs['site_build'])),
@@ -199,47 +219,59 @@ def get_sites(iso3):
     """
     output = {}
 
-    filename = 'national_market_results_technology_options.csv'
+    path = os.path.join(BASE_PATH, 'intermediate', iso3, 'sites', 'sites.csv')
+    data = pd.read_csv(path)
+
+    data = data[['sites_4G', 'total_estimated_sites', 'backhaul_wireless']]
+    data = data.sum()
+
+    output['sites_4G'] = data['sites_4G']
+    output['total_estimated_sites'] = data['total_estimated_sites']
+    output['backhaul_wireless'] = int(round(
+        (data['backhaul_wireless'] / data['total_estimated_sites']) *100))
+
+    return output
+
+
+def get_tech_costs(iso3, rounding):
+    """
+    Load data.
+
+    """
+    output = {}
+
+    filename = 'national_market_cost_results_technology_options.csv'
     path = os.path.join(RESULTS, 'model_results', iso3, filename)
     data = pd.read_csv(path)
 
-    data.loc[data['scenario'].str.endswith('2_2_2', na=False), 'capacity'] = '2 Mbps'
-    data.loc[data['scenario'].str.endswith('5_5_5', na=False), 'capacity'] = '5 Mbps'
-    data.loc[data['scenario'].str.endswith('10_10_10', na=False), 'capacity'] = '10 Mbps'
-    data.loc[data['scenario'].str.endswith('20_20_20', na=False), 'capacity'] = '20 Mbps'
-
-    data.loc[data['scenario'].str.startswith('low', na=False), 'scenario'] = 'Low'
-    data.loc[data['scenario'].str.startswith('baseline', na=False), 'scenario'] = 'Baseline'
-    data.loc[data['scenario'].str.startswith('high', na=False), 'scenario'] = 'High'
-
-    data['strategy'] = data['strategy'].replace(['3G_umts_wireless_baseline_baseline_baseline_baseline'], '3G (W)')
-    data['strategy'] = data['strategy'].replace(['3G_umts_fiber_baseline_baseline_baseline_baseline'], '3G (FB)')
-    data['strategy'] = data['strategy'].replace(['4G_epc_wireless_baseline_baseline_baseline_baseline'], '4G (W)')
-    data['strategy'] = data['strategy'].replace(['4G_epc_fiber_baseline_baseline_baseline_baseline'], '4G (FB)')
-    data['strategy'] = data['strategy'].replace(['5G_nsa_wireless_baseline_baseline_baseline_baseline'], '5G (W)')
-    data['strategy'] = data['strategy'].replace(['5G_nsa_fiber_baseline_baseline_baseline_baseline'], '5G (FB)')
-
-    data['generation'] = data['strategy'].str.split(' ').str[0]
-    data['backhaul'] = data['strategy'].str.split(' ').str[1]
-
     for idx, row in data.iterrows():
 
-        key = '{}_{}_{}_{}'.format(
+        key = '{}_{}'.format(
             row['scenario'].lower(),
-            row['capacity'].lower().replace(' ', ''),
-            row['generation'].lower(),
-            row['backhaul'].lower().replace('(','').replace(')',''),
+            row['strategy'].lower(),
         )
 
+        private_cost_bn = round(row['private_cost'] / 1e9, rounding)
+        government_cost_bn = round(row['government_cost'] / 1e9, rounding)
+        societal_cost_bn = round(row['societal_cost'] / 1e9, rounding)
+
+        perc_private = int(round((private_cost_bn / societal_cost_bn) * 100, 1))
+        if perc_private > 100:
+            perc_private = 100
+
+        perc_govt = int(round((government_cost_bn / societal_cost_bn) * 100, 1))
+        if perc_govt < 0:
+            perc_govt = 0
+
         output[key] = {
-            'total_upgraded_sites': row['total_upgraded_sites'],
-            'total_new_sites': row['total_new_sites'],
+            'perc_private': perc_private,
+            'perc_govt': perc_govt,
         }
 
     return output
 
 
-def get_tech_percentages(iso3):
+def get_tech_percentages(iso3, rounding):
     """
     Load data.
 
@@ -259,16 +291,23 @@ def get_tech_percentages(iso3):
             row['backhaul'].lower().replace('(','').replace(')',''),
         )
 
+        social_cost_bn = round(row['social_cost'] / 1e9, rounding)
+        perc_saving_vs_3g = round(row['perc_saving_vs_3G'], 1)
+        w_over_fb = round(row['w_over_fb'], 1)
+
+        if rounding == 0:
+            social_cost_bn = int(social_cost_bn)
+
         output[key] = {
-            'social_cost_bn': round(row['social_cost'] / 1e9, 2),
-            'perc_saving_vs_3g': round(row['perc_saving_vs_3G'], 1),
-            'w_over_fb': round(row['w_over_fb'], 1),
+            'social_cost_bn': social_cost_bn,
+            'perc_saving_vs_3g': perc_saving_vs_3g,
+            'w_over_fb': w_over_fb,
         }
 
     return output
 
 
-def get_sharing_data(iso3):
+def get_sharing_data(iso3, rounding):
     """
     Load data.
 
@@ -287,15 +326,19 @@ def get_sharing_data(iso3):
             row['strategy_x'].lower(),
         )
 
+        social_cost_bn = round(row['social_cost_x'] / 1e9, rounding)
+        if rounding == 0:
+            social_cost_bn = int(social_cost_bn)
+
         output[key] = {
-            'social_cost_bn': round(row['social_cost_x'] / 1e9, 2),
+            'social_cost_bn': social_cost_bn,
             'saving_against_baseline': round(row['saving_against_baseline'], 1),
         }
 
     return output
 
 
-def get_policy_data(iso3):
+def get_policy_data(iso3, rounding):
     """
     Load data.
 
@@ -306,6 +349,8 @@ def get_policy_data(iso3):
     path = os.path.join(RESULTS, 'percentages', filename)
     data = pd.read_csv(path)
 
+    rounding = rounding + 1
+
     for idx, row in data.iterrows():
 
         key = '{}_{}_{}'.format(
@@ -314,8 +359,12 @@ def get_policy_data(iso3):
             row['strategy_x'].lower().replace(' ', ''),
         )
 
+        social_cost_bn = round(row['social_cost_x'] / 1e9, rounding)
+        if rounding == 0:
+            social_cost_bn = int(social_cost_bn)
+
         output[key] = {
-            'social_cost_bn': round(row['social_cost_x'] / 1e9, 2),
+            'social_cost_bn': social_cost_bn,
             'perc_against_baseline': round(row['saving_against_baseline'], 1),
         }
 
@@ -424,8 +473,8 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        if not country['iso3'] == 'BGD':
-            continue
+        # if not country['iso3'] == 'MOZ':
+        #     continue
 
         print('Reporting for {}'.format(country['iso3']))
 
