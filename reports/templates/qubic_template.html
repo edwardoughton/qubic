@@ -41,12 +41,14 @@ caption {
 </head>
 <body>
 <p align="justify">
-    This country briefing contains estimated investment costs for providing
-    universal broadband. The analysis focuses on exploring the impact of different
-    technologies, infrastructure sharing business models and policy options.
+    The first part of this country briefing contains estimated investment costs for providing
+    universal broadband in {{preferred_name}}. The analysis focuses on exploring
+    the impact of different technologies, infrastructure sharing business models and policy options.
+    For further detail, the second part provides an overview of the method and model
+    inputs, with a separate document providing the mathematical description of the model.
 </p>
 <p align="justify">
-    The required investment is broken down based on the social cost, which is a
+    The required investment is broken down based on the financial cost, which is a
     combination of the quantity of private sector investment and government subsidies
     (minus any government tax revenues). The private sector investment represents the
     portion that can be viably achieved through private actors, such as Mobile Network
@@ -55,9 +57,11 @@ caption {
     licensing revenues) represents any public subsidies required to make up
     capital shortfall in unviable locations, and is usually only a small portion of
     the overall cost.
-    For a detailed description of the method used, please refer to the recent World Bank
-    working paper which provides a comprehensive overview applied to 8 Low and Middle
-    Income Countries (Oughton et al. 2021a).
+</p>
+<p align="justify">
+    The results demonstrate that providing governments make judicious choices, adopting fiscal
+    and regulatory regimes that are conducive to lowering costs, universal broadband may be
+    within reach of most countries over the next decade.
 </p>
 
 <h2>Technology options</h2>
@@ -68,7 +72,8 @@ caption {
     and 5G) using licensed spectrum as this is one of the most cost-effective ways to
     provide wide-area broadband connectivity (Oughton et al. 2021b).
 </p>
-<p align="justify"> The cost of building and operating cellular sites is not always prohibitive on its own,
+<p align="justify"> The cost of building and operating cellular sites is not always
+    prohibitive on its own,
     but often in rural and remote areas a major challenge relates to the cost of building
     the ‘backhaul’ connection. This component links each tower back to a fiber Point of
     Presence, enabling data to be transported to and from the wider Internet. If data needs
@@ -78,12 +83,15 @@ caption {
 </p>
 <p align="justify">
     Three different scenarios are explored here given different cellphone and smartphone
-    adoption rates, for low (2%), baseline (4%) and high (6%) variants. Moreover, three
+    adoption growth rates, for low (2%), baseline (4%) and high (6%) variants. Moreover, three
     capacity per user targets are applied (~2, ~5, and ~10 Mbps) based on the mean speed
     available for the busiest hour of the day. Figure 1 illustrates the results, with
     the social cost of the different technology strategies tested based on the
     required private sector and government investment to reach 100% population
-    coverage. 'Cost' is defined as the Net Present Value (NPV) of the Total Cost of
+    coverage.
+</p>
+<p align="justify"></p>
+    'Cost' is defined as the Net Present Value (NPV) of the Total Cost of
     Ownership (TCO) over the next decade, 2020-2030, aligning with the horizon of the
     Sustainable Development Goals (SDGs) (specifically target SDG 9c on universal
     affordable broadband access).
@@ -102,8 +110,8 @@ caption {
     Additionally, newer technologies often have better quality coverage spectrum
     relative to older generations, such as when comparing 3G to 4G. Moreover,
     with 5G there is the benefit of having both good quality coverage spectrum
-    (700 MHz), as well as very wide bandwidth in the 3.5 GHz band, enabling large
-    capacity increases.
+    (700 MHz), and when used, very wide bandwidth in the 3.5 GHz band
+    enabling large capacity increases close to the cell site.
 </p>
 <p align="justify">
     A key factor determining the capacity provided by each generation is the number
@@ -112,8 +120,6 @@ caption {
     This contrasts with 4G which is commonly deployed with 2x2 'Multiple In, Multiple
     Out' (MIMO) radio technology, using two transmitter and receiver antennas. In 5G,
     much higher order MIMO is possible, although here only 4x4 MIMO is assumed.
-</p>
-<p align="justify">
     As the MIMO level has a large impact on the cost results,
     this technology deserves attention. Just imagine in practical terms that the MIMO
     level reflects the number of streams of simultaneously transmitted information
@@ -121,7 +127,7 @@ caption {
     where radio waves can take many different routes between the site antenna and the
     receiving antenna on a user's smartphone. Newer devices are clever enough to
     detect these simultaneous streams thanks to the use of multiple antennas, enabling
-    impressive  capacity gains.
+    impressive capacity gains.
 </p>
 
 <h3>Figure 1 Assessment of universal broadband technology strategies</h3>
@@ -130,8 +136,15 @@ caption {
 <p align="justify">
     When comparing the required investment across strategies in the baseline, using
     wireless backhaul to deliver ~5 Mbps per user, 3G is estimated to cost
-    ${{ baseline_5mbps_3g_w }} billion, versus a 4G cost of ${{ baseline_5mbps_4g_w }}
-    billion and a 5G cost of ${{ baseline_5mbps_5g_w }} billion.
+    ${{ baseline_5mbps_3g_w }} billion
+    (private: {{perc_private_base_5mbps_3g_w}}%, public:
+    {{perc_govt_base_5mbps_3g_w}}%),
+    versus a 4G cost of ${{ baseline_5mbps_4g_w }}
+    billion (private: {{perc_private_base_5mbps_4g_w}}%, public:
+    {{perc_govt_base_5mbps_4g_w}}%)
+    and a 5G cost of ${{ baseline_5mbps_5g_w }} billion
+    (private: {{perc_private_base_5mbps_5g_w}}%, public:
+    {{perc_govt_base_5mbps_5g_w}}%).
 </p>
 <p align="justify">
     The scenario variants help to capture the uncertainty around future cellphone and
@@ -178,6 +191,10 @@ caption {
     such as 2G or 3G (although this is likely to be in high-income frontier
     markets where consumers have progressively moved to newer generations such as 4G).
 </p>
+
+<h3>Figure 2 Assessment of universal broadband technology strategies</h3>
+<img src="{{ figure_2 }}", width="auto", height="auto">
+
 <p align="justify">
     The use of different backhaul technologies has a large impact on investment.
     While fiber optic backhaul links are highly desirable thanks to their large capacity,
@@ -189,10 +206,6 @@ caption {
     Figure 2 illustrates the percentage composition of the private cost across the different
     strategies and capacity per user targets, for the baseline adoption scenario.
 </p>
-
-<h3>Figure 2 Assessment of universal broadband technology strategies</h3>
-<img src="{{ figure_2 }}", width="auto", height="auto">
-
 <p align="justify">
     Figure 2 captures the capex and opex proportion required for the RAN, backhaul
     and core, as well as the one-off capex requirement for any civil engineering costs.
@@ -325,8 +338,9 @@ caption {
     The new policy strategies explore a reduction
     in the corporation tax rate on profits to {{tax_low}}% (Low Tax), versus a
     situation where this rate is raised to {{tax_high}}% (High Tax). This is relative
-    to a baseline of {{tax_baseline}}%. Figure 4 presents the results generated from
-    testing these strategies.
+    to a taxation baseline assumption of {{tax_baseline}}%, which is broadly aligned with
+    the corporation tax rate for {{preferred_name}}. Figure 4 presents the results
+    generated from testing these strategies.
 </p>
 <p align="justify">
     The results find a cost decrease of approximately {{perc_lowtax}}% in
@@ -339,20 +353,23 @@ caption {
 </p>
 <p align="justify">
     As the model focuses on deploying universal broadband via user-cross
-    subsidization (akin to a universal service obligation), profits above
-    {{profit_margin}}% are reallocated to serving unviable areas. Therefore,
-    corporation tax rate changes have a more modest impact than if there was
-    no minimum service target and operators could maximize profits from only
-    viable urban and suburban areas (leaving rural areas with poor coverage).
+    subsidization (akin to a universal service obligation), return on capital
+    invested above {{profit_margin}}% is reallocated to serving unviable areas.
+    Therefore, corporation tax rate changes have a more modest impact than if
+    there was no minimum service target and operators could maximize profits
+    from only viable urban and suburban areas (leaving rural areas with
+    poor coverage).
 </p>
 <p align="justify">
     Similarly, the spectrum license fees are varied to explore the cost sensitivity
-    of this option. In the Low Spectrum Fees case, the existing cost of
-    ${{spectrum_coverage_baseline_usd_mhz_pop}} per MHz/population for coverage
-    spectrum and ${{spectrum_capacity_baseline_usd_mhz_pop}} per MHz/population
-    for capacity spectrum, is decreased by {{spectrum_cost_low}}%. This led to a
-    cost decrease from the baseline of ${{baselinetax_cost_4g_10mbps}} billion to
-    ${{lowspectrum_cost_4g_10mbps}} billion.
+    of this option. Analysis of the PointTopic spectrum database is used to inform
+    spectrum price assumptions for each country, for coverage (below 1 GHz) and
+    capacity (over 1 GHz) spectrum bands. In the Low Spectrum Fees case, the
+    existing cost of ${{spectrum_coverage_baseline_usd_mhz_pop}} per MHz/population
+    for coverage spectrum and ${{spectrum_capacity_baseline_usd_mhz_pop}} per
+    MHz/population for capacity spectrum, is decreased by {{spectrum_cost_low}}%.
+    This led to a cost decrease from the baseline of ${{baselinetax_cost_4g_10mbps}}
+    billion to ${{lowspectrum_cost_4g_10mbps}} billion.
 </p>
 <p align="justify">
     In contrast, the cost of spectrum is increased by {{spectrum_cost_high}}% in
@@ -399,17 +416,17 @@ caption {
     and telecommunication policy.
 </p>
 <p align="justify">
-        In the Quantified Universal Broadband Investment by Country (Qubic) project,
+        In the Qubic project,
         the method provides an innovative analytical approach which combines the
         use of remote sensing and least-cost infrastructure network designs, with
         traditional telecommunications regulatory assessment techniques. This
         method builds off the previous open-source codebases developed, including
-        the Policy Options for Digital Infrastructure Strategies (podis) and
-        the Python Telecommunications Assessment Library repositories, both of
-        which adhere to gold-standard software engineering methods (fully-tested,
-        fully-documented) and are available openly from the repository for all
-        to access.
-    </p>
+        the Policy Options for Digital Infrastructure Strategies (podis) (Oughton, 2021)
+        and the Python Telecommunications Assessment Library (Oughton, 2020)
+        repositories, both of which adhere to gold-standard software engineering
+        methods (being fully-tested and fully-documented). Both are openly available
+        from the repository for all to access.
+</p>
 <p align="justify">
     A ‘what-if’ scenario approach is adopted enabling different questions
     pertaining to universal broadband to be tested. In scientific research
@@ -427,10 +444,10 @@ caption {
     instead focusing on modeling a ‘hypothetical operator’ with an average
     quantity of sunk costs and users. Explicitly modeling an operator’s
     supply and demand conditions can be challenging due to a lack of available
-    data. Even if comprehensive information was available, explicit modeling
+    data. Even if comprehensive information is available, explicit modeling
     often raises commercially sensitive issues which can hinder engagement
     with industry. Therefore, this approach is considered superior, but comes
-    with the caveat that the model inputs will purposefully not identically
+    with the caveat that the model inputs purposefully do not
     match any of the operators currently active in the market (as is common in
     decision analytics for telecom regulation).
 </p>
@@ -462,23 +479,22 @@ caption {
     infrastructure.
 </p>
 <p align="justify">
-        Firstly, Gross Domestic Product (GDP) per capita represents the economic
-        purchasing power of consumers, and secondly, population density represents
-        the general spatial distribution of humans living in a particular country
-        (World Bank, 2020). Thirdly, 4G coverage provides insight into the level of
-        existing availability of telecom infrastructure and wireless broadband
-        availability, and finally, the penetration rate for unique cellphone subscribers
-        is used (recognizing that as many people multiple SIM cards, therefore
-        the unique number of users is required) (GSMA, 2020). While these metrics
-        are by no means a fully comprehensive set of country indicators, it is
-        preferable to use a small number of metrics when clustering. This keeps the
-        analysis as explainable as possible (e.g. for why certain countries are in
-        each cluster), as well as keeping any illustrations visually succinct (e.g.
-        making it possible to visualize the inputs and results in a single set of
-        plots). Figure 1 reports the mean centered results of the clustering process,
-        along with the six different country segments selected.
+    Firstly, Gross Domestic Product (GDP) per capita represents the economic
+    purchasing power of consumers, and secondly, population density represents
+    the general spatial distribution of humans living in a particular country
+    (World Bank, 2020). Thirdly, 4G coverage provides insight into the level of
+    existing availability of telecom infrastructure and wireless broadband
+    availability, and finally, the penetration rate for unique cellphone subscribers
+    is used (recognizing that many people own multiple SIM cards, therefore
+    the unique number of users is required) (GSMA, 2020). While these metrics
+    are by no means a fully comprehensive set of country indicators, it is
+    preferable to use a small number of metrics when clustering. This keeps the
+    analysis as explainable as possible (e.g. for why certain countries are in
+    each cluster), as well as keeping any illustrations visually succinct (e.g.
+    making it possible to visualize the inputs and results in a single set of
+    plots). Figure 1 reports the mean centered results of the clustering process,
+    along with the six different country segments selected.
 </p>
-
 
 <h3>Figure 1 K-means clustering results for each country grouping</h3>
 <img src="{{figure_m1}}", width="auto", height="auto">
@@ -492,9 +508,9 @@ caption {
     islands, such as Grenada, Saint Lucia, or The Maldives. Countries with very
     high population density (over 5,000 inhabitants per square kilometer) are also
     excluded as these nations have favorable economic conditions that may not
-    warrant the type of universal broadband analysis carried out in this assessment
-    (such as Lebanon). The exact R code uses the inbuilt kmeans function from the
-    R stats package and is available for inspection in the Qubic code repository
+    warrant the type of universal broadband analysis carried out in this assessment.
+    The exact R code uses the inbuilt kmeans function from the R stats package and
+    is available for inspection in the Qubic code repository
     (Oughton, 2021).
 </p>
 
@@ -502,20 +518,30 @@ caption {
 <p align="justify">
     The modeling techniques have been applied to many countries around the world,
     with the foundations of the method developed for national 5G assessments in
-    OECD markets, such as the UK (Oughton et al., 2018; Oughton and Frias, 2018,
-    2016; Oughton and Russell, 2020) and the Netherlands (Oughton et al., 2019).
+    mainly OECD markets, such as the UK (Oughton et al., 2018; Oughton and Frias, 2018,
+    2016; Oughton and Russell, 2020) and the Netherlands (Oughton et al., 2019),
+    as well as India, the world's largest mobile market (Oughton and Jha, 2021).
     More recently, the methods have been deployed in the Pytal and Podis
     repositories. Figure 2 visualizes the assessment method, divided into the
-    three software modules, which will now be presented.
+    three software modules.
 </p>
 
 <h2>Figure 2 Universal broadband assessment method applied in Qubic</h2>
 <img src="{{figure_m2}}", width="auto", height="auto">
 
-<h2>Demand module</h2>
+<pdf:nextpage></pdf:nextpage>
 
-The demand module uses a variety of data inputs. For a detailed description of
-the mathematical model, see the affiliated document.
+<p align="justify">
+    All bespoke model inputs for {{preferred_name}} are now presented, starting with
+    the demand forecasts developed in Figure 3, followed by (i) country information
+    in Table 1, (ii) model parameters in Table 2, (iii) cost information in Table 3
+    and (iv) the spectrum portfolio used in Table 4.
+</p>
+
+<p align="justify">
+    The full mathematical description of the method for
+    each software module can be found in the affiliated method document.
+</p>
 
 <h3>Figure 3 Demand forecasts for {{preferred_name}}</h3>
 <img src="{{figure_m3}}", width="auto", height="auto">
@@ -539,6 +565,14 @@ the mathematical model, see the affiliated document.
     <tr>
         <td>ISO2</td>
         <td>{{iso2}}</td>
+    </tr>
+    <tr>
+        <td>Estimated existing sites</td>
+        <td>{{total_estimated_sites}}</td>
+    </tr>
+    <tr>
+        <td>Sites with wireless backhaul (%)</td>
+        <td>{{backhaul_wireless}}</td>
     </tr>
     <tr>
         <td>GADM GID level for core nodes</td>
@@ -751,6 +785,8 @@ the mathematical model, see the affiliated document.
     </tr>
 </table>
 
+<pdf:nextpage></pdf:nextpage>
+
 <h2>References</h2>
 
 <p align="justify">
@@ -770,9 +806,21 @@ the mathematical model, see the affiliated document.
     Policy 45, 102127. <a href="https://doi.org/10.1016/j.telpol.2021.102127">https://doi.org/10.1016/j.telpol.2021.102127</a>
 </p>
 <p align="justify">
-    Oughton, E.J., 2021. edwardoughton/qubic [WWW Document]. URL:
+    Oughton, E.J., 2021. Quantified Universal Broadband Investment by Country (QUBIC) [WWW Document]. URL:
     <a href="https://github.com/edwardoughton/qubic">https://github.com/edwardoughton/qubic</a>
     (accessed 5.14.21).
+</p>
+<p align="justify">
+    Oughton, E., 2021. Policy Options for Digital Infrastructure Strategies (podis) [WWW Document].
+    URL:
+    <a href="https://github.com/edwardoughton/podis">https://github.com/edwardoughton/podis</a>
+    (accessed 9.13.21).
+</p>
+<p align="justify">
+    Oughton, E.J., 2020. Python Telecommunication Assessment Library (pytal) [WWW Document].
+    URL:
+    <a href="https://github.com/edwardoughton/pytal">https://github.com/edwardoughton/pytal</a>
+    (accessed 5.26.20).
 </p>
 <p align="justify">
     Oughton, E.J., Frias, Z., 2016. Exploring the cost, coverage and rollout implications of
@@ -798,6 +846,12 @@ the mathematical model, see the affiliated document.
     <a href="https://doi.org/10.1016/j.tele.2019.01.003">https://doi.org/10.1016/j.tele.2019.01.003</a>
 </p>
 <p align="justify">
+    Oughton, E.J., Jha, A., 2021. Supportive 5G Infrastructure Policies are Essential for
+    Universal 6G: Assessment Using an Open-Source Techno-Economic Simulation Model Utilizing
+    Remote Sensing. IEEE Access 9, 101924–101945.
+    <a href="https://doi.org/10.1109/ACCESS.2021.3097627">https://doi.org/10.1109/ACCESS.2021.3097627</a>
+</p>
+<p align="justify">
     Oughton, E.J., Russell, T., 2020. The importance of spatio-temporal infrastructure
     assessment: Evidence for 5G from the Oxford–Cambridge Arc. Computers, Environment and
     Urban Systems 83, 101515.
@@ -813,7 +867,7 @@ the mathematical model, see the affiliated document.
 <pdf:nextpage>
 
 <h2>Appendix 1</h2>
-<h3>Figure A1 {{preferred_name}} population density</h3>
+<h3>Figure A1 {{preferred_name}} population density (Population Per Square Kilometer)</h3>
 <img src="{{ figure_a1 }}", width="auto", height="auto">
 </pdf:nextpage>
 

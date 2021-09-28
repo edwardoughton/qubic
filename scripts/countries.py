@@ -28,7 +28,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,5)
+        'figsize':(9,5),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Angola',
@@ -54,7 +56,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Bangladesh',
@@ -80,7 +84,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Bhutan',
@@ -106,7 +112,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,3)
+        'figsize':(9,3),
+        'rounding': 2,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Cameroon',
@@ -132,7 +140,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Costa Rica',
@@ -158,7 +168,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Egypt',
@@ -184,7 +196,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,7)
+        'figsize':(9,7),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'El Salvador',
@@ -210,7 +224,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,4)
+        'figsize':(9,4),
+        'rounding': 1,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Gambia (the)',
@@ -236,7 +252,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,3.5)
+        'figsize':(9,3.5),
+        'rounding': 2,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Honduras',
@@ -262,7 +280,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,4.5)
+        'figsize':(9,4.5),
+        'rounding': 1,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'India',
@@ -288,7 +308,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Kenya',
@@ -314,7 +336,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Sri Lanka',
@@ -340,7 +364,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Morocco',
@@ -366,7 +392,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,6)
+        'figsize':(9,6),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Madagascar',
@@ -392,7 +420,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Maldives (the)',
@@ -418,7 +448,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 2,
+        'rounding_policy': 2,
     },
     {
         'country_name': 'Mozambique',
@@ -444,7 +476,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 0,
     },
     {
         'country_name': 'Malawi',
@@ -470,7 +504,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,8)
+        'figsize':(9,8),
+        'rounding': 0,
+        'rounding_policy': 0,
     },
     {
         'country_name': 'Nigeria',
@@ -496,7 +532,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,6)
+        'figsize':(9,6),
+        'rounding': 0,
+        'rounding_policy': 0,
     },
     {
         'country_name': 'Nepal',
@@ -522,7 +560,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,4)
+        'figsize':(9,4),
+        'rounding': 0,
+        'rounding_policy': 0,
     },
     {
         'country_name': 'Pakistan',
@@ -548,7 +588,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,6)
+        'figsize':(9,6),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
     {
         'country_name': 'Senegal',
@@ -574,7 +616,9 @@ COUNTRY_LIST = [
         'sp_growth_high_rural': 6,
         'phone_ownership_male': 50,
         'phone_ownership_female': 50,
-        'figsize':(9,6)
+        'figsize':(9,6),
+        'rounding': 0,
+        'rounding_policy': 1,
     },
 ]
 
