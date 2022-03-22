@@ -184,4 +184,4 @@ if __name__ == '__main__':
 
     #     vis_maps('GMB', metric)
 
-    vis('GMB')
+    vis('COL')

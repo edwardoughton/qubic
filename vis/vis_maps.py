@@ -371,8 +371,8 @@ if __name__ == '__main__':
 
         iso3 = country['iso3']
 
-        # if not iso3 == 'HND':
-        #     continue
+        if not iso3 == 'COL':
+            continue
 
         print('-- {} --'.format(iso3))
 
