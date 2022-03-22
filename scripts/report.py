@@ -473,8 +473,8 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        # if not country['iso3'] == 'MOZ':
-        #     continue
+        if not country['iso3'] == 'COL':
+            continue
 
         print('Reporting for {}'.format(country['iso3']))
 

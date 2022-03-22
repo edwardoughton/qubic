@@ -109,12 +109,12 @@ def generate_policy_options():
     """
     output = []
 
-    scenarios = ['low_20_20_20', 'baseline_20_20_20', 'high_20_20_20',
+    scenarios = [#'low_20_20_20', 'baseline_20_20_20', 'high_20_20_20',
                 'low_10_10_10', 'baseline_10_10_10', 'high_10_10_10',
                 'low_5_5_5', 'baseline_5_5_5', 'high_5_5_5',
                 'low_2_2_2', 'baseline_2_2_2', 'high_2_2_2']
-    generation_core_types = ['3G_umts', '4G_epc', '5G_nsa']
-    backhaul_types = ['wireless', 'fiber']
+    generation_core_types = ['4G_epc']#'3G_umts', '5G_nsa'
+    backhaul_types = ['wireless'] #, 'fiber'
     sharing_types = ['baseline']
     networks_types = ['baseline']
     spectrum_types = ['baseline', 'low', 'high']

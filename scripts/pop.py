@@ -1025,8 +1025,8 @@ if __name__ == '__main__':
         if country['iso3'] == 'MDV': #MDV has it's own set of scripts
             continue #see -> ~/qubic/scripts/MDV/
 
-        # if not country['iso3'] == 'AGO':
-        #     continue
+        if not country['iso3'] == 'COL':
+            continue
 
         print('----')
         print('-- Working on {}'.format(country['country_name']))

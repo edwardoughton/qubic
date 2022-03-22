@@ -911,7 +911,10 @@ def generate_agglomeration_lut(country):
         coords = [json.loads(geo.to_json())['features'][0]['geometry']]
 
         #chop on coords
-        out_img, out_transform = mask(settlements, coords, crop=True)
+        try:
+            out_img, out_transform = mask(settlements, coords, crop=True)
+        except:
+            continue
 
         # Copy the metadata
         out_meta = settlements.meta.copy()
@@ -969,6 +972,9 @@ def generate_agglomeration_lut(country):
         if len(seen_coords) == 0:
 
             pop_tif = os.path.join(folder_tifs, region[GID_level] + '.tif')
+
+            if not os.path.exists(pop_tif):
+                continue
 
             with rasterio.open(pop_tif) as src:
                 data = src.read()
@@ -1065,6 +1071,9 @@ def find_settlement_nodes(country, regions):
     for idx, region in regions.iterrows():
 
         path = os.path.join(folder_tifs, region[GID_level] + '.tif')
+
+        if not os.path.exists(path):
+            continue
 
         with rasterio.open(path) as src:
             data = src.read()
@@ -1985,19 +1994,19 @@ if __name__ == '__main__':
 
     for country in COUNTRY_LIST:
 
-        # if not country['iso3'] == 'HND':
-        #     continue
+        if not country['iso3'] == 'COL':
+            continue
 
         print('--Working on {}'.format(country['iso3']))
 
-        print('Processing coverage shapes')
-        process_coverage_shapes(country)
+        # print('Processing coverage shapes')
+        # process_coverage_shapes(country)
 
-        print('Chopping coverage shapes')
-        process_regional_coverage(country)
+        # print('Chopping coverage shapes')
+        # process_regional_coverage(country)
 
-        print('Load existing fiber infrastructure')
-        process_existing_fiber(country)
+        # print('Load existing fiber infrastructure')
+        # process_existing_fiber(country)
 
         print('Generating agglomeration lookup table')
         generate_agglomeration_lut(country)
