@@ -1,4 +1,4 @@
-Quantified Universal Broadband by Country (qubic)
+Quantified Universal Broadband Investment by Country (qubic)
 ===================================================
 
 **qubic** enables the required investment to be quantified for providing
